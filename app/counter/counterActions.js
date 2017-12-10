@@ -1,5 +1,5 @@
 // @flow
-import type { counterStateType } from '../reducers/counter';
+import type { counterStateType } from './counterReducer';
 
 type actionType = {
   +type: string
@@ -7,6 +7,7 @@ type actionType = {
 
 export const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
 export const DECREMENT_COUNTER = 'DECREMENT_COUNTER';
+export const INCREMENT_COUNTER_ASYNC = 'INCREMENT_COUNTER_ASYNC';
 
 export function increment() {
   return {
@@ -33,9 +34,8 @@ export function incrementIfOdd() {
 }
 
 export function incrementAsync(delay: number = 1000) {
-  return (dispatch: (action: actionType) => void) => {
-    setTimeout(() => {
-      dispatch(increment());
-    }, delay);
+  return {
+    type: INCREMENT_COUNTER_ASYNC,
+    payload: { delay }
   };
 }
