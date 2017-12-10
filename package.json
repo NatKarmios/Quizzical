@@ -200,7 +200,8 @@
     "redux": "^3.7.1",
     "redux-logic": "^0.12.3",
     "redux-thunk": "^2.2.0",
-    "source-map-support": "^0.4.15"
+    "source-map-support": "^0.4.15",
+    "material-ui": "^0.20.0"
   },
   "devEngines": {
     "node": ">=7.x",
