@@ -1,11 +1,13 @@
 import { createStore, applyMiddleware, compose } from 'redux';
+import { createLogicMiddleware } from 'redux-logic';
 import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
+import arrLogic from '../logic';
 import rootReducer from '../reducers';
-import * as counterActions from '../actions/counter';
-import type { counterStateType } from '../reducers/counter';
+import * as counterActions from '../counter/counterActions';
+import type { counterStateType } from '../counter/counterReducer';
 
 const history = createHashHistory();
 
@@ -13,6 +15,10 @@ const configureStore = (initialState?: counterStateType) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
+
+  // Logic Middleware
+  const logicMiddleware = createLogicMiddleware(arrLogic, {});
+  middleware.push(logicMiddleware);
 
   // Thunk Middleware
   middleware.push(thunk);

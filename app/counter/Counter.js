@@ -1,7 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import styles from './Counter.css';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as CounterActions from './counterActions';
+import styles from './counterStyle.css';
+
 
 class Counter extends Component {
   props: {
@@ -39,4 +43,15 @@ class Counter extends Component {
   }
 }
 
-export default Counter;
+
+function mapStateToProps(state) {
+  return {
+    counter: state.counter
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(CounterActions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
