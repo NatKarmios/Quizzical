@@ -7,11 +7,12 @@ import { createLogger } from 'redux-logger';
 import arrLogic from '../logic';
 import rootReducer from '../reducers';
 import * as counterActions from '../counter/counterActions';
-import type { counterStateType } from '../counter/counterReducer';
+import * as globalActions from '../global/actions';
+// import type { GlobalStateType } from '../global/types';
 
 const history = createHashHistory();
 
-const configureStore = (initialState?: counterStateType) => {
+const configureStore = (initialState) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
