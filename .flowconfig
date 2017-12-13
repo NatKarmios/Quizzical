@@ -12,6 +12,7 @@
 [include]
 
 [libs]
+./libdefs.js
 
 [options]
 esproposal.class_static_fields=enable
