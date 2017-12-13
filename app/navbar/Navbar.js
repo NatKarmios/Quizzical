@@ -1,14 +1,31 @@
 // @flow
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
+import { connect } from 'react-redux';
+
+import NavbarTitle from './NavbarTitle';
 import NavbarWindowControls from './windowControls';
 
-const Navbar = () => (
+
+type Props = {
+  streamerUsername: string,
+  botUsername: string
+};
+
+const Navbar = ({ streamerUsername, botUsername }: Props) => (
   <AppBar
-    title="Quizzical"
+    title={<NavbarTitle streamer={streamerUsername} bot={botUsername} />}
     style={{ WebkitAppRegion: 'drag' }}
+    iconStyleLeft={{ WebkitAppRegion: 'no-drag' }}
     iconElementRight={<NavbarWindowControls />}
   />
 );
 
-export default Navbar;
+function mapStateToProps(state) {
+  return {
+    streamerUsername: state.navbar.streamerUsername,
+    botUsername: state.navbar.botUsername
+  };
+}
+
+export default connect(mapStateToProps)(Navbar);
