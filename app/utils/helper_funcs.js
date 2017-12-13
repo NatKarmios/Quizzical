@@ -1,11 +1,12 @@
 import { remote, BrowserWindow } from 'electron';
 
-export function delay(t: number): Promise<void> {
+export const delay = (t: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(resolve, t);
   });
-}
+};
 
-export function getWindow(): BrowserWindow {
+// eslint-disable-next-line arrow-body-style
+export const getWindow = (): BrowserWindow => {
   return remote.getCurrentWindow();
-}
+};
