@@ -38,6 +38,7 @@ const configureStore = (initialState) => {
   // Redux DevTools Configuration
   const actionCreators = {
     ...counterActions,
+    ...globalActions,
     ...routerActions,
   };
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
