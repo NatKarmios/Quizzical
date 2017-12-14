@@ -1,5 +1,5 @@
 // @flow
-import { LOGIN_STREAMER, LOGIN_BOT } from '../global/actions';
+import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../global/actions';
 // import type { ActionType } from '../global/actions';
 
 export type NavbarStateType = {
@@ -14,9 +14,9 @@ export default function navbar(
   const { streamerUsername, botUsername } = state;
 
   switch (type) {
-    case LOGIN_STREAMER:
+    case STREAMER_LOGGED_IN:
       return { streamerUsername: payload.username, botUsername };
-    case LOGIN_BOT:
+    case BOT_LOGGED_IN:
       return { streamerUsername, botUsername: payload.username };
     default:
       return { streamerUsername, botUsername };

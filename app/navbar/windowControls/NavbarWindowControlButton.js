@@ -1,22 +1,16 @@
 // @flow
 import React from 'react';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
+import MDIcon from '../../utils/components/MDIcon';
 
 type propType = {
   onClick: void => void,
-  children: string
+  icon: string
 };
 
-const NavbarWindowControlButton = ({ children, onClick }: propType) => (
-  <IconButton>
-    <FontIcon
-      color="white"
-      className="material-icons"
-      onClick={onClick}
-    >
-      {children}
-    </FontIcon>
+const NavbarWindowControlButton = ({ icon, onClick }: propType) => (
+  <IconButton onClick={onClick}>
+    <MDIcon color="white">{icon}</MDIcon>
   </IconButton>
 );
 
