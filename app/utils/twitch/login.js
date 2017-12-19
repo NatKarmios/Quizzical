@@ -63,7 +63,8 @@ function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean) 
   const popupWindow = new BrowserWindow({
     title: 'Quizzical | Log into Twitch',
     width: 400,
-    height: 550,  // show: false,
+    height: 550,
+    // show: false,
     // alwaysOnTop: true,
     // modal: true,
     // parent: remote.getCurrentWindow()
@@ -79,19 +80,19 @@ function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean) 
 async function loginWithLocalAuthWebserver(
   sessionPartition: string, persist: boolean, cache: boolean
 ): Promise<?string> {
-  await new Promise(resolve => {
-    remote.session.defaultSession.clearStorageData([], (data) => {
-      console.log(data);
-      resolve();
-    });
-  });
-
-  await new Promise(resolve => {
-    remote.session.defaultSession.clearCache((data) => {
-      console.log(data);
-      resolve();
-    });
-  });
+  // await new Promise(resolve => {
+  //   remote.session.defaultSession.clearStorageData([], (data) => {
+  //     console.log(data);
+  //     resolve();
+  //   });
+  // });
+  //
+  // await new Promise(resolve => {
+  //   remote.session.defaultSession.clearCache((data) => {
+  //     console.log(data);
+  //     resolve();
+  //   });
+  // });
 
   const popupWindow = loadPopup(sessionPartition, persist, cache);
   let token = null;
