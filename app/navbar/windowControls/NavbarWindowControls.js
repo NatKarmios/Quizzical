@@ -39,15 +39,9 @@ class NavbarWindowControls extends Component<DefaultProps, Props, State> {
     const { maximized } = this.state;
     return (
       <div style={{ color: 'white', WebkitAppRegion: 'no-drag' }}>
-        <ControlButton onClick={minimize}>
-          remove
-        </ControlButton>
-        <ControlButton onClick={toggleMaximise}>
-          {`flip_to_${maximized ? 'back' : 'front'}`}
-        </ControlButton>
-        <ControlButton onClick={closeWindow}>
-          clear
-        </ControlButton>
+        <ControlButton onClick={minimize} icon="window-minimize" />
+        <ControlButton onClick={toggleMaximise} icon={`window-${maximized ? 'restore' : 'maximize'}`} />
+        <ControlButton onClick={closeWindow} icon="window-close" />
       </div>
     );
   }
