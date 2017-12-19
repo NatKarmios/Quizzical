@@ -1,8 +1,8 @@
 // @flow
 import { createLogic } from 'redux-logic';
 
-import login from '../utils/twitch/login';
-import type { LoginDataType } from '../utils/twitch/login';
+import login from '../_modules/twitch/login';
+import type { LoginDataType } from '../_modules/twitch/login';
 import {
   START_STREAMER_LOGIN, START_BOT_LOGIN,
   streamerLoginCancelled, botLoginCancelled,
