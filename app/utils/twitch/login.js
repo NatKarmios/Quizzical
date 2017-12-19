@@ -5,9 +5,7 @@ import connect from 'connect';
 import { parse } from 'qs';
 import request from 'request-promise-native';
 
-import { delay } from '../helper_funcs';
-
-const { BrowserWindow } = remote;
+const { BrowserWindow, session } = remote;
 
 const authURL = (forceVerify: boolean = false) => (`${'https://api.twitch.tv/kraken/oauth2/authorize' +
                                                    '?client_id=aaq1ihaa22xgkeswvo8r02pi62iiw2' +
@@ -55,24 +53,22 @@ export type LoginDataType = {
 // </editor-fold>
 
 
-function loadPopup(sessionPartition: ?string, persist: boolean = true) {
-  let opts = {
+function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean) {
+  const realPartition = (sessionPartition !== null && sessionPartition !== undefined) ?
+    `${persist ? 'persist:' : ''}${sessionPartition}` :
+    sessionPartition;
+
+  const sess = session.fromPartition(realPartition, { cache });
+
+  const popupWindow = new BrowserWindow({
     title: 'Quizzical | Log into Twitch',
     width: 400,
     height: 550,  // show: false,
     // alwaysOnTop: true,
     // modal: true,
     // parent: remote.getCurrentWindow()
-  };
-  if (sessionPartition !== null && sessionPartition !== undefined) {
-    opts = {
-      ...opts,
-      partition: `${persist ? 'persist:' : ''}${sessionPartition}`
-    };
-  }
-  console.log(opts);
-
-  const popupWindow = new BrowserWindow(opts);
+    session: sess
+  });
   popupWindow.setMenu(null);
 
   popupWindow.loadURL(authURL(true));
@@ -80,9 +76,24 @@ function loadPopup(sessionPartition: ?string, persist: boolean = true) {
   return popupWindow;
 }
 
-async function
-loginWithLocalAuthWebserver(sessionPartition: string, persist: boolean = true): Promise<?string> {
-  const popupWindow = loadPopup(sessionPartition, persist);
+async function loginWithLocalAuthWebserver(
+  sessionPartition: string, persist: boolean, cache: boolean
+): Promise<?string> {
+  await new Promise(resolve => {
+    remote.session.defaultSession.clearStorageData([], (data) => {
+      console.log(data);
+      resolve();
+    });
+  });
+
+  await new Promise(resolve => {
+    remote.session.defaultSession.clearCache((data) => {
+      console.log(data);
+      resolve();
+    });
+  });
+
+  const popupWindow = loadPopup(sessionPartition, persist, cache);
   let token = null;
 
   const app = connect();
@@ -148,9 +159,12 @@ async function retrieveUsername(token: string) {
   return reply.token.user_name;
 }
 
-export default async function
-  login(sessionPartition: string, persist: boolean = true): Promise<?LoginDataType> {
-  const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist);
+export default async function login(
+  sessionPartition: string,
+  persist: boolean = true,
+  cache: boolean = false
+): Promise<?LoginDataType> {
+  const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist, cache);
   if (token !== null && token !== undefined) {
     return { token, username: await retrieveUsername(token) };
   }

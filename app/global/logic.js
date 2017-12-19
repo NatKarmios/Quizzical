@@ -10,6 +10,9 @@ import {
 } from './actions';
 
 
+let partitionCount = 0;
+
+
 const accountMap = {
   streamer: {
     successActionCreator: streamerLoggedIn,
@@ -24,9 +27,12 @@ const accountMap = {
 };
 
 
-const processLogin = ({ successActionCreator, failureActionCreator, sessionPartition }) =>
+const processLogin = ({ successActionCreator, failureActionCreator }) =>
   async ({ action }, dispatch, done) => {
-    const loginData: ?LoginDataType = await login(sessionPartition);
+    const sessionPartition = `${partitionCount}`;
+    partitionCount += 1;
+
+    const loginData: ?LoginDataType = await login(sessionPartition, false);
     console.log(loginData);
     if (loginData !== null && loginData !== undefined) {
       dispatch(successActionCreator(loginData.username));
