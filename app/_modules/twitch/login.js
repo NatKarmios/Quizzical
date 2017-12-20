@@ -80,19 +80,17 @@ function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean) 
 async function loginWithLocalAuthWebserver(
   sessionPartition: string, persist: boolean, cache: boolean
 ): Promise<?string> {
-  // await new Promise(resolve => {
-  //   remote.session.defaultSession.clearStorageData([], (data) => {
-  //     console.log(data);
-  //     resolve();
-  //   });
-  // });
-  //
-  // await new Promise(resolve => {
-  //   remote.session.defaultSession.clearCache((data) => {
-  //     console.log(data);
-  //     resolve();
-  //   });
-  // });
+  await new Promise(resolve => {
+    remote.session.defaultSession.clearStorageData([], (data) => {
+      resolve();
+    });
+  });
+
+  await new Promise(resolve => {
+    remote.session.defaultSession.clearCache((data) => {
+      resolve();
+    });
+  });
 
   const popupWindow = loadPopup(sessionPartition, persist, cache);
   let token = null;
@@ -134,12 +132,9 @@ async function loginWithLocalAuthWebserver(
 
   // popupWindow.webContents.once('ready-to-show', () => {
   //   console.log('ready');
-  console.log(popupWindow);
   popupWindow.show();
   popupWindow.focus();
   // });
-
-  console.log('loading');
 
   const popupClosedPromise = new Promise(resolve => {
     popupWindow.on('closed', resolve);
@@ -160,9 +155,14 @@ async function retrieveUsername(token: string) {
   return reply.token.user_name;
 }
 
-export default async function login(
+export async function tokenLogin(token: ?string) {
+  if (token === undefined || token === null) return null;
+  return retrieveUsername(token);
+}
+
+export async function guiLogin(
   sessionPartition: string,
-  persist: boolean = true,
+  persist: boolean = false,
   cache: boolean = false
 ): Promise<?LoginDataType> {
   const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist, cache);

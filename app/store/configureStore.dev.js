@@ -18,7 +18,7 @@ const configureStore = (initialState) => {
   const enhancers = [];
 
   // Logic Middleware
-  const logicMiddleware = createLogicMiddleware(arrLogic, {});
+  const logicMiddleware = createLogicMiddleware(arrLogic);
   middleware.push(logicMiddleware);
 
   // Thunk Middleware
