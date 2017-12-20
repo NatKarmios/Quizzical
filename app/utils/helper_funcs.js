@@ -16,13 +16,13 @@ export const cloneObject: <T>(t) => T =
 export const getDataDir: () => string =
   () => app.getPath('userData');
 
-export const readFile: string => string =
+export const readFile: string => Promise<string> =
   filename => new Promise((resolve, reject) => fs.readFile(filename,
-    (data, err) => ((err !== null && err !== undefined) ? resolve(data) : reject(err))
+    (err, data) => ((err !== null && err !== undefined) ? reject(err) : resolve(data.toString()))
   ));
 
-export const writeFile: (string, string) => void =
+export const writeFile: (string, string) => Promise<void> =
   (filename, contents) => new Promise((resolve, reject) => fs.writeFile(filename, contents,
-    err => ((err !== null && err !== undefined) ? resolve() : reject(err))
+    err => ((err === null || err === undefined) ? reject(err) : resolve())
   ));
 
