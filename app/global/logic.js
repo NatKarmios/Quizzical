@@ -38,7 +38,6 @@ type AccountVarsType = {
 const testSavedTokensLogic = createLogic({
   type: TEST_SAVED_TOKENS,
   process: async ({ action }, dispatch, done) => {
-    console.log("testing");
 
     const doLogin = async (
       { startedActionCreator, successActionCreator, failureActionCreator, type }: AccountVarsType
@@ -46,7 +45,6 @@ const testSavedTokensLogic = createLogic({
       dispatch(startedActionCreator());
 
       const token = getSetting('login', `${type}AuthToken`);
-      console.log(token);
       const username: ?string = await tokenLogin(token);
       if (username !== undefined && username !== null) {
         dispatch(successActionCreator(username));
@@ -74,7 +72,6 @@ const processLogin = (
     partitionCount += 1;
 
     const loginData: ?LoginDataType = await guiLogin(sessionPartition);
-    console.log(loginData);
     if (loginData !== null && loginData !== undefined) {
       await setSetting('login', `${type}AuthToken`, loginData.token);
       dispatch(successActionCreator(loginData.username));

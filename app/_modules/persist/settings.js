@@ -99,8 +99,6 @@ export const setSetting = async (category, settingKey, newVal, save = true) => {
 
 export const getSetting = (category, settingKey) => {
   checkLoaded();
-  console.log(settings[category]);
-  console.log(settingKey);
   return settings[category][settingKey];
 };
 

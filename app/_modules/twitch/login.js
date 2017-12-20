@@ -157,7 +157,6 @@ async function retrieveUsername(token: string) {
 
 export async function tokenLogin(token: ?string) {
   if (token === undefined || token === null) return null;
-  console.log('hey');
   return retrieveUsername(token);
 }
 
