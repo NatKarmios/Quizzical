@@ -26,3 +26,8 @@ export const writeFile: (string, string) => Promise<void> =
     err => ((err === null || err === undefined) ? reject(err) : resolve())
   ));
 
+export const fileExists: string => Promise<boolean> =
+  filename => new Promise(resolve => fs.access(filename,
+    err => resolve((err === null || err === undefined))
+  ));
+
