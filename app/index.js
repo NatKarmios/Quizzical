@@ -4,8 +4,13 @@ import { AppContainer } from 'react-hot-loader';
 import Root from './root/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
+import { testSavedTokens } from './global/actions';
+import { loadSettings } from './_modules/persist/settings';
 
 const store = configureStore();
+loadSettings().then(
+  () => { store.dispatch(testSavedTokens()); }
+);
 
 render(
   <AppContainer>

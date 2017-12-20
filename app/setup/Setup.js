@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { Redirect } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -52,7 +53,7 @@ const Setup = ({ streamerLoginStage, botLoginStage, logInStreamer, logInBot }: P
     activeStep = 0;
   }
 
-  return (
+  return activeStep === 2 ? (<Redirect to="/home" />) : (
     <div style={{ margin: '20px' }}>
       <Card>
         <CardHeader
@@ -70,14 +71,6 @@ const Setup = ({ streamerLoginStage, botLoginStage, logInStreamer, logInBot }: P
               <StepLabel>Log into bot account</StepLabel>
               <StepContent>
                 {getLoginButton(botLoginStage, logInBot)}
-              </StepContent>
-            </Step>
-            <Step>
-              <StepLabel>Done!</StepLabel>
-              <StepContent>
-                <Link to="/home">
-                  <RaisedButton primary>Let&#39;s go!</RaisedButton>
-                </Link>
               </StepContent>
             </Step>
           </Stepper>
