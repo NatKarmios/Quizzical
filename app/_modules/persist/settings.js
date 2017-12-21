@@ -3,6 +3,7 @@ import { sep } from 'path';
 
 import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../../utils/helper_funcs';
 
+export const tempVars = {};
 
 const SETTINGS_FILENAME = 'settings.json';
 const SETTINGS_FILE_PATH = `${getDataDir()}${sep}${SETTINGS_FILENAME}`;
@@ -94,7 +95,7 @@ export const setSetting = async (category, settingKey, newVal, save = true) => {
   try {
     settings[category][settingKey] = newVal;
     if (save) await saveSettings();
-  } catch (e) { console.error(e); }
+  } catch (e) { if (e !== undefined && e !== null) console.error(e); }
 };
 
 export const getSetting = (category, settingKey) => {
