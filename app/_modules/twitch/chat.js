@@ -7,8 +7,8 @@ const TWITCH_CHAT_URL = 'wss://irc-ws.chat.twitch.tv:443';
 const PREFIX = '/me - ';
 const LOG_TWITCH = false;
 let connectionStarted = false;
-const getChannel = () => { return `#${tempVars.streamerNick}`; };
-const getNick = () => { return tempVars.botNick; };
+const getChannel = () => { return `#${tempVars['streamerNick']}`; };
+const getNick = () => { return tempVars['botNick']; };
 let queue: IntervalQueue;
 
 let socket: WebSocket;
