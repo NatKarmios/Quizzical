@@ -19,7 +19,7 @@ type Props = {
   logInBot: () => void
 };
 
-function getLoginButton(stage: 0 | 1 | 2, onClick) {
+const getLoginButton = (stage: 0 | 1 | 2, onClick) => {
   let content;
   switch (stage) {
     case 0:
@@ -39,26 +39,17 @@ function getLoginButton(stage: 0 | 1 | 2, onClick) {
       {content}
     </RaisedButton>
   );
-}
+};
 
 const Setup = ({ streamerLoginStage, botLoginStage, logInStreamer, logInBot }: Props) => {
   let activeStep: 0 | 1 | 2;
-  if (streamerLoginStage === 2) {
-    if (botLoginStage === 2) {
-      activeStep = 2;
-    } else {
-      activeStep = 1;
-    }
-  } else {
-    activeStep = 0;
-  }
+  if (streamerLoginStage === 2) activeStep = botLoginStage === 2 ? 2 : 1;
+  else activeStep = 0;
 
   return activeStep === 2 ? (<Redirect to="/home" />) : (
     <div style={{ margin: '20px' }}>
       <Card>
-        <CardHeader
-          title="Let's get set up."
-        />
+        <CardHeader title="Let's get set up." />
         <CardText>
           <Stepper activeStep={activeStep} orientation="vertical">
             <Step>
@@ -80,15 +71,13 @@ const Setup = ({ streamerLoginStage, botLoginStage, logInStreamer, logInBot }: P
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     streamerLoginStage: state.setup.streamerLoginStage,
     botLoginStage: state.setup.botLoginStage
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(setupActions, dispatch);
-}
+const mapDispatchToProps = (dispatch) => bindActionCreators(setupActions, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Setup);
