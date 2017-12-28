@@ -7,12 +7,14 @@ import request from 'request-promise-native';
 
 const { BrowserWindow, session } = remote;
 
-const authURL = (forceVerify: boolean = false) => (`${'https://api.twitch.tv/kraken/oauth2/authorize' +
-                                                   '?client_id=aaq1ihaa22xgkeswvo8r02pi62iiw2' +
-                                                   '&redirect_uri=http://127.0.0.1:23121' +
-                                                   '&response_type=token' +
-                                                   '&scope='}${
-                                                   forceVerify ? '&force_verify=true' : ''}`);
+const authURL =
+  (forceVerify: boolean = false, scopes: Array<string>) =>
+    (`${'https://api.twitch.tv/kraken/oauth2/authorize' +
+        '?client_id=aaq1ihaa22xgkeswvo8r02pi62iiw2' +
+        '&redirect_uri=http://127.0.0.1:23121' +
+        '&response_type=token' +
+        '&scope='}${scopes.join('+')}${
+        forceVerify ? '&force_verify=true' : ''}`);
 
 const WEBSERVER_REPLY = {
   preauth: "<html><head><script type='text/javascript'>" +
@@ -53,7 +55,7 @@ export type LoginDataType = {
 // </editor-fold>
 
 
-function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean) {
+function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean, scopes: Array<string>) {
   const realPartition = (sessionPartition !== null && sessionPartition !== undefined) ?
     `${persist ? 'persist:' : ''}${sessionPartition}` :
     sessionPartition;
@@ -72,13 +74,13 @@ function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean) 
   });
   popupWindow.setMenu(null);
 
-  popupWindow.loadURL(authURL(true));
+  popupWindow.loadURL(authURL(true, scopes));
 
   return popupWindow;
 }
 
 async function loginWithLocalAuthWebserver(
-  sessionPartition: string, persist: boolean, cache: boolean
+  sessionPartition: string, persist: boolean, cache: boolean, scopes: Array<string>
 ): Promise<?string> {
   await new Promise(resolve => {
     remote.session.defaultSession.clearStorageData([], (data) => {
@@ -92,7 +94,7 @@ async function loginWithLocalAuthWebserver(
     });
   });
 
-  const popupWindow = loadPopup(sessionPartition, persist, cache);
+  const popupWindow = loadPopup(sessionPartition, persist, cache, scopes);
   let token = null;
 
   const app = connect();
@@ -162,10 +164,11 @@ export async function tokenLogin(token: ?string) {
 
 export async function guiLogin(
   sessionPartition: string,
+  scopes: Array<string> = [],
   persist: boolean = false,
-  cache: boolean = false
+  cache: boolean = false,
 ): Promise<?LoginDataType> {
-  const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist, cache);
+  const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist, cache, scopes);
   if (token !== null && token !== undefined) {
     return { token, username: await retrieveUsername(token) };
   }
