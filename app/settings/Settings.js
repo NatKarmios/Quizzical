@@ -6,15 +6,16 @@ import Paper from 'material-ui/Paper';
 import { MDIcon } from '../utils/components';
 import Typography from 'material-ui/es/Typography/Typography';
 
-const Home = () => (
+const Settings = () => (
   <div>
     <Paper style={{ margin: '20px', padding: '20px' }}>
       <Typography type="headline">
-        <MDIcon color="black" style={{ marginRight: '5px' }}>home</MDIcon>
-        Home
-        <Link to="/settings">
+        <MDIcon color="black" style={{ marginRight: '5px' }}>settings</MDIcon>
+        Settings
+        <Link to="/home">
           <Button raised color="primary" style={{ float: 'right', top: '-5px' }}>
-            <MDIcon>settings</MDIcon>
+            <MDIcon>arrow-left-bold</MDIcon>
+            <MDIcon>home</MDIcon>
           </Button>
         </Link>
       </Typography>
@@ -22,4 +23,4 @@ const Home = () => (
   </div>
 );
 
-export default Home;
+export default Settings;

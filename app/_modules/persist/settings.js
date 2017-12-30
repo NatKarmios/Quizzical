@@ -3,8 +3,6 @@ import { sep } from 'path';
 
 import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../../utils/helperFuncs';
 
-export const tempVars = {};
-
 const SETTINGS_FILENAME = 'settings.json';
 const SETTINGS_FILE_PATH = `${getDataDir()}${sep}${SETTINGS_FILENAME}`;
 

@@ -1,7 +1,6 @@
 // @flow
 
 export const TEST_SAVED_TOKENS = 'TEST_SAVED_TOKENS';
-export const LOGIN_FINISHED = 'LOGIN_FINISHED';
 export const STREAMER_LOGGED_IN = 'STREAMER_LOGGED_IN';
 export const BOT_LOGGED_IN = 'BOT_LOGGED_IN';
 export const STREAMER_LOGIN_CANCELLED = 'STREAMER_LOGIN_CANCELLED';
@@ -10,12 +9,6 @@ export const STREAMER_LOGIN_STARTED = 'STREAMER_LOGIN_STARTED';
 export const BOT_LOGIN_STARTED = 'BOT_LOGIN_STARTED';
 export const START_STREAMER_LOGIN = 'START_STREAMER_LOGIN';
 export const START_BOT_LOGIN = 'START_BOT_LOGIN';
-export type ActionType = {
-  +type: string,
-  +payload: {
-    +username: string
-  }
-};
 
 
 export function testSavedTokens() {
@@ -23,16 +16,16 @@ export function testSavedTokens() {
 }
 
 
-function login(type, username) {
-  return { type, payload: { username } };
+function login(type) {
+  return { type };
 }
 
-export function streamerLoggedIn(username: string) {
-  return login(STREAMER_LOGGED_IN, username);
+export function streamerLoggedIn() {
+  return login(STREAMER_LOGGED_IN);
 }
 
-export function botLoggedIn(username: string) {
-  return login(BOT_LOGGED_IN, username);
+export function botLoggedIn() {
+  return login(BOT_LOGGED_IN);
 }
 
 export function streamerLoginCancelled() {

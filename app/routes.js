@@ -5,6 +5,7 @@ import App from './root/App';
 import HomePage from './home/Home';
 import CounterPage from './counter/Counter';
 import SetupPage from './setup/Setup';
+import SettingsPage from './settings/Settings';
 
 export default () => (
   <App>
@@ -13,6 +14,7 @@ export default () => (
       <Route path="/counter" component={CounterPage} />
       <Route path="/home" component={HomePage} />
       <Route path="/setup" component={SetupPage} />
+      <Route path="/settings" component={SettingsPage} />
     </Switch>
   </App>
 );

@@ -3,7 +3,7 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import Paper from 'material-ui/Paper';
 import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
@@ -46,33 +46,27 @@ const Setup = ({ streamerLoginStage, botLoginStage, logInStreamer, logInBot }: P
   else activeStep = 0;
 
   return activeStep === 2 ? (<Redirect to="/home" />) : (
-    <div style={{ margin: '20px' }}>
-      <Card>
-        <CardHeader title={
-          <Typography type="headline">
-            Lets get set up.
-          </Typography>
-        } />
-        <CardContent>
-          <div style={{ paddingBottom: '20px' }}>
-            <Stepper activeStep={activeStep} orientation="vertical">
-              <Step>
-                <StepLabel>Log into streamer account</StepLabel>
-                <StepContent>
-                  {getLoginButton(streamerLoginStage, logInStreamer)}
-                </StepContent>
-              </Step>
-              <Step>
-                <StepLabel>Log into bot account</StepLabel>
-                <StepContent>
-                  {getLoginButton(botLoginStage, logInBot)}
-                </StepContent>
-              </Step>
-            </Stepper>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <Paper style={{ margin: '20px', padding: '20px' }}>
+      <Typography type="headline">
+        Lets get set up.
+      </Typography>
+      <div>
+        <Stepper activeStep={activeStep} orientation="vertical">
+          <Step>
+            <StepLabel>Log into streamer account</StepLabel>
+            <StepContent>
+              {getLoginButton(streamerLoginStage, logInStreamer)}
+            </StepContent>
+          </Step>
+          <Step>
+            <StepLabel>Log into bot account</StepLabel>
+            <StepContent>
+              {getLoginButton(botLoginStage, logInBot)}
+            </StepContent>
+          </Step>
+        </Stepper>
+      </div>
+    </Paper>
   );
 };
 

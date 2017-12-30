@@ -6,11 +6,12 @@ import { parse } from 'qs';
 import request from 'request-promise-native';
 
 const { BrowserWindow, session } = remote;
+const CLIENT_ID = 'aaq1ihaa22xgkeswvo8r02pi62iiw2';
 
 const authURL =
   (forceVerify: boolean = false, scopes: Array<string>) =>
     (`${'https://api.twitch.tv/kraken/oauth2/authorize' +
-        '?client_id=aaq1ihaa22xgkeswvo8r02pi62iiw2' +
+        `?client_id=${CLIENT_ID}` +
         '&redirect_uri=http://127.0.0.1:23121' +
         '&response_type=token' +
         '&scope='}${scopes.join('+')}${
@@ -20,9 +21,9 @@ const WEBSERVER_REPLY = {
   preauth: "<html><head><script type='text/javascript'>" +
              "window.location = 'http://127.0.0.1:23121/auth?' + window.location.hash.substr(1);" +
            '</script> </head>',
-  success: '<html><head></head><body>Redirecting...</body></html>',
+  success: '<html><body>Redirecting...</body></html>',
   failure: {
-    s1: '<html><head></head><body>Auth failed!<br /><br />Supplied query string:<br />',
+    s1: '<html><body>Auth failed!<br /><br />Supplied query string:<br />',
     s2: '</body></html>'
   }
 };
@@ -47,9 +48,15 @@ export type LoginUsernameReplyType = {
   }
 };
 
+export type AccountDetailsType = {
+  username: string,
+  displayName: string,
+  avatarURL: string
+};
+
 export type LoginDataType = {
   token: string,
-  username: string
+  details: AccountDetailsType
 };
 
 // </editor-fold>
@@ -148,18 +155,36 @@ async function loginWithLocalAuthWebserver(
   return token;
 }
 
-async function retrieveUsername(token: string) {
+async function retrieveAccountDetails(token: string): AccountDetailsType {
+  const username = await retrieveUsername(token);
+  console.log(username);
+  return {username, ...await retrieveAvatarAndDisplayName(username)};
+}
+
+async function retrieveUsername(token: string): string {
   const reply: LoginUsernameReplyType = await request({
     uri: 'https://api.twitch.tv/kraken',
     headers: { Authorization: `OAuth ${token}` },
     json: true
   });
-  return reply.token.user_name;
+  return reply.token.user_name
 }
 
-export async function tokenLogin(token: ?string) {
+async function retrieveAvatarAndDisplayName(username: string) {
+  console.log('hi there')
+  const reply = await request({
+    uri: `https://api.twitch.tv/helix/users?login=${username}`,
+    headers: { 'Client-ID': CLIENT_ID },
+    json: true
+  });
+  console.log(reply);
+  const allDetails = reply.data[0];
+  return { avatarURL: allDetails['profile_image_url'], displayName: allDetails['display_name'] };
+}
+
+export async function tokenLogin(token: ?string): AccountDetailsType {
   if (token === undefined || token === null) return null;
-  return retrieveUsername(token);
+  return await retrieveAccountDetails(token);
 }
 
 export async function guiLogin(
@@ -170,7 +195,8 @@ export async function guiLogin(
 ): Promise<?LoginDataType> {
   const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist, cache, scopes);
   if (token !== null && token !== undefined) {
-    return { token, username: await retrieveUsername(token) };
+    console.log('yay1');
+    return { token, details: await retrieveAccountDetails(token) };
   }
   return null;
 }

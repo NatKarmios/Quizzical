@@ -2,9 +2,11 @@
 import { createLogic } from 'redux-logic';
 
 import { guiLogin, tokenLogin } from '../_modules/twitch/login';
-import type { LoginDataType } from '../_modules/twitch/login';
+import type { LoginDataType, AccountDetailsType } from '../_modules/twitch/login';
 import { connect } from '../_modules/twitch/chat';
-import { getSetting, setSetting, tempVars } from '../_modules/persist/settings';
+import { getSetting, setSetting } from '../_modules/persist/settings';
+import vars from '../_modules/vars';
+
 import {
   TEST_SAVED_TOKENS,
   START_STREAMER_LOGIN, START_BOT_LOGIN,
@@ -21,14 +23,14 @@ const accountMap = {
     successActionCreator: streamerLoggedIn,
     failureActionCreator: streamerLoginCancelled,
     scopes: [],
-    type: 'streamer'
+    accountType: 'streamer'
   },
   bot: {
     startedActionCreator: botLoginStarted,
     successActionCreator: botLoggedIn,
     failureActionCreator: botLoginCancelled,
     scopes: ['chat_login'],
-    type: 'bot'
+    accountType: 'bot'
   }
 };
 
@@ -38,24 +40,33 @@ type AccountVarsType = {
   successActionCreator: string => {},
   failureActionCreator: () => {},
   scopes: Array<string>,
-  type: 'streamer' | 'bot'
+  accountType: 'streamer' | 'bot'
 };
 
+
+const storeAccountDetails = (accountType: string, details: AccountDetailsType) => {
+  const { username, displayName, avatarURL } = details;
+  vars.accountData[accountType] = {
+    nick: username,
+    display: displayName,
+    avatar: avatarURL
+  };
+};
 
 const testSavedTokensLogic = createLogic({
   type: TEST_SAVED_TOKENS,
   process: async ({ action }, dispatch, done) => {
 
     const doLogin = async (
-      { startedActionCreator, successActionCreator, failureActionCreator, type }: AccountVarsType
+      { startedActionCreator, successActionCreator, failureActionCreator, accountType }: AccountVarsType
     ) => {
       dispatch(startedActionCreator());
 
-      const token = getSetting('login', `${type}AuthToken`);
-      const username: ?string = await tokenLogin(token);
-      if (username !== undefined && username !== null) {
-        tempVars[`${type}Nick`] = username;
-        dispatch(successActionCreator(username));
+      const token = getSetting('login', `${accountType}AuthToken`);
+      const details: ?{username: string, displayName: string, avatarURL: string} = await tokenLogin(token);
+      if (details !== undefined && details !== null) {
+        storeAccountDetails(accountType, details);
+        dispatch(successActionCreator());
       } else { dispatch(failureActionCreator()); }
     };
 
@@ -71,7 +82,7 @@ let atLeastOneLoggedIn = false;
 
 
 const processLogin = (
-  {startedActionCreator, successActionCreator, failureActionCreator, scopes, type }: AccountVarsType
+  {startedActionCreator, successActionCreator, failureActionCreator, scopes, accountType }: AccountVarsType
 ) =>
   async ({ action }, dispatch, done) => {
     dispatch(startedActionCreator());
@@ -81,10 +92,10 @@ const processLogin = (
 
     const loginData: ?LoginDataType = await guiLogin(sessionPartition, scopes);
     if (loginData !== null && loginData !== undefined) {
-      tempVars[`${type}Nick`] = loginData.username;
-      await setSetting('login', `${type}AuthToken`, loginData.token);
+      storeAccountDetails(accountType, loginData.details);
+      await setSetting('login', `${accountType}AuthToken`, loginData.token);
 
-      dispatch(successActionCreator(loginData.username));
+      dispatch(successActionCreator());
     } else {
       dispatch(failureActionCreator());
     }
@@ -111,10 +122,6 @@ const loginFinishedLogic = createLogic({
     atLeastOneLoggedIn = true;
     done();
   }
-});
-
-const botLoginFinishedLogic = createLogic({
-  type: BOT_LOGGED_IN,
 });
 
 

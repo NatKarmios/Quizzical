@@ -1,14 +1,15 @@
 // @flow
 
-import { getSetting, tempVars } from '../persist/settings';
+import { getSetting } from '../persist/settings';
+import vars from '../vars';
 import { IntervalQueue } from '../../utils/IntervalQueue';
 
 const TWITCH_CHAT_URL = 'wss://irc-ws.chat.twitch.tv:443';
 const PREFIX = '/me - ';
 const LOG_TWITCH = false;
 let connectionStarted = false;
-const getChannel = () => { return `#${tempVars['streamerNick']}`; };
-const getNick = () => { return tempVars['botNick']; };
+const getChannel = () => { return `#${vars.accountData.streamer.nick}`; };
+const getNick = () => { return vars.accountData.bot.nick; };
 let queue: IntervalQueue;
 
 let socket: WebSocket;

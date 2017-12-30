@@ -3,22 +3,22 @@ import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../global/actions';
 // import type { ActionType } from '../global/actions';
 
 export type NavbarStateType = {
-  streamerUsername: string,
-  botUsername: string
+  streamerLoggedIn: boolean,
+  botLoggedIn: boolean
 };
 
 export default function navbar(
-  state: NavbarStateType = { streamerUsername: 'Not logged in', botUsername: 'Not logged in' },
-  { type, payload }
+  state: NavbarStateType = { streamerLoggedIn: false, botLoggedIn: false },
+  { type }
 ): NavbarStateType {
-  const { streamerUsername, botUsername } = state;
+  const { streamerLoggedIn, botLoggedIn } = state;
 
   switch (type) {
     case STREAMER_LOGGED_IN:
-      return { streamerUsername: payload.username, botUsername };
+      return { streamerLoggedIn: true, botLoggedIn };
     case BOT_LOGGED_IN:
-      return { streamerUsername, botUsername: payload.username };
+      return { streamerLoggedIn, botLoggedIn: true };
     default:
-      return { streamerUsername, botUsername };
+      return { streamerLoggedIn, botLoggedIn };
   }
 }
