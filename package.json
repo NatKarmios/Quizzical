@@ -1,7 +1,7 @@
 {
   "name": "quizzical",
   "productName": "Quizzical",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "A trivia bot for Twitch.tv",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
