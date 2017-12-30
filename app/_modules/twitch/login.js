@@ -2,10 +2,11 @@
 import { remote } from 'electron';
 import { createServer } from 'http';
 import connect from 'connect';
-import { parse } from 'qs';
+import qs from 'qs';
 import request from 'request-promise-native';
 
 const { BrowserWindow, session } = remote;
+// noinspection SpellCheckingInspection
 const CLIENT_ID = 'aaq1ihaa22xgkeswvo8r02pi62iiw2';
 
 const authURL =
@@ -67,7 +68,7 @@ function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean, 
     `${persist ? 'persist:' : ''}${sessionPartition}` :
     sessionPartition;
 
-  const sess = session.fromPartition(realPartition, { cache });
+  const browserSession = session.fromPartition(realPartition, { cache });
 
   const popupWindow = new BrowserWindow({
     title: 'Quizzical | Log into Twitch',
@@ -77,7 +78,7 @@ function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean, 
     // alwaysOnTop: true,
     // modal: true,
     // parent: remote.getCurrentWindow()
-    session: sess
+    session: browserSession
   });
   popupWindow.setMenu(null);
 
@@ -90,13 +91,13 @@ async function loginWithLocalAuthWebserver(
   sessionPartition: string, persist: boolean, cache: boolean, scopes: Array<string>
 ): Promise<?string> {
   await new Promise(resolve => {
-    remote.session.defaultSession.clearStorageData([], (data) => {
+    remote.session.defaultSession.clearStorageData([], () => {
       resolve();
     });
   });
 
   await new Promise(resolve => {
-    remote.session.defaultSession.clearCache((data) => {
+    remote.session.defaultSession.clearCache(() => {
       resolve();
     });
   });
@@ -107,11 +108,11 @@ async function loginWithLocalAuthWebserver(
   const app = connect();
 
   const replyPromise = new Promise(resolve => {
-    app.use((req, res) => {
+    app.use((req: LoginRawQueryType, res) => {
       if (req.url.startsWith('/auth')) {
         // eslint-disable-next-line no-underscore-dangle
         const queryRaw = req._parsedUrl.query;
-        const queryParsed: LoginParsedQueryType = parse(queryRaw);
+        const queryParsed: LoginParsedQueryType = qs.parse(queryRaw);
 
         // eslint-disable-next-line no-prototype-builtins
         if (queryParsed.hasOwnProperty('access_token')) {
@@ -157,33 +158,45 @@ async function loginWithLocalAuthWebserver(
 
 async function retrieveAccountDetails(token: string): AccountDetailsType {
   const username = await retrieveUsername(token);
-  console.log(username);
-  return {username, ...await retrieveAvatarAndDisplayName(username)};
+  if (username === null || username === undefined) return null;
+
+  const avatarAndDisplayName = await retrieveAvatarAndDisplayName(username);
+  if (avatarAndDisplayName === null || avatarAndDisplayName === undefined) return null;
+
+  return {username, ...avatarAndDisplayName};
 }
 
 async function retrieveUsername(token: string): string {
-  const reply: LoginUsernameReplyType = await request({
-    uri: 'https://api.twitch.tv/kraken',
-    headers: { Authorization: `OAuth ${token}` },
-    json: true
-  });
-  return reply.token.user_name
+  try {
+    const reply: LoginUsernameReplyType = await request({
+      uri: 'https://api.twitch.tv/kraken',
+      headers: {Authorization: `OAuth ${token}`},
+      json: true
+    });
+    return reply.token.user_name
+  } catch (e) {
+    console.log('There was a problem retrieving a username!', e);
+    return null;
+  }
 }
 
 async function retrieveAvatarAndDisplayName(username: string) {
-  console.log('hi there')
-  const reply = await request({
-    uri: `https://api.twitch.tv/helix/users?login=${username}`,
-    headers: { 'Client-ID': CLIENT_ID },
-    json: true
-  });
-  console.log(reply);
-  const allDetails = reply.data[0];
-  return { avatarURL: allDetails['profile_image_url'], displayName: allDetails['display_name'] };
+  try{
+    const reply = await request({
+      uri: `https://api.twitch.tv/helix/users?login=${username}`,
+      headers: { 'Client-ID': CLIENT_ID },
+      json: true
+    });
+    const allDetails = reply.data[0];
+    return { avatarURL: allDetails['profile_image_url'], displayName: allDetails['display_name'] };
+  } catch (e) {
+    console.log('There was a problem retrieving a display name and avatar URL!', e);
+    return null;
+  }
 }
 
 export async function tokenLogin(token: ?string): AccountDetailsType {
-  if (token === undefined || token === null) return null;
+  if (token === undefined || token === null || token === '') return null;
   return await retrieveAccountDetails(token);
 }
 
@@ -194,9 +207,10 @@ export async function guiLogin(
   cache: boolean = false,
 ): Promise<?LoginDataType> {
   const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist, cache, scopes);
-  if (token !== null && token !== undefined) {
-    console.log('yay1');
-    return { token, details: await retrieveAccountDetails(token) };
-  }
-  return null;
+  if (token === null || token === undefined) return null;
+
+  const details = await retrieveAccountDetails(token);
+  if (details === null || details === undefined) return null;
+
+  return { token, details };
 }
