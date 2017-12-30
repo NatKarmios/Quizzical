@@ -1,7 +1,7 @@
 import MDIcon from './MDIcon';
 import VerticalSeparator from './VerticalSeparator';
 
-export default {
+export {
   MDIcon,
   VerticalSeparator
 };

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import ControlButton from './NavbarWindowControlButton';
-import { getWindow } from '../../utils/helper_funcs';
+import { getWindow } from '../../utils/helperFuncs';
 
 
 const minimize = () => {

@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic';
 import { INCREMENT_COUNTER_ASYNC, increment } from './counterActions';
-import { delay } from '../utils/helper_funcs';
+import { delay } from '../utils/helperFuncs';
 
 const incrementAsyncLogic = createLogic({
   type: INCREMENT_COUNTER_ASYNC,

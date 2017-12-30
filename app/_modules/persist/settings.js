@@ -1,7 +1,7 @@
 // @flow
 import { sep } from 'path';
 
-import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../../utils/helper_funcs';
+import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../../utils/helperFuncs';
 
 export const tempVars = {};
 

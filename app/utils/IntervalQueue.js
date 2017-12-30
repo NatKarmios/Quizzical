@@ -1,6 +1,6 @@
 // @flow
 
-import { delay } from './helper_funcs';
+import { delay } from './helperFuncs';
 
 import {LinkedQueue} from './LinkedQueue';
 
