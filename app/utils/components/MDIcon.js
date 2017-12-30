@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import FontIcon from 'material-ui/FontIcon';
+import Icon from 'material-ui/Icon';
 
 type MDIconProps = {
   children: string,
@@ -9,7 +9,7 @@ type MDIconProps = {
 };
 
 const MDIcon = ({ children, color = 'white', style = {} }: MDIconProps) => (
-  <FontIcon color={color} style={style} className={`mdi mdi-${children}`} />
+  <Icon style={{color, ...style}} className={`mdi mdi-${children}`} />
 );
 
 export default MDIcon;

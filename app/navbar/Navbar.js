@@ -1,9 +1,11 @@
 // @flow
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui/Typography';
 import { connect } from 'react-redux';
 
-import NavbarTitle from './NavbarTitle';
+import NavbarUsers from './NavbarUsers';
 import NavbarWindowControls from './windowControls';
 
 
@@ -13,12 +15,15 @@ type Props = {
 };
 
 const Navbar = ({ streamerUsername, botUsername }: Props) => (
-  <AppBar
-    title={<NavbarTitle streamer={streamerUsername} bot={botUsername} />}
-    style={{ WebkitAppRegion: 'drag' }}
-    iconStyleLeft={{ WebkitAppRegion: 'no-drag' }}
-    iconElementRight={<NavbarWindowControls />}
-  />
+  <AppBar position="static" style={{ WebkitAppRegion: 'drag' }}>
+    <Toolbar>
+      <Typography type="title" color="inherit">Quizzical</Typography>
+      <div style={{ flex: 1, height: '100%' }}>
+        <NavbarUsers streamer={streamerUsername} bot={botUsername} />
+      </div>
+      <NavbarWindowControls />
+    </Toolbar>
+  </AppBar>
 );
 
 function mapStateToProps(state) {

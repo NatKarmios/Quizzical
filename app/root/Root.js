@@ -12,12 +12,10 @@ type RootType = {
 
 export default function Root({ store, history }: RootType) {
   return (
-    <MuiThemeProvider>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <Routes />
-        </ConnectedRouter>
-      </Provider>
-    </MuiThemeProvider>
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <Routes />
+      </ConnectedRouter>
+    </Provider>
   );
 }

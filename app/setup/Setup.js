@@ -3,14 +3,13 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import { Stepper, Step, StepLabel, StepContent } from 'material-ui/Stepper';
-import RaisedButton from 'material-ui/RaisedButton';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
+import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
 
 import * as setupActions from './setupActions';
 import MDIcon from "../utils/components/MDIcon";
-
 
 type Props = {
   streamerLoginStage: 0 | 1 | 2,
@@ -34,10 +33,10 @@ const getLoginButton = (stage: 0 | 1 | 2, onClick) => {
   }
 
   return (
-    <RaisedButton primary disabled={stage > 0} onClick={onClick}>
+    <Button raised color="primary" disabled={stage > 0} onClick={onClick}>
       {stage === 0 ? <MDIcon color="black" style={{ fontSize: '14px', paddingRight: '6px' }}>twitch</MDIcon> : null}
       {content}
-    </RaisedButton>
+    </Button>
   );
 };
 
@@ -49,23 +48,29 @@ const Setup = ({ streamerLoginStage, botLoginStage, logInStreamer, logInBot }: P
   return activeStep === 2 ? (<Redirect to="/home" />) : (
     <div style={{ margin: '20px' }}>
       <Card>
-        <CardHeader title="Let's get set up." />
-        <CardText>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            <Step>
-              <StepLabel>Log into streamer account</StepLabel>
-              <StepContent>
-                {getLoginButton(streamerLoginStage, logInStreamer)}
-              </StepContent>
-            </Step>
-            <Step>
-              <StepLabel>Log into bot account</StepLabel>
-              <StepContent>
-                {getLoginButton(botLoginStage, logInBot)}
-              </StepContent>
-            </Step>
-          </Stepper>
-        </CardText>
+        <CardHeader title={
+          <Typography type="headline">
+            Lets get set up.
+          </Typography>
+        } />
+        <CardContent>
+          <div style={{ paddingBottom: '20px' }}>
+            <Stepper activeStep={activeStep} orientation="vertical">
+              <Step>
+                <StepLabel>Log into streamer account</StepLabel>
+                <StepContent>
+                  {getLoginButton(streamerLoginStage, logInStreamer)}
+                </StepContent>
+              </Step>
+              <Step>
+                <StepLabel>Log into bot account</StepLabel>
+                <StepContent>
+                  {getLoginButton(botLoginStage, logInBot)}
+                </StepContent>
+              </Step>
+            </Stepper>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

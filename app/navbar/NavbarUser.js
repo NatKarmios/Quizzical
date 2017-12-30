@@ -10,11 +10,11 @@ type Props = {
 };
 
 
-const NavbarTitleUserDisplay = ({ children, icon }: Props) => (
+const NavbarUser = ({ children, icon }: Props) => (
   <i className={style.userDisplay}>
     <MDIcon style={{ paddingRight: '5px' }}>{icon}</MDIcon>
     {children}
   </i>
 );
 
-export default NavbarTitleUserDisplay;
+export default NavbarUser;
