@@ -23,7 +23,7 @@ const avatarStyles = {
 const NotLoggedIn = ({ icon }) => (
   <i className={style.userDisplay}>
     <Avatar style={avatarStyles}>
-      <MDIcon style={{ paddingRight: '5px' }}>{icon}</MDIcon>
+      <MDIcon style={{ marginLeft: '8px', marginTop: '5px' }}>{icon}</MDIcon>
     </Avatar>
     Not logged in
   </i>
