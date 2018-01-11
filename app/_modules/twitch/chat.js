@@ -3,10 +3,11 @@
 import { getSetting } from '../persist/settings';
 import vars from '../vars';
 import { IntervalQueue } from '../../utils/IntervalQueue';
+import { parseMsg, MsgData } from './msgData';
 
 const TWITCH_CHAT_URL = 'wss://irc-ws.chat.twitch.tv:443';
 const PREFIX = '/me - ';
-const LOG_TWITCH = false;
+const LOG_TWITCH = true;
 let connectionStarted = false;
 const getChannel = () => { return `#${vars.accountData.streamer.nick}`; };
 const getNick = () => { return vars.accountData.bot.nick; };
@@ -16,7 +17,11 @@ let socket: WebSocket;
 const listeners: Array<string => void> = [
   // The Twitch IRC server will send a PING message, which must reply with PONG
   // to prove that the bot is not inactive.
-  msg => { if (msg === 'PING :tmi.twitch.tv') sendRaw('PONG :tmi.twitch.tv'); }
+  msg => { if (msg === 'PING :tmi.twitch.tv') sendRaw('PONG :tmi.twitch.tv'); },
+  msg => {
+    const msgData: ?MsgData = parseMsg(msg);
+    if (msgData !== null && msgData.msg.startsWith('!hello')) queueMessage('Hi there!');
+  }
 ];
 if (LOG_TWITCH) listeners.push(msg => { console.log(`< ${msg}`); });
 
