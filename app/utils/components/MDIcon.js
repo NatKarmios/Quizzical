@@ -8,7 +8,7 @@ type MDIconProps = {
   style?: {}
 };
 
-const MDIcon = ({ children, color = 'white', style = {} }: MDIconProps) => (
+const MDIcon = ({ children, color = 'inherit', style = {} }: MDIconProps) => (
   <Icon style={{color, ...style}} className={`mdi mdi-${children}`} />
 );
 
