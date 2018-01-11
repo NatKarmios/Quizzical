@@ -13,7 +13,7 @@ export type MsgData = {
   isMod: boolean
 }
 
-export const parseMsg: string => MsgData = toParse => {
+export const parseMsg: string => ?MsgData = toParse => {
   const search = PATTERN.exec(toParse.trim());
   return search === null ? null : {
     rawMsg: toParse,
