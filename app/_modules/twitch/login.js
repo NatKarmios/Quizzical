@@ -187,6 +187,11 @@ async function retrieveAvatarAndDisplayName(username: string) {
       headers: { 'Client-ID': CLIENT_ID },
       json: true
     });
+    if(reply.error !== null && reply.error !== undefined) {
+      console.log(`Retrieving display name and avatar URL failed with error message:\n${reply.error}`);
+      return null;
+    }
+
     const allDetails = reply.data[0];
     return { avatarURL: allDetails['profile_image_url'], displayName: allDetails['display_name'] };
   } catch (e) {
