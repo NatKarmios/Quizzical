@@ -1,0 +1,37 @@
+// @flow
+import React from 'react';
+import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
+import Typography from 'material-ui/Typography';
+import { withStyles } from "material-ui/es/styles";
+import { MDIcon } from "../utils/components";
+
+
+const styles = theme => ({
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: '33.33%',
+    flexShrink: 0,
+  },
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  }
+});
+
+const SettingsExpansionPanel = ({primary, secondary, expanded, onChange, children, classes}) => (
+  <ExpansionPanel expanded={expanded} onChange={onChange}>
+    <ExpansionPanelSummary expandIcon={<MDIcon color="rgba(0, 0, 0, 0.5)" >chevron-down</MDIcon>}>
+      <Typography className={classes.heading} >
+        {primary}
+      </Typography>
+      <Typography className={classes.secondaryHeading} >
+        {secondary}
+        </Typography>
+    </ExpansionPanelSummary>
+    <ExpansionPanelDetails>
+      {children}
+    </ExpansionPanelDetails>
+  </ExpansionPanel>
+);
+
+export default withStyles(styles)(SettingsExpansionPanel);
