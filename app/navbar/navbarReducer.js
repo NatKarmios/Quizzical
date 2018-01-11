@@ -7,8 +7,10 @@ export type NavbarStateType = {
   botLoggedIn: boolean
 };
 
+const defaultState = { streamerLoggedIn: false, botLoggedIn: false };
+
 export default function navbar(
-  state: NavbarStateType = { streamerLoggedIn: false, botLoggedIn: false },
+  state: NavbarStateType = defaultState,
   { type }
 ): NavbarStateType {
   const { streamerLoggedIn, botLoggedIn } = state;
