@@ -34,7 +34,7 @@ const getLoginButton = (stage: 0 | 1 | 2, onClick) => {
 
   return (
     <Button raised color="primary" disabled={stage > 0} onClick={onClick}>
-      {stage === 0 ? <MDIcon color="black" style={{ fontSize: '14px', paddingRight: '6px' }}>twitch</MDIcon> : null}
+      {stage === 0 ? <MDIcon style={{ verticalAlign: 'middle', paddingRight: '6px' }}>twitch</MDIcon> : null}
       {content}
     </Button>
   );
