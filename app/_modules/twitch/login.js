@@ -108,7 +108,7 @@ async function loginWithLocalAuthWebserver(
   const app = connect();
 
   const replyPromise = new Promise(resolve => {
-    app.use((req: LoginRawQueryType, res) => {
+    app.use((req/*: LoginRawQueryType*/, res) => {
       if (req.url.startsWith('/auth')) {
         // eslint-disable-next-line no-underscore-dangle
         const queryRaw = req._parsedUrl.query;
@@ -181,13 +181,13 @@ async function retrieveUsername(token: string): string {
 }
 
 async function retrieveAvatarAndDisplayName(username: string) {
-  try{
+  try {
     const reply = await request({
       uri: `https://api.twitch.tv/helix/users?login=${username}`,
       headers: { 'Client-ID': CLIENT_ID },
       json: true
     });
-    if(reply.error !== null && reply.error !== undefined) {
+    if (reply.error !== null && reply.error !== undefined) {
       console.log(`Retrieving display name and avatar URL failed with error message:\n${reply.error}`);
       return null;
     }
