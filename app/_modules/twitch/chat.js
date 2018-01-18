@@ -1,6 +1,6 @@
 // @flow
 
-import { getSetting } from '../persist/settings';
+import { getSetting } from '../savedSettings';
 import vars from '../vars';
 import { IntervalQueue } from '../../utils/IntervalQueue';
 import { parseMsg, MsgData } from './msgData';
@@ -69,6 +69,7 @@ export const connect = () => {
       login();
       queue = new IntervalQueue(sendMessage);
       console.log('Connected to chat.');
+      queueMessage(getSetting('chatMessages', 'joinMessage'));
       resolve();
     });
     socket.addEventListener('message', event => { listeners.forEach(func => func(event.data)); });

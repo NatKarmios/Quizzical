@@ -1,15 +1,18 @@
 // @flow
 import { sep } from 'path';
 
-import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../../utils/helperFuncs';
+import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../utils/helperFuncs';
 
 const SETTINGS_FILENAME = 'settings.json';
 const SETTINGS_FILE_PATH = `${getDataDir()}${sep}${SETTINGS_FILENAME}`;
 
-const defaultSettings = {
+const DEFAULT_SETTINGS = {
   login: {
     streamerAuthToken: null,
     botAuthToken: null
+  },
+  chatMessages: {
+    joinMessage: 'Quizzical initialized!'
   }
 };
 
@@ -17,9 +20,9 @@ let settingsAreLoaded: boolean = false;
 
 // <editor-fold desc="Object key types">
 
-type SettingsCategoryType = $Keys<typeof defaultSettings>;
+type SettingsCategoryType = $Keys<typeof DEFAULT_SETTINGS>;
 
-type LoginSettingKeyType = $Keys<typeof defaultSettings.login>;
+type LoginSettingKeyType = $Keys<typeof DEFAULT_SETTINGS.login>;
 
 
 type SettingKeyType = LoginSettingKeyType;
@@ -27,34 +30,36 @@ type SettingKeyType = LoginSettingKeyType;
 // </editor-fold>
 
 
-const settings = cloneObject(defaultSettings);
+let settings = cloneObject(DEFAULT_SETTINGS);
 
 
 const checkLoaded = () => {
   if (!settingsAreLoaded) throw new Error('Settings haven\'t been loaded yet!');
 };
 
-const processLoadedSettings = loaded => {
-  const processSetting = (category, settingKey) => {
-    const loadedSetting = loaded[category][settingKey];
-    if (loadedSetting !== null && loadedSetting !== undefined) {
-      settings[category][settingKey] = loadedSetting;
-    }
-  };
-
+export const mergeOntoSettings = loaded => {
   const processCategory = category => {
-    if (typeof loaded[category] === 'object') {
+    const processSetting = (settingKey) => {
+      const loadedSetting = loaded[category][settingKey];
+      if (loadedSetting !== undefined) {
+        settings[category][settingKey] = loadedSetting;
+      }
+    };
+
+    if (loaded[category] !== null && typeof loaded[category] === 'object') {
       // Iterate through category settings
-      Object.keys(settings[category]).forEach(settingKey => {
-        processSetting(category, settingKey);
-      });
+      Object.keys(settings[category]).forEach(processSetting);
     }
   };
 
   // Iterate through setting categories
-  Object.keys(settings).forEach(category => {
-    processCategory(category);
-  });
+  Object.keys(settings).forEach(processCategory);
+};
+
+export const resetSettings = () => {
+  const login = settings.login;
+  settings = cloneObject(DEFAULT_SETTINGS);
+  settings.login = login;
 };
 
 export const loadSettings = async () => {
@@ -76,7 +81,7 @@ export const loadSettings = async () => {
     console.log('Failed to read settings file:');
     console.log(e1);
   }
-  processLoadedSettings(loadedSettings);
+  mergeOntoSettings(loadedSettings);
   settingsAreLoaded = true;
   console.log('Settings loaded successfully.');
 };
@@ -98,7 +103,15 @@ export const setSetting = async (category, settingKey, newVal, save = true) => {
 
 export const getSetting = (category, settingKey) => {
   checkLoaded();
-  return settings[category][settingKey];
+  if (settings[category] !== null && settings[category] !== undefined)
+    return settings[category][settingKey];
+  return null;
+};
+
+export const getDefaultSetting = (category, settingKey) => {
+  if (DEFAULT_SETTINGS[category] !== null && DEFAULT_SETTINGS[category] !== undefined)
+    return DEFAULT_SETTINGS[category][settingKey];
+  return null;
 };
 
 // </editor-fold>

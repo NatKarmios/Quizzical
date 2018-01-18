@@ -4,7 +4,7 @@ import { createLogic } from 'redux-logic';
 import { guiLogin, tokenLogin } from '../_modules/twitch/login';
 import type { LoginDataType, AccountDetailsType } from '../_modules/twitch/login';
 import { connect } from '../_modules/twitch/chat';
-import { getSetting, setSetting } from '../_modules/persist/settings';
+import { getSetting, setSetting } from '../_modules/savedSettings';
 import vars from '../_modules/vars';
 
 import {

@@ -5,7 +5,7 @@ import Root from './root/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import { testSavedTokens } from './global/actions';
-import { loadSettings } from './_modules/persist/settings';
+import { loadSettings } from './_modules/savedSettings';
 
 const store = configureStore();
 loadSettings().then(
