@@ -3,7 +3,8 @@ import { remote } from 'electron';
 import { createServer } from 'http';
 import connect from 'connect';
 import qs from 'qs';
-import request from 'request-promise-native';
+import { delay, httpGet } from "../../utils/helperFuncs";
+
 
 const { BrowserWindow, session } = remote;
 // noinspection SpellCheckingInspection
@@ -159,18 +160,25 @@ async function loginWithLocalAuthWebserver(
 async function retrieveAccountDetails(token: string): AccountDetailsType {
   const username = await retrieveUsername(token);
   if (username === null || username === undefined) return null;
+  console.log("name");
 
-  const avatarAndDisplayName = await retrieveAvatarAndDisplayName(username);
+  await delay(200);
+
+  const avatarAndDisplayName = await retrieveAvatarAndDisplayName(token, username);
   if (avatarAndDisplayName === null || avatarAndDisplayName === undefined) return null;
+  console.log("display");
 
   return {username, ...avatarAndDisplayName};
 }
 
 async function retrieveUsername(token: string): string {
   try {
-    const reply: LoginUsernameReplyType = await request({
+    const reply: LoginUsernameReplyType = await httpGet({
       uri: 'https://api.twitch.tv/kraken',
-      headers: {Authorization: `OAuth ${token}`},
+      headers: {
+        Authorization: `OAuth ${token}`,
+        'CLIENT-ID': CLIENT_ID
+      },
       json: true
     });
     return reply.token.user_name
@@ -180,18 +188,16 @@ async function retrieveUsername(token: string): string {
   }
 }
 
-async function retrieveAvatarAndDisplayName(username: string) {
+async function retrieveAvatarAndDisplayName(token: string, username: string) {
   try {
-    const reply = await request({
+    const reply = await httpGet({
       uri: `https://api.twitch.tv/helix/users?login=${username}`,
-      headers: { 'Client-ID': CLIENT_ID },
+      headers: {
+        Authorization: `OAuth ${token}`,
+        'CLIENT-ID': CLIENT_ID
+      },
       json: true
     });
-    if (reply.error !== null && reply.error !== undefined) {
-      console.log(`Retrieving display name and avatar URL failed with error message:\n${reply.error}`);
-      return null;
-    }
-
     const allDetails = reply.data[0];
     return { avatarURL: allDetails['profile_image_url'], displayName: allDetails['display_name'] };
   } catch (e) {
