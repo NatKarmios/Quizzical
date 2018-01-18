@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
+import Tooltip from 'material-ui/Tooltip'
 import { MDIcon, InlineIcon } from '../utils/components';
 import Typography from 'material-ui/es/Typography/Typography';
 
@@ -69,15 +70,21 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
       <br/>
 
       <div style={{ width: '100%', textAlign: 'center' }}>
-        <Button raised color="primary" onClick={saveTempSettings} disabled={!unsavedSettings}>
-          <InlineIcon>content-save</InlineIcon>
-          Save
-        </Button>
+        <Tooltip title="Save changes">
+          <span>
+            <Button raised dense color="primary" onClick={saveTempSettings} disabled={!unsavedSettings}>
+              <MDIcon>content-save</MDIcon>
+            </Button>
+          </span>
+        </Tooltip>
         <Space>4</Space>
-        <Button raised color="accent" onClick={clearTempSettings} disabled={!unsavedSettings}>
-          <InlineIcon>delete</InlineIcon>
-          Discard Changes
-        </Button>
+        <Tooltip title="Discard changes">
+          <span>
+            <Button raised dense color="accent" onClick={clearTempSettings} disabled={!unsavedSettings}>
+              <MDIcon>delete</MDIcon>
+            </Button>
+          </span>
+        </Tooltip>
       </div>
 
       <br/>

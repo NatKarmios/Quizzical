@@ -3,9 +3,11 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import Dialog from './dialog/SettingsDialog';
+import Tooltip from 'material-ui/Tooltip';
 
+import Dialog from './dialog/SettingsDialog';
 import { Space } from '../utils/components';
+import InlineIcon from "../utils/components/InlineIcon";
 
 
 const DIALOG_CONTENT = (
@@ -55,9 +57,23 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
         </Typography>
         <br/>
         <div style={{textAlign: 'center'}}>
-          <Button raised color="accent" onClick={onLogoutButton}>LOG OUT OF TWITCH</Button>
+          <Tooltip title="Log out of Twitch">
+            <span>
+              <Button raised color="accent" onClick={onLogoutButton}>
+                <InlineIcon>logout-variant</InlineIcon>
+              </Button>
+            </span>
+          </Tooltip>
+
           <Space>8</Space>
-          <Button raised color="accent" onClick={onResetButton}>RESET ALL TO DEFAULT</Button>
+
+          <Tooltip title="Clear all settings">
+            <span>
+              <Button raised color="accent" onClick={onResetButton}>
+                <InlineIcon>delete-sweep</InlineIcon>
+              </Button>
+            </span>
+          </Tooltip>
         </div>
 
         <Dialog
