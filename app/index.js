@@ -6,6 +6,7 @@ import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import { testSavedTokens } from './global/actions';
 import { loadSettings } from './_modules/savedSettings';
+import { loadDB } from './_modules/db';
 
 
 const ready = () => {
@@ -34,6 +35,7 @@ const store = configureStore();
 
 const setup = async () => {
   await Promise.all([
+    loadDB(),
     loadSettings()
   ]);
   ready();
