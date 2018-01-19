@@ -4,8 +4,8 @@ import React from 'react';
 import style from './style.scss';
 
 import Avatar from 'material-ui/Avatar';
-import { VerticalSeparator } from '../utils/components';
-import { MDIcon } from "../utils/components";
+import Tooltip from 'material-ui/Tooltip';
+import { MDIcon, Space } from "../utils/components";
 import vars, { AccountDataType } from '../_modules/vars';
 
 
@@ -16,28 +16,30 @@ type Props = {
 
 const avatarStyles = {
   display: 'inline-block',
-  marginRight: '10px',
+  // marginRight: '10px',
   verticalAlign: 'middle'
 };
 
 const NotLoggedIn = ({ icon }) => (
-  <i className={style.userDisplay}>
-    <Avatar style={avatarStyles}>
-      <MDIcon style={{ marginLeft: '8px', marginTop: '5px' }}>{icon}</MDIcon>
-    </Avatar>
-    Not logged in
-  </i>
+  <span className={style.userDisplay}>
+    <Tooltip title={<i>Not logged in</i>}>
+      <Avatar style={avatarStyles}>
+        <MDIcon style={{ marginLeft: '8px', marginTop: '5px' }}>{icon}</MDIcon>
+      </Avatar>
+    </Tooltip>
+  </span>
 );
 
 const LoggedIn = ({ details }: { details: AccountDataType }) => (
-  <i className={style.userDisplay}>
-    <Avatar
-      style={avatarStyles}
-      alt={details.display}
-      src={details.avatar}
-    />
-    {details.display}
-  </i>
+  <span className={style.userDisplay}>
+    <Tooltip title={<i>{details.display}</i>}>
+      <Avatar
+        style={avatarStyles}
+        alt={details.display}
+        src={details.avatar}
+      />
+    </Tooltip>
+  </span>
 );
 
 const NavbarUsers = ({ streamerLoggedIn, botLoggedIn }: Props) => (
@@ -46,7 +48,7 @@ const NavbarUsers = ({ streamerLoggedIn, botLoggedIn }: Props) => (
       <NotLoggedIn icon="account"/> :
       <LoggedIn details={vars.accountData.streamer} />
     }
-    <VerticalSeparator>{{ size: '30px', color: 'rgba(0, 0, 0, 0)' }}</VerticalSeparator>
+    <Space>4</Space>
     {!botLoggedIn ?
       <NotLoggedIn icon="robot"/> :
       <LoggedIn details={vars.accountData.bot} />
