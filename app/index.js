@@ -8,35 +8,36 @@ import { testSavedTokens } from './global/actions';
 import { loadSettings } from './_modules/savedSettings';
 import { loadDB } from './_modules/db';
 
-
 const store = configureStore();
+
+const ready = () => {
+  render(
+    <AppContainer>
+      <Root store={store} history={history} />
+    </AppContainer>,
+    document.getElementById('root')
+  );
+
+  if (module.hot) {
+    module.hot.accept('./root/Root', () => {
+      const NextRoot = require('./root/Root'); // eslint-disable-line global-require
+      render(
+        <AppContainer>
+          <NextRoot store={store} history={history}/>
+        </AppContainer>,
+        document.getElementById('root')
+      );
+    });
+  }
+};
 
 const setup = async () => {
   await Promise.all([
     loadDB(),
     loadSettings()
   ]);
+  ready();
   store.dispatch(testSavedTokens());
 };
 
 setup().catch();
-
-
-render(
-  <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('root')
-);
-
-if (module.hot) {
-  module.hot.accept('./root/Root', () => {
-    const NextRoot = require('./root/Root'); // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NextRoot store={store} history={history}/>
-      </AppContainer>,
-      document.getElementById('root')
-    );
-  });
-}
