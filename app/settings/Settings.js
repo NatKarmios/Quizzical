@@ -2,16 +2,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
-import Tooltip from 'material-ui/Tooltip'
 import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/es/Typography/Typography';
 
 import * as SettingsActions from './settingsActions';
+import ControlButtons from './SettingsControlButtons'
 import Panels from './SettingsPanels';
 import DangerZone from './SettingsDangerZone';
-import Space from "../utils/components/Space";
 import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings';
 import { restart } from '../utils/helperFuncs';
 
@@ -63,23 +61,7 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
 
       <br/>
 
-      <div style={{ width: '100%', textAlign: 'center' }}>
-        <Tooltip title="Save changes">
-          <span>
-            <Button raised dense color="primary" onClick={saveTempSettings} disabled={!unsavedSettings}>
-              <MDIcon>content-save</MDIcon>
-            </Button>
-          </span>
-        </Tooltip>
-        <Space>4</Space>
-        <Tooltip title="Discard changes">
-          <span>
-            <Button raised dense color="accent" onClick={clearTempSettings} disabled={!unsavedSettings}>
-              <MDIcon>delete</MDIcon>
-            </Button>
-          </span>
-        </Tooltip>
-      </div>
+      <ControlButtons enabled={unsavedSettings} onSave={saveTempSettings} onClear={clearTempSettings}/>
 
       <br/>
 
