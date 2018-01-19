@@ -13,7 +13,7 @@ const HeaderLinkButton = ({tooltipText, linkTo, icons, width="auto"}) => (
       <span>
         <Link to={linkTo}>
           <Button dense raised color="primary">
-            {icons.map(icon => <MDIcon>{icon}</MDIcon>)}
+            {icons.map(icon => <MDIcon key={icon}>{icon}</MDIcon>)}
           </Button>
         </Link>
       </span>
