@@ -1,10 +1,8 @@
 // @flow
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
-import { MDIcon } from '../utils/components';
+import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/es/Typography/Typography';
 
 const Home = () => (
@@ -13,11 +11,8 @@ const Home = () => (
       <Typography type="headline">
         <MDIcon color="black" style={{ marginRight: '5px' }}>home</MDIcon>
         Home
-        <Link to="/settings">
-          <Button raised color="primary" style={{ float: 'right', top: '-5px' }}>
-            <MDIcon>settings</MDIcon>
-          </Button>
-        </Link>
+        <HeaderLinkButton
+          tooltipText="To settings" linkTo="/settings" icons={['settings']} width="70px"/>
       </Typography>
     </Paper>
     <br/>

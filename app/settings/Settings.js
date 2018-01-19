@@ -2,11 +2,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import Tooltip from 'material-ui/Tooltip'
-import { MDIcon, InlineIcon } from '../utils/components';
+import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/es/Typography/Typography';
 
 import * as SettingsActions from './settingsActions';
@@ -58,12 +57,7 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
         <Typography type="headline">
           <MDIcon color="black" style={{ marginRight: '5px' }}>settings</MDIcon>
           Settings
-          <Link to="/home">
-            <Button raised color="primary" style={{ float: 'right', top: '-5px' }}>
-              <MDIcon>arrow-left-bold</MDIcon>
-              <MDIcon>home</MDIcon>
-            </Button>
-          </Link>
+          <HeaderLinkButton tooltipText="Back to home" linkTo="/home" icons={['arrow-left-bold', 'home']} width="80px"/>
         </Typography>
       </Paper>
 
