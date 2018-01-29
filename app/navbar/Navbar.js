@@ -21,7 +21,7 @@ const styles = {
 };
 
 const Navbar = ({ streamerLoggedIn, botLoggedIn }: Props) => (
-  <AppBar position="static" style={{ WebkitAppRegion: 'drag', height: '64px' }}>
+  <AppBar position="fixed" style={{ WebkitAppRegion: 'drag', height: '64px' }}>
     <Toolbar>
       <Typography type="headline" color="inherit">Quizzical</Typography>
       <div style={{ flex: 1, height: '100%' }}>

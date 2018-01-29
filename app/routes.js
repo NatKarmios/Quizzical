@@ -9,7 +9,7 @@ import SettingsPage from './settings/Settings';
 
 export default () => (
   <App>
-    <Switch>
+    <Switch style={{overflowY: 'scroll'}}>
       <Route exact path="/" render={() => (<Redirect to="/setup" />)} />
       <Route path="/counter" component={CounterPage} />
       <Route path="/home" component={HomePage} />

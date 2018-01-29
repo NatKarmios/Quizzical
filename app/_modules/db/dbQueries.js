@@ -1,5 +1,15 @@
 // @flow
-import { getDB, QuestionType } from './dbSetup';
+import { getDB } from './dbSetup';
+
+
+export type QuestionType = {
+  questionID: number,
+  content: string,
+  correctAnswer: string,
+  incorrectAnswers: Array<string>,
+  external: boolean
+}
+
 
 const CREATE_QUESTIONS_TABLE =
   'CREATE TABLE IF NOT EXISTS Questions ' +

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import request from 'request';
+import rp from 'request-promise-native';
 import { remote, BrowserWindow } from 'electron';
 
 const { app } = remote;
@@ -39,11 +39,10 @@ export const fileExists: string => Promise<boolean> =
     err => resolve((err === null || err === undefined))
   ));
 
-export const httpGet = (options) => {
-  return new Promise((resolve, reject) => {
-    request.get(options, (error, response, body) => {
-        if (error !== undefined && error !== null) reject(error);
-        else resolve(body);
-      })
-  })
+export const httpGet = async options => rp({ method: 'GET', ...options });
+
+export const decodeHtml = html => {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
 };

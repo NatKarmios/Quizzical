@@ -1,16 +1,16 @@
 // @flow
 
-import { httpGet } from '../utils/helperFuncs';
-import {insertQuestion} from "./db/dbQueries";
+import { decodeHtml, httpGet } from '../utils/helperFuncs';
+import { insertQuestion } from './db/dbQueries';
 
 const getApiUrl = (amount, difficulty) =>
   `https://opentdb.com/api.php?amount=${amount}&category=15&difficulty=${difficulty}`;
 
 
 const parseRawQuestion = question => ({
-  content: decodeURI(question['question']),
-  correctAnswer: decodeURI(question['correct_answer']),
-  incorrectAnswers: question['incorrect_answers'].map(decodeURI),
+  content: decodeHtml(question['question']),
+  correctAnswer: decodeHtml(question['correct_answer']),
+  incorrectAnswers: question['incorrect_answers'].map(decodeHtml),
 });
 
 export const retrieveExternalQuestions = async (amount, difficulty='medium') => {

@@ -7,6 +7,7 @@ import './app.global.css';
 import { testSavedTokens } from './global/actions';
 import { loadSettings } from './_modules/savedSettings';
 import { setUpDB } from './_modules/db/dbSetup';
+import {addExternalQuestions} from "./_modules/externalQuestions";
 
 const store = configureStore();
 
