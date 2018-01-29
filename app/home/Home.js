@@ -4,7 +4,7 @@ import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/Typography';
-import QuestionList from './HomeQuestionList';
+import QuestionList from './questionList/QuestionList';
 
 const Home = () => (
   <div style={{ margin: '20px' }}>
