@@ -7,7 +7,7 @@ import { parseMsg, MsgData } from './msgData';
 
 const TWITCH_CHAT_URL = 'wss://irc-ws.chat.twitch.tv:443';
 const PREFIX = '/me - ';
-const LOG_TWITCH = true;
+const LOG_TWITCH = false;
 let connectionStarted = false;
 const getChannel = () => { return `#${vars.accountData.streamer.nick}`; };
 const getNick = () => { return vars.accountData.bot.nick; };

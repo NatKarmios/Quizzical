@@ -2,16 +2,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
-import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
-import { MDIcon, InlineIcon } from '../utils/components';
+import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/es/Typography/Typography';
 
 import * as SettingsActions from './settingsActions';
+import ControlButtons from './SettingsControlButtons'
 import Panels from './SettingsPanels';
 import DangerZone from './SettingsDangerZone';
-import Space from "../utils/components/Space";
 import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings';
 import { restart } from '../utils/helperFuncs';
 
@@ -57,28 +55,13 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
         <Typography type="headline">
           <MDIcon color="black" style={{ marginRight: '5px' }}>settings</MDIcon>
           Settings
-          <Link to="/home">
-            <Button raised color="primary" style={{ float: 'right', top: '-5px' }}>
-              <MDIcon>arrow-left-bold</MDIcon>
-              <MDIcon>home</MDIcon>
-            </Button>
-          </Link>
+          <HeaderLinkButton tooltipText="Back to home" linkTo="/home" icons={['arrow-left-bold', 'home']} width="80px"/>
         </Typography>
       </Paper>
 
       <br/>
 
-      <div style={{ width: '100%', textAlign: 'center' }}>
-        <Button raised color="primary" onClick={saveTempSettings} disabled={!unsavedSettings}>
-          <InlineIcon>content-save</InlineIcon>
-          Save
-        </Button>
-        <Space>4</Space>
-        <Button raised color="accent" onClick={clearTempSettings} disabled={!unsavedSettings}>
-          <InlineIcon>delete</InlineIcon>
-          Discard Changes
-        </Button>
-      </div>
+      <ControlButtons enabled={unsavedSettings} onSave={saveTempSettings} onClear={clearTempSettings}/>
 
       <br/>
 

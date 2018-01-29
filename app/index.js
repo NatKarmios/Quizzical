@@ -6,27 +6,38 @@ import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import { testSavedTokens } from './global/actions';
 import { loadSettings } from './_modules/savedSettings';
+import { setUpDB } from './_modules/db/dbSetup';
 
 const store = configureStore();
-loadSettings().then(
-  () => { store.dispatch(testSavedTokens()); }
-);
 
-render(
-  <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('root')
-);
+const ready = () => {
+  render(
+    <AppContainer>
+      <Root store={store} history={history} />
+    </AppContainer>,
+    document.getElementById('root')
+  );
 
-if (module.hot) {
-  module.hot.accept('./root/Root', () => {
-    const NextRoot = require('./root/Root'); // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NextRoot store={store} history={history} />
-      </AppContainer>,
-      document.getElementById('root')
-    );
-  });
-}
+  if (module.hot) {
+    module.hot.accept('./root/Root', () => {
+      const NextRoot = require('./root/Root'); // eslint-disable-line global-require
+      render(
+        <AppContainer>
+          <NextRoot store={store} history={history}/>
+        </AppContainer>,
+        document.getElementById('root')
+      );
+    });
+  }
+};
+
+const setup = async () => {
+  await Promise.all([
+    setUpDB(),
+    loadSettings()
+  ]);
+  ready();
+  store.dispatch(testSavedTokens());
+};
+
+setup().catch();

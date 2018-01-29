@@ -160,13 +160,11 @@ async function loginWithLocalAuthWebserver(
 async function retrieveAccountDetails(token: string): AccountDetailsType {
   const username = await retrieveUsername(token);
   if (username === null || username === undefined) return null;
-  console.log("name");
 
   await delay(200);
 
   const avatarAndDisplayName = await retrieveAvatarAndDisplayName(token, username);
   if (avatarAndDisplayName === null || avatarAndDisplayName === undefined) return null;
-  console.log("display");
 
   return {username, ...avatarAndDisplayName};
 }
