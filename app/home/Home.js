@@ -3,7 +3,8 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
-import Typography from 'material-ui/es/Typography/Typography';
+import Typography from 'material-ui/Typography';
+import QuestionList from './HomeQuestionList';
 
 const Home = () => (
   <div style={{ margin: '20px' }}>
@@ -18,8 +19,8 @@ const Home = () => (
     <br/>
     <Grid container>
       <Grid item xs={12} sm={6}>
-        <Paper style={{ padding: '20px' }}>
-          <Typography>[Question list]</Typography>
+        <Paper>
+          <QuestionList/>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6}>
