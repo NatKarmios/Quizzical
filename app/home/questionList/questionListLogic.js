@@ -1,9 +1,10 @@
 // @flow
 import { createLogic } from 'redux-logic';
 
-import { getQuestionCount, getQuestionList } from '../../_modules/db/dbQueries';
+import { getQuestionCount, getQuestionList, insertQuestion } from '../../_modules/db/dbQueries';
 
-import { LOAD_QUESTIONS, questionsLoaded } from './questionListActions';
+import { ADD_QUESTION, LOAD_QUESTIONS, IMPORT_QUESTIONS, questionsLoaded, loadQuestions } from './questionListActions';
+import {addExternalQuestions} from "../../_modules/externalQuestions";
 
 const loadQuestionsLogic = createLogic({
   type: LOAD_QUESTIONS,
@@ -19,6 +20,30 @@ const loadQuestionsLogic = createLogic({
   }
 });
 
+const addQuestionLogic = createLogic({
+  type: ADD_QUESTION,
+  process: async ({ action, getState }, dispatch, done) => {
+    const { payload } = action;
+    const { question, answer, incorrectAnswers } = payload;
+    await insertQuestion(question, answer, incorrectAnswers, false);
+    dispatch(loadQuestions(getState().questionList.currentPage));
+    done();
+  }
+});
+
+const importQuestionsLogic = createLogic({
+  type: IMPORT_QUESTIONS,
+  process: async ({ action, getState }, dispatch, done) => {
+    const { payload } = action;
+    const { amount, difficulty } = payload;
+    await addExternalQuestions(amount, difficulty);
+    dispatch(loadQuestions(getState().questionList.currentPage));
+    done();
+  }
+});
+
 export default [
-  loadQuestionsLogic
+  loadQuestionsLogic,
+  addQuestionLogic,
+  importQuestionsLogic
 ];

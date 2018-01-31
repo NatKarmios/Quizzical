@@ -5,8 +5,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 
-import Dialog from './dialog/SettingsDialog';
-import { Space } from '../utils/components';
+import { Space, Dialog } from '../utils/components';
 import InlineIcon from "../utils/components/InlineIcon";
 
 

@@ -33,9 +33,10 @@ const QuestionListItem = ({ question, enabled }) => (
   </ListItem>
 );
 
-const QuestionList = ({ initialLoad, loading, questionCount,
-                        currentPage, loadedQuestions, loadQuestions }) => {
-  console.log(initialLoad, questionCount, currentPage, loadedQuestions);
+const QuestionList = ({
+  initialLoad, loading, questionCount, currentPage,
+  loadedQuestions, loadQuestions, addQuestion, importQuestions
+}) => {
 
   if (!initialLoad) loadQuestions(0);
 
@@ -63,7 +64,7 @@ const QuestionList = ({ initialLoad, loading, questionCount,
         loadPrevPage={() => loadQuestions(currentPage-1)}
       />
       <Divider />
-      <AddButtons />
+      <AddButtons addQuestion={addQuestion} importQuestions={importQuestions}/>
     </List>
   );
 };
