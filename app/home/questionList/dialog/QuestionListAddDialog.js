@@ -7,8 +7,13 @@ import IconButton from 'material-ui/IconButton';
 
 import { MDIcon, Dialog } from '../../../utils/components/index';
 
-const AnswerChip = ({ onDelete = ()=>{}, children }) =>
-  <Chip label={children} onDelete={onDelete} style={{ marginRight: '5px', display: 'flex' }} />;
+const AnswerChip = ({ onDelete = ()=>{}, children }) => (
+  <Chip
+    label={children}
+    onDelete={onDelete}
+    style={{ marginRight: '5px', marginBottom: '5px', display: 'flex' }}
+  />
+);
 
 const QuestionListAddDialog = ({
   open, question, answer, incorrectAnswers, tempIncorrectAnswer,
@@ -55,7 +60,7 @@ const QuestionListAddDialog = ({
             onChange={onAnswerChange}
           />
 
-          <div style={{ display: 'flex', margin: '10px 0' }}>
+          <div style={{ display: 'flex', margin: '10px 0', flexWrap: 'wrap' }}>
             {
               incorrectAnswers.map((incorrectAnswer, i) =>
                   <AnswerChip
