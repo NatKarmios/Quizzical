@@ -11,6 +11,7 @@ import ControlButtons from './SettingsControlButtons'
 import Panels from './SettingsPanels';
 import DangerZone from './SettingsDangerZone';
 import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings';
+import { deleteAllQuestions } from '../_modules/db/dbQueries';
 import { restart } from '../utils/helperFuncs';
 
 
@@ -36,6 +37,11 @@ const logOutOfTwitch = async () => {
     }
   });
   await saveSettings();
+  restart();
+};
+
+const deleteQuestions = async () => {
+  await deleteAllQuestions();
   restart();
 };
 
@@ -72,7 +78,7 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
         onTempSettingChange={updateTempSetting}
       />
 
-      <DangerZone onLogout={logOutOfTwitch} onDeleteQuestions={()=>{}} onReset={resetToDefaultSettings}/>
+      <DangerZone onLogout={logOutOfTwitch} onDeleteQuestions={deleteQuestions} onReset={resetToDefaultSettings}/>
     </div>
   );
 };
