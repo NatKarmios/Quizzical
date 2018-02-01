@@ -25,15 +25,16 @@ type Props = {
 };
 type State = {
   logoutDialogOpen: boolean,
+  deleteQuestionsDialogOpen: boolean,
   resetDialogOpen: boolean
 }
 
 class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
-  state = { logoutDialogOpen: false, resetDialogOpen: false };
+  state = { logoutDialogOpen: false, deleteQuestionsDialogOpen: false, resetDialogOpen: false };
 
   render() {
     const { onLogout, onReset } = this.props;
-    const { logoutDialogOpen, resetDialogOpen } = this.state;
+    const { logoutDialogOpen, deleteQuestionsDialogOpen, resetDialogOpen } = this.state;
 
     const onLogoutButton = () =>
       this.setState({ ...this.state, logoutDialogOpen: true });
