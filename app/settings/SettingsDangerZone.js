@@ -91,6 +91,14 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
           open={logoutDialogOpen}
           handleClose={onLogoutDialogClose}
         />
+
+        <Dialog
+          title="Delete all question data"
+          content={DIALOG_CONTENT}
+          open={deleteQuestionsDialogOpen}
+          handleClose={onDeleteQuestionsDialogClose}
+        />
+
         <Dialog
           title="Reset all settings?"
           content={DIALOG_CONTENT}
