@@ -59,6 +59,7 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
           <Tooltip title="Log out of Twitch">
             <span>
               <Button raised color="accent" onClick={onLogoutButton}>
+                <InlineIcon>twitch</InlineIcon>
                 <InlineIcon>logout-variant</InlineIcon>
               </Button>
             </span>
@@ -69,6 +70,7 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
           <Tooltip title="Clear all settings">
             <span>
               <Button raised color="accent" onClick={onResetButton}>
+                <InlineIcon>settings</InlineIcon>
                 <InlineIcon>delete-sweep</InlineIcon>
               </Button>
             </span>
