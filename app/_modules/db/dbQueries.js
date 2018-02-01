@@ -22,6 +22,7 @@ const GET_ALL_QUESTIONS = 'SELECT * FROM Questions';
 const GET_QUESTION_BY_ID = 'SELECT * FROM Questions WHERE id = ?';
 const GET_QUESTION_COUNT = 'SELECT COUNT(*) FROM Questions';
 const GET_QUESTION_SELECTION = 'SELECT * FROM Questions LIMIT ? OFFSET ?';
+const DELETE_ALL_QUESTIONS = 'DELETE FROM Questions';
 
 const parseRawQuestion: mixed => QuestionType =
     rawQuestion => ({
@@ -51,3 +52,6 @@ export const getQuestionList: () => Promise<Array<QuestionType>> =
     (await getDB().all(
       GET_QUESTION_SELECTION, [numQuestions, page*numQuestions]
     )).map(parseRawQuestion);
+
+export const deleteAllQuestions: () => Promise<void> =
+  () => getDB().run(DELETE_ALL_QUESTIONS);
