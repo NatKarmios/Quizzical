@@ -75,6 +75,17 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
 
           <Space>8</Space>
 
+          <Tooltip title="Delete all question data">
+            <span>
+              <Button raised color="accent" onClick={onDeleteQuestionsButton}>
+                <InlineIcon>comment-question-outline</InlineIcon>
+                <InlineIcon>delete-sweep</InlineIcon>
+              </Button>
+            </span>
+          </Tooltip>
+
+          <Space>8</Space>
+
           <Tooltip title="Clear all settings">
             <span>
               <Button raised color="accent" onClick={onResetButton}>
