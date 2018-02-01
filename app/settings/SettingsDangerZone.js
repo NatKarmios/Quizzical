@@ -21,6 +21,7 @@ const DIALOG_CONTENT = (
 type DefaultProps = {};
 type Props = {
   onLogout: () => void,
+  onDeleteQuestions: () => void,
   onReset: () => void
 };
 type State = {
@@ -33,7 +34,7 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
   state = { logoutDialogOpen: false, deleteQuestionsDialogOpen: false, resetDialogOpen: false };
 
   render() {
-    const { onLogout, onReset } = this.props;
+    const { onLogout, onDeleteQuestions, onReset } = this.props;
     const { logoutDialogOpen, deleteQuestionsDialogOpen, resetDialogOpen } = this.state;
 
     const onLogoutButton = () =>

@@ -72,7 +72,7 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
         onTempSettingChange={updateTempSetting}
       />
 
-      <DangerZone onLogout={logOutOfTwitch} onReset={resetToDefaultSettings}/>
+      <DangerZone onLogout={logOutOfTwitch} onDeleteQuestions={()=>{}} onReset={resetToDefaultSettings}/>
     </div>
   );
 };
