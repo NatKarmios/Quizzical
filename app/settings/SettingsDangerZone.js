@@ -48,6 +48,10 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
       this.setState({...this.state, logoutDialogOpen: false });
       if (confirm) onLogout();
     };
+    const onDeleteQuestionsDialogClose = confirm => () => {
+      this.setState({ ...this.state, deleteQuestionsDialogOpen: false });
+      if (confirm) onDeleteQuestions()
+    };
     const onResetDialogClose = confirm => () => {
       this.setState({ ...this.state, resetDialogOpen: false });
       if (confirm) onReset();
