@@ -21,31 +21,39 @@ const DIALOG_CONTENT = (
 type DefaultProps = {};
 type Props = {
   onLogout: () => void,
+  onDeleteQuestions: () => void,
   onReset: () => void
 };
 type State = {
   logoutDialogOpen: boolean,
+  deleteQuestionsDialogOpen: boolean,
   resetDialogOpen: boolean
 }
 
 class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
-  state = { logoutDialogOpen: false, resetDialogOpen: false };
+  state = { logoutDialogOpen: false, deleteQuestionsDialogOpen: false, resetDialogOpen: false };
 
   render() {
-    const { onLogout, onReset } = this.props;
-    const { logoutDialogOpen, resetDialogOpen } = this.state;
+    const { onLogout, onDeleteQuestions, onReset } = this.props;
+    const { logoutDialogOpen, deleteQuestionsDialogOpen, resetDialogOpen } = this.state;
 
     const onLogoutButton = () =>
-      this.setState({logoutDialogOpen: true, resetDialogOpen});
+      this.setState({ ...this.state, logoutDialogOpen: true });
+    const onDeleteQuestionsButton = () =>
+      this.setState({ ...this.state, deleteQuestionsDialogOpen: true });
     const onResetButton = () =>
-      this.setState({logoutDialogOpen, resetDialogOpen: true});
+      this.setState({ ...this.state, resetDialogOpen: true });
 
     const onLogoutDialogClose = confirm => () => {
-      this.setState({logoutDialogOpen: false, resetDialogOpen});
+      this.setState({...this.state, logoutDialogOpen: false });
       if (confirm) onLogout();
     };
+    const onDeleteQuestionsDialogClose = confirm => () => {
+      this.setState({ ...this.state, deleteQuestionsDialogOpen: false });
+      if (confirm) onDeleteQuestions()
+    };
     const onResetDialogClose = confirm => () => {
-      this.setState({logoutDialogOpen, resetDialogOpen: false});
+      this.setState({ ...this.state, resetDialogOpen: false });
       if (confirm) onReset();
     };
 
@@ -59,7 +67,19 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
           <Tooltip title="Log out of Twitch">
             <span>
               <Button raised color="accent" onClick={onLogoutButton}>
+                <InlineIcon>twitch</InlineIcon>
                 <InlineIcon>logout-variant</InlineIcon>
+              </Button>
+            </span>
+          </Tooltip>
+
+          <Space>8</Space>
+
+          <Tooltip title="Delete all question data">
+            <span>
+              <Button raised color="accent" onClick={onDeleteQuestionsButton}>
+                <InlineIcon>comment-question-outline</InlineIcon>
+                <InlineIcon>delete-sweep</InlineIcon>
               </Button>
             </span>
           </Tooltip>
@@ -69,6 +89,7 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
           <Tooltip title="Clear all settings">
             <span>
               <Button raised color="accent" onClick={onResetButton}>
+                <InlineIcon>settings</InlineIcon>
                 <InlineIcon>delete-sweep</InlineIcon>
               </Button>
             </span>
@@ -81,6 +102,14 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
           open={logoutDialogOpen}
           handleClose={onLogoutDialogClose}
         />
+
+        <Dialog
+          title="Delete all question data"
+          content={DIALOG_CONTENT}
+          open={deleteQuestionsDialogOpen}
+          handleClose={onDeleteQuestionsDialogClose}
+        />
+
         <Dialog
           title="Reset all settings?"
           content={DIALOG_CONTENT}
