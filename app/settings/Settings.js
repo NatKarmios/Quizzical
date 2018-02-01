@@ -36,7 +36,7 @@ const logOutOfTwitch = async () => {
     }
   });
   await saveSettings();
-  restart()
+  restart();
 };
 
 const resetToDefaultSettings = async () => {
