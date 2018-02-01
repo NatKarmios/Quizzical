@@ -46,7 +46,7 @@ export const getQuestionByID: number => Promise<QuestionType> =
 export const getQuestionCount: () => Promise<number> =
   async () => (await getDB().get(GET_QUESTION_COUNT))['COUNT(*)'];
 
-export const getQuestionList =
+export const getQuestionList: () => Promise<Array<QuestionType>> =
   async (page: number, numQuestions: number = 10) =>
     (await getDB().all(
       GET_QUESTION_SELECTION, [numQuestions, page*numQuestions]
