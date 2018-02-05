@@ -13,6 +13,10 @@ const DEFAULT_SETTINGS = {
   },
   chatMessages: {
     joinMessage: 'Quizzical initialized!'
+  },
+  misc: {
+    pointName: 'point',
+    pointsName: 'points'
   }
 };
 
@@ -29,37 +33,33 @@ type SettingKeyType = LoginSettingKeyType;
 
 // </editor-fold>
 
-
-let settings = cloneObject(DEFAULT_SETTINGS);
-
-
-const checkLoaded = () => {
-  if (!settingsAreLoaded) throw new Error('Settings haven\'t been loaded yet!');
-};
-
-export const mergeOntoSettings = loaded => {
+export const mergeOntoSettings = (settings, loaded) => {
+  const newSettings = cloneObject(settings);
   const processCategory = category => {
     const processSetting = (settingKey) => {
       const loadedSetting = loaded[category][settingKey];
       if (loadedSetting !== undefined) {
-        settings[category][settingKey] = loadedSetting;
+        newSettings[category][settingKey] = loadedSetting;
       }
     };
 
     if (loaded[category] !== null && typeof loaded[category] === 'object') {
       // Iterate through category settings
-      Object.keys(settings[category]).forEach(processSetting);
+      Object.keys(newSettings[category]).forEach(processSetting);
     }
   };
 
   // Iterate through setting categories
   Object.keys(settings).forEach(processCategory);
+
+  return newSettings;
 };
 
 export const resetSettings = () => {
   const login = settings.login;
-  settings = cloneObject(DEFAULT_SETTINGS);
-  settings.login = login;
+  const newSettings = cloneObject(DEFAULT_SETTINGS);
+  newSettings.login = login;
+  return newSettings;
 };
 
 export const loadSettings = async () => {
@@ -81,28 +81,24 @@ export const loadSettings = async () => {
     console.log('Failed to read settings file:');
     console.log(e1);
   }
-  mergeOntoSettings(loadedSettings);
-  settingsAreLoaded = true;
-  console.log('Settings loaded successfully.');
+  return mergeOntoSettings(DEFAULT_SETTINGS, loadedSettings);
 };
 
-export const saveSettings = async () => {
-  checkLoaded();
+export const saveSettings = async settings => {
   await writeFile(SETTINGS_FILE_PATH, JSON.stringify(settings, null, '    '));
 };
 
 // <editor-fold desc="Get / Set">
 
-export const setSetting = async (category, settingKey, newVal, save = true) => {
-  checkLoaded();
+export const setSetting = async (settings, category, settingKey, newVal) => {
+  const newSettings = cloneObject(settings);
   try {
-    settings[category][settingKey] = newVal;
-    if (save) await saveSettings();
+    newSettings[category][settingKey] = newVal;
   } catch (e) { if (e !== undefined && e !== null) console.error(e); }
+  return newSettings;
 };
 
-export const getSetting = (category, settingKey) => {
-  checkLoaded();
+export const getSetting = (settings, category, settingKey) => {
   if (settings[category] !== null && settings[category] !== undefined)
     return settings[category][settingKey];
   return null;

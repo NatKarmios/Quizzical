@@ -25,7 +25,7 @@ const OptionListItem = ({ theme, subtitle, changed, resettable, onUndoButton, on
         <MDIcon color={changed ? theme.palette.primary[500] : 'rgba(0, 0, 0, 0.1)' }>alert-circle-outline</MDIcon>
       </Icon>
     </ListItemIcon>
-    <ListItemText inset primary={children} secondary={subtitle} />
+    <ListItemText inset primary={children} secondary={subtitle} style={{ marginRight: '60px' }} />
     <ListItemSecondaryAction>
       <SecondaryActionButton
         tooltip="Undo changes"

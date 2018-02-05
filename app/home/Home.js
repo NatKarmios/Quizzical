@@ -5,6 +5,7 @@ import Grid from 'material-ui/Grid';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/Typography';
 import QuestionList from './questionList/QuestionList';
+import QuestionDisplay from './questionDisplay/QuestionDisplay';
 
 const Home = () => (
   <div style={{ margin: '20px' }}>
@@ -19,13 +20,13 @@ const Home = () => (
     <br/>
     <Grid container>
       <Grid item xs={12} sm={6}>
-        <Paper>
-          <QuestionList/>
+        <Paper style={{ padding: '20px' }}>
+          <QuestionDisplay/>
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Paper style={{ padding: '20px' }}>
-          <Typography>[Settings]</Typography>
+        <Paper>
+          <QuestionList/>
         </Paper>
       </Grid>
     </Grid>

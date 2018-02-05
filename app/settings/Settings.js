@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Paper from 'material-ui/Paper';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
-import Typography from 'material-ui/es/Typography/Typography';
+import Typography from 'material-ui/Typography';
 
 import * as SettingsActions from './settingsActions';
 import ControlButtons from './SettingsControlButtons'
@@ -52,7 +52,9 @@ const resetToDefaultSettings = async () => {
 };
 
 
-const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings }) => {
+const Settings = ({
+  settings, expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings
+}) => {
   const unsavedSettings = checkIfUnsavedChanges(tempSettings);
 
   return (
@@ -72,6 +74,7 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
       <br/>
 
       <Panels
+        settings={settings}
         expanded={expanded}
         tempSettings={tempSettings}
         expandPanel={expandPanel}
@@ -85,6 +88,7 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
 
 function mapStateToProps(state) {
   return {
+    settings: state.global.settings,
     expanded: state.settings.expanded,
     tempSettings: state.settings.tempSettings
   }

@@ -4,6 +4,9 @@ import { remote, BrowserWindow } from 'electron';
 
 const { app } = remote;
 
+const NATURAL_NUMBER = RegExp('^([1-9]\\d*)?$');
+const INTEGER = RegExp('^-?\\d*$');
+
 
 export const restart: () => void =
   () => {
@@ -46,3 +49,9 @@ export const decodeHtml = html => {
   txt.innerHTML = html;
   return txt.value;
 };
+
+export const isNaturalNumber = str =>
+  NATURAL_NUMBER.test(str);
+
+export const isInteger = str =>
+  INTEGER.test(str);
