@@ -16,8 +16,8 @@ import * as QuestionListActions from './questionListActions';
 import CenteredListItem from "../../utils/components/CenteredListItem";
 
 
-const QuestionListItem = ({ question, enabled }) => (
-  <ListItem button disabled={!enabled}>
+const QuestionListItem = ({ question, enabled, onClick }) => (
+  <ListItem button onClick={onClick} disabled={!enabled}>
     <ListItemText
       primary={<Typography type="body1">{question.content}</Typography>}
     />
@@ -35,7 +35,7 @@ const QuestionListItem = ({ question, enabled }) => (
 
 const QuestionList = ({
   initialLoad, loading, questionCount, currentPage,
-  loadedQuestions, loadQuestions, addQuestion, importQuestions
+  loadedQuestions, loadQuestions, addQuestion, importQuestions, selectQuestion
 }) => {
 
   if (!initialLoad) loadQuestions(0);
@@ -49,7 +49,12 @@ const QuestionList = ({
     </CenteredListItem>;
   else listContent =
     loadedQuestions.map(question => (
-      <QuestionListItem question={question} enabled={!loading} key={`q${question['questionID']}`}/>
+      <QuestionListItem
+        question={question}
+        enabled={!loading}
+        key={`q${question['questionID']}`}
+        onClick={() => selectQuestion(question)}
+      />
     ));
 
   return (
