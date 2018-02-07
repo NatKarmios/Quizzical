@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import Switch from 'material-ui/Switch';
 import { FormControlLabel } from 'material-ui/Form';
 import { InputAdornment } from 'material-ui/Input';
+import Divider from 'material-ui/Divider';
 
 import { getSetting } from '../../_modules/savedSettings';
 
@@ -83,7 +84,11 @@ const QuestionDisplay = ({
           />
         </Grid>
       </Grid>
-      <br/><br/>
+
+      <br/>
+      <Divider/>
+      <br/>
+
       <div style={{ width: '100%', textAlign: 'center' }}>
         {
           question === null ?
