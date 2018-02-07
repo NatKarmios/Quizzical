@@ -5,6 +5,7 @@ import { isInteger, isNaturalNumber } from '../../utils/helperFuncs';
 import {
   CHANGE_QUESTION, CHANGE_DURATION, CHANGE_PRIZE, CHANGE_MULTIPLE_WINNERS, CHANGE_END_EARLY
 } from './questionDisplayActions';
+import { SELECT_QUESTION } from '../questionList/questionListActions';
 
 const defaultState = {
   question: null,
@@ -33,6 +34,8 @@ export default (
       return { ...state, multipleWinners: payload.value };
     case CHANGE_END_EARLY:
       return { ...state, endEarly: payload.value };
+    case SELECT_QUESTION:
+      return { ...state, question: payload.question };
     default:
       break;
   }

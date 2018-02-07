@@ -12,6 +12,7 @@ import { InputAdornment } from 'material-ui/Input';
 
 import { getSetting } from '../../_modules/savedSettings';
 
+import QuestionDetails from './QuestionDisplayQuestionDetails';
 import * as QuestionDisplayActions from './questionDisplayActions';
 
 
@@ -82,6 +83,14 @@ const QuestionDisplay = ({
           />
         </Grid>
       </Grid>
+      <br/><br/>
+      <div style={{ width: '100%', textAlign: 'center' }}>
+        {
+          question === null ?
+            <Typography><i>No question selected.</i></Typography> :
+            <QuestionDetails question={question}/>
+        }
+      </div>
     </div>
   )
 };
