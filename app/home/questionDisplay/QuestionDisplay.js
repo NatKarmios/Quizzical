@@ -59,7 +59,7 @@ const QuestionDisplay = ({
       </Grid>
       <br/>
       <Grid container>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} style={{ textAlign: 'center' }}>
           <FormControlLabel
             control={
               <Switch
@@ -70,7 +70,7 @@ const QuestionDisplay = ({
             label="Allow multiple winners"
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} style={{ textAlign: 'center' }}>
           <FormControlLabel
             control={
               <Switch
