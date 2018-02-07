@@ -12,6 +12,7 @@ import { InputAdornment } from 'material-ui/Input';
 
 import { getSetting } from '../../_modules/savedSettings';
 
+import QuestionDetails from './QuestionDisplayQuestionDetails';
 import * as QuestionDisplayActions from './questionDisplayActions';
 
 
@@ -87,7 +88,7 @@ const QuestionDisplay = ({
         {
           question === null ?
             <Typography><i>No question selected.</i></Typography> :
-            null
+            <QuestionDetails question={question}/>
         }
       </div>
     </div>
