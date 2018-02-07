@@ -82,6 +82,14 @@ const QuestionDisplay = ({
           />
         </Grid>
       </Grid>
+      <br/><br/>
+      <div style={{ width: '100%', textAlign: 'center' }}>
+        {
+          question === null ?
+            <Typography><i>No question selected.</i></Typography> :
+            null
+        }
+      </div>
     </div>
   )
 };
