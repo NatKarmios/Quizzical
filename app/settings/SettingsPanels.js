@@ -3,7 +3,7 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 
 import { OptionList, OptionListItem } from './option';
-import {getDefaultSetting, getSetting} from "../_modules/savedSettings";
+import { getDefaultSetting, getSetting } from '../_modules/savedSettings';
 
 
 type OptionType = {
@@ -21,8 +21,8 @@ type OptionCategoryType = {
 };
 
 
-const basicTextFieldProducer = (id, value, label, onChange) => (
-  <TextField id={id} label={label} value={value} onChange={onChange}/>
+const basicTextFieldProducer = (id, value, label, onChange, fullWidth=true) => (
+  <TextField id={id} label={label} value={value} onChange={onChange} fullWidth={fullWidth}/>
 );
 
 
@@ -50,16 +50,35 @@ const OPTIONS = [
         optionSubtitle: 'This is sent to chat once the bot connects.'
       }
     ]
+  },
+  {
+    settingCategory: 'misc',
+    title: 'Miscellaneous',
+    subtitle: 'Everything else here.',
+    options: [
+      {
+        settingLabel: 'pointName',
+        componentProducer: basicTextFieldProducer,
+        label: 'Point name',
+        optionSubtitle: 'The name of one unit of your stream points/currency',
+      },
+      {
+        settingLabel: 'pointsName',
+        componentProducer: basicTextFieldProducer,
+        label: 'Points name (plural)',
+        optionSubtitle: 'The plural name of your stream points/currency (i.e. more than one)'
+      }
+    ]
   }
 ];
 
 
-const SettingsPanels = ({ expanded, tempSettings, expandPanel, onTempSettingChange }) => {
+const SettingsPanels = ({ settings, expanded, tempSettings, expandPanel, onTempSettingChange }) => {
   const handleExpansion = (newPanel) => () => { expandPanel(expanded, newPanel); };
 
   const optionCategoryToComponent = ({ title, subtitle, options, settingCategory }: OptionCategoryType, i) => {
     const optionToComponent = ({ componentProducer, label, settingLabel, optionSubtitle }: OptionType) => {
-      const savedSettingValue = getSetting(settingCategory, settingLabel);
+      const savedSettingValue = getSetting(settings, settingCategory, settingLabel);
       let tempSettingValue = null;
       if (tempSettings[settingCategory] !== null &&
           tempSettings[settingCategory] !== undefined &&
@@ -73,20 +92,22 @@ const SettingsPanels = ({ expanded, tempSettings, expandPanel, onTempSettingChan
       const defaultSetting = getDefaultSetting(settingCategory, settingLabel);
       const isResettable = value !== defaultSetting;
 
+      const updateTempSetting = value => onTempSettingChange(settings, settingCategory, settingLabel, value);
+
       return (
         <OptionListItem
           subtitle={optionSubtitle}
           key={`${settingCategory}_${settingLabel}`}
           changed={changed}
-          onUndoButton={() => onTempSettingChange(settingCategory, settingLabel, null)}
+          onUndoButton={() => updateTempSetting(null)}
           resettable={isResettable}
-          onResetButton={() => onTempSettingChange(settingCategory, settingLabel, defaultSetting)}
+          onResetButton={() => updateTempSetting(defaultSetting)}
         >
           {componentProducer(
             `${settingCategory}_${settingLabel}`,
             value,
             label,
-            event => onTempSettingChange(settingCategory, settingLabel, event.target.value))}
+            event => updateTempSetting(event.target.value))}
         </OptionListItem>
       );
     };

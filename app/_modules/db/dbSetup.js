@@ -4,15 +4,6 @@ import { sep } from 'path';
 import { getDataDir } from '../../utils/helperFuncs';
 import { createTable } from './dbQueries';
 
-
-export type QuestionType = {
-  id: number,
-  content: string,
-  correctAnswer: string,
-  incorrectAnswers: Array<string>,
-  external: boolean
-}
-
 const DB_FILENAME = 'db.sqlite';
 const DB_PATH = `${getDataDir()}${sep}${DB_FILENAME}`;
 

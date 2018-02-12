@@ -5,8 +5,8 @@ import Root from './root/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import { testSavedTokens } from './global/actions';
-import { loadSettings } from './_modules/savedSettings';
 import { setUpDB } from './_modules/db/dbSetup';
+import { loadSettings } from './global/actions/settingsActions';
 
 const store = configureStore();
 
@@ -37,7 +37,7 @@ const setup = async () => {
     loadSettings()
   ]);
   ready();
-  store.dispatch(testSavedTokens());
+  store.dispatch(loadSettings());
 };
 
 setup().catch();

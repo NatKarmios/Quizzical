@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Paper from 'material-ui/Paper';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
-import Typography from 'material-ui/es/Typography/Typography';
+import Typography from 'material-ui/Typography';
 
 import * as SettingsActions from './settingsActions';
 import ControlButtons from './SettingsControlButtons'
 import Panels from './SettingsPanels';
 import DangerZone from './SettingsDangerZone';
 import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings';
+import { deleteAllQuestions } from '../_modules/db/dbQueries';
 import { restart } from '../utils/helperFuncs';
 
 
@@ -36,7 +37,12 @@ const logOutOfTwitch = async () => {
     }
   });
   await saveSettings();
-  restart()
+  restart();
+};
+
+const deleteQuestions = async () => {
+  await deleteAllQuestions();
+  restart();
 };
 
 const resetToDefaultSettings = async () => {
@@ -46,7 +52,9 @@ const resetToDefaultSettings = async () => {
 };
 
 
-const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings }) => {
+const Settings = ({
+  settings, expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings
+}) => {
   const unsavedSettings = checkIfUnsavedChanges(tempSettings);
 
   return (
@@ -66,19 +74,21 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
       <br/>
 
       <Panels
+        settings={settings}
         expanded={expanded}
         tempSettings={tempSettings}
         expandPanel={expandPanel}
         onTempSettingChange={updateTempSetting}
       />
 
-      <DangerZone onLogout={logOutOfTwitch} onReset={resetToDefaultSettings}/>
+      <DangerZone onLogout={logOutOfTwitch} onDeleteQuestions={deleteQuestions} onReset={resetToDefaultSettings}/>
     </div>
   );
 };
 
 function mapStateToProps(state) {
   return {
+    settings: state.global.settings,
     expanded: state.settings.expanded,
     tempSettings: state.settings.tempSettings
   }

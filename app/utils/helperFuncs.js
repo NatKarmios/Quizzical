@@ -1,8 +1,11 @@
 import fs from 'fs';
-import request from 'request';
+import rp from 'request-promise-native';
 import { remote, BrowserWindow } from 'electron';
 
 const { app } = remote;
+
+const NATURAL_NUMBER = RegExp('^([1-9]\\d*)?$');
+const INTEGER = RegExp('^-?\\d*$');
 
 
 export const restart: () => void =
@@ -39,11 +42,16 @@ export const fileExists: string => Promise<boolean> =
     err => resolve((err === null || err === undefined))
   ));
 
-export const httpGet = (options) => {
-  return new Promise((resolve, reject) => {
-    request.get(options, (error, response, body) => {
-        if (error !== undefined && error !== null) reject(error);
-        else resolve(body);
-      })
-  })
+export const httpGet = async options => rp({ method: 'GET', ...options });
+
+export const decodeHtml = html => {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
 };
+
+export const isNaturalNumber = str =>
+  NATURAL_NUMBER.test(str);
+
+export const isInteger = str =>
+  INTEGER.test(str);
