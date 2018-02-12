@@ -1,11 +1,12 @@
 // @flow
 import React from 'react';
 import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
 
 import { InlineIcon } from '../../utils/components';
 
 
-const QuestionDisplayQuestionDetails = ({ question }) => (
+const QuestionDisplayQuestionDetails = ({ question, onDeleteButton }) => (
   <div style={{ width: '100%' }}>
     <Typography type="subheading" style={{ marginBottom: '5px' }}><i>{question.content}</i></Typography>
     <div style={{ textAlign: 'left', display: 'inline-block' }}>
@@ -24,6 +25,11 @@ const QuestionDisplayQuestionDetails = ({ question }) => (
         )
       }
     </div>
+    <br/><br/>
+    <Button dense color="accent" onClick={onDeleteButton}>
+      <InlineIcon padded>delete</InlineIcon>
+      Delete Question
+    </Button>
   </div>
 );
 

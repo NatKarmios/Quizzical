@@ -11,7 +11,7 @@ const loadQuestionsLogic = createLogic({
   process: async ({ action }, dispatch, done) => {
     const targetPage = action.payload['page'];
     const questionCount = await getQuestionCount();
-    const maxPage = Math.floor(Math.max(questionCount, 1)/10);
+    const maxPage = Math.floor(Math.max(questionCount-1, 0)/10);
     const page = Math.min(targetPage, maxPage);
     const loadedQuestions = await getQuestionList(page);
 
