@@ -19,10 +19,11 @@ const INSERT_QUESTION =
   'INSERT INTO Questions(content, correctAnswer, incorrectAnswers, external) ' +
   'VALUES (?, ?, ?, ?)';
 const GET_ALL_QUESTIONS = 'SELECT * FROM Questions';
-const GET_QUESTION_BY_ID = 'SELECT * FROM Questions WHERE id = ?';
+const GET_QUESTION_BY_ID = 'SELECT * FROM Questions WHERE questionID = ?';
 const GET_QUESTION_COUNT = 'SELECT COUNT(*) FROM Questions';
 const GET_QUESTION_SELECTION = 'SELECT * FROM Questions LIMIT ? OFFSET ?';
 const DELETE_ALL_QUESTIONS = 'DELETE FROM Questions';
+const DELETE_QUESTION_BY_ID = 'DELETE FROM Questions WHERE questionID = ?';
 
 const parseRawQuestion: mixed => QuestionType =
     rawQuestion => ({
@@ -55,3 +56,6 @@ export const getQuestionList: () => Promise<Array<QuestionType>> =
 
 export const deleteAllQuestions: () => Promise<void> =
   () => getDB().run(DELETE_ALL_QUESTIONS);
+
+export const deleteQuestionByID: number => Promise<void> =
+  id => getDB().run(DELETE_QUESTION_BY_ID, [id]);
