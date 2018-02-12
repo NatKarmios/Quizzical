@@ -5,7 +5,7 @@ import { isInteger, isNaturalNumber } from '../../utils/helperFuncs';
 import {
   CHANGE_QUESTION, CHANGE_DURATION, CHANGE_PRIZE, CHANGE_MULTIPLE_WINNERS, CHANGE_END_EARLY, CHANGE_DELETE_DIALOG_OPEN
 } from './questionDisplayActions';
-import { SELECT_QUESTION } from '../questionList/questionListActions';
+import { SELECT_QUESTION, QUESTIONS_LOADED } from '../questionList/questionListActions';
 
 const defaultState = {
   question: null,
@@ -13,7 +13,8 @@ const defaultState = {
   duration: '',
   multipleWinners: false,
   endEarly: false,
-  deleteDialogOpen: false
+  deleteDialogOpen: false,
+  busy: false
 };
 
 export default (
@@ -39,6 +40,8 @@ export default (
       return { ...state, question: payload.question };
     case CHANGE_DELETE_DIALOG_OPEN:
       return { ...state, deleteDialogOpen: payload.open };
+    case QUESTIONS_LOADED:
+      return { ...state, busy: false };
     default:
       break;
   }

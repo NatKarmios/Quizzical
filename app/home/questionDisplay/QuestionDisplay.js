@@ -20,7 +20,7 @@ import { InlineIcon, Space, Dialog } from '../../utils/components';
 
 
 const QuestionDisplay = ({
-  settings, question, prize, duration, multipleWinners, endEarly,
+  settings, question, prize, duration, multipleWinners, endEarly, busy,
   changeQuestion, changePrize, changeDuration, changeMultipleWinners, changeEndEarly,
   deleteQuestion, openDeleteDialog, closeDeleteDialog, deleteDialogOpen,
 }) => {
@@ -100,13 +100,13 @@ const QuestionDisplay = ({
         {
           question === null ?
             <Typography><i>No question selected.</i></Typography> :
-            <QuestionDetails question={question} onDeleteButton={openDeleteDialog}/>
+            <QuestionDetails question={question} onDeleteButton={openDeleteDialog} deleteButtonEnabled={!busy}/>
         }
       </div>
       <br/>
       <Divider/>
       <br/>
-      <Button raised color="primary" style={{ width: '100%'}}>
+      <Button raised color="primary" style={{ width: '100%'}} disabled={busy}>
         Go!
         <Space>1</Space>
         <InlineIcon>arrow-right-thick</InlineIcon>
