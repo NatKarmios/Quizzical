@@ -4,12 +4,13 @@ import Tooltip from 'material-ui/Tooltip';
 import Button from 'material-ui/Button';
 
 import { MDIcon, Space, CenteredListItem } from '../../utils/components';
+import { isNaturalNumber } from '../../utils/helperFuncs';
 
 import AddDialog from './dialog/QuestionListAddDialog';
 import ImportDialog from './dialog/QuestionListImportDialog';
 
 
-const IS_NATURAL_NUMBER = RegExp('^\\d*$');
+
 
 const ADD_DIALOG_DEFAULT_STATE = {
   open: false,
@@ -72,7 +73,7 @@ class QuestionListAddButtons extends React.Component {
       onAmountChange: e => {
         const amount = e.target.value;
         if (
-          IS_NATURAL_NUMBER.test(amount)
+          isNaturalNumber(amount)
           && (+amount) <= 50 && (+amount) > 0
         ) this.setState({
           addDialog,

@@ -4,6 +4,7 @@ export const LOAD_QUESTIONS = 'LOAD_QUESTIONS';
 export const QUESTIONS_LOADED = 'QUESTIONS_LOADED';
 export const ADD_QUESTION = 'ADD_QUESTION';
 export const IMPORT_QUESTIONS = 'IMPORT_QUESTIONS';
+export const SELECT_QUESTION = 'SELECT_QUESTION';
 
 export const loadQuestions = page => ({
   type: LOAD_QUESTIONS,
@@ -23,4 +24,10 @@ export const addQuestion = (question, answer, incorrectAnswers) => ({
 export const importQuestions = (amount, difficulty) => ({
   type: IMPORT_QUESTIONS,
   payload: { amount, difficulty }
+});
+
+
+export const selectQuestion = question => ({
+  type: SELECT_QUESTION,
+  payload: { question }
 });
