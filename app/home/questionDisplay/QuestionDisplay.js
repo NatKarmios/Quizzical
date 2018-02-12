@@ -10,20 +10,27 @@ import Switch from 'material-ui/Switch';
 import { FormControlLabel } from 'material-ui/Form';
 import { InputAdornment } from 'material-ui/Input';
 import Divider from 'material-ui/Divider';
+import Button from 'material-ui/Button';
 
 import { getSetting } from '../../_modules/savedSettings';
 
 import QuestionDetails from './QuestionDisplayQuestionDetails';
 import * as QuestionDisplayActions from './questionDisplayActions';
+import { InlineIcon, Space, Dialog } from '../../utils/components';
 
 
 const QuestionDisplay = ({
   settings, question, prize, duration, multipleWinners, endEarly,
-  changeQuestion, changePrize, changeDuration, changeMultipleWinners, changeEndEarly
+  changeQuestion, changePrize, changeDuration, changeMultipleWinners, changeEndEarly,
+  deleteQuestion, openDeleteDialog, closeDeleteDialog, deleteDialogOpen,
 }) => {
   const callWithInputValue = handler => e => handler(e.target.value);
   const onPrizeChange = callWithInputValue(changePrize);
   const onDurationChange = callWithInputValue(changeDuration);
+  const onDeleteDialogClose = confirm => () => {
+    if (confirm) deleteQuestion(question.questionID);
+    closeDeleteDialog();
+  };
 
   return (
     <div>
@@ -93,9 +100,30 @@ const QuestionDisplay = ({
         {
           question === null ?
             <Typography><i>No question selected.</i></Typography> :
-            <QuestionDetails question={question}/>
+            <QuestionDetails question={question} onDeleteButton={openDeleteDialog}/>
         }
       </div>
+      <br/>
+      <Divider/>
+      <br/>
+      <Button raised color="primary" style={{ width: '100%'}}>
+        Go!
+        <Space>1</Space>
+        <InlineIcon>arrow-right-thick</InlineIcon>
+      </Button>
+
+      <Dialog
+        title="Delete question?"
+        content={
+          <span>
+            This action cannot be undone.
+            <br/>
+            Do you wish to continue?
+          </span>
+        }
+        open={deleteDialogOpen}
+        handleClose={onDeleteDialogClose}
+      />
     </div>
   )
 };

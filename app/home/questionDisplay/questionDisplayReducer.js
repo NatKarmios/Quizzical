@@ -3,7 +3,7 @@
 import { isInteger, isNaturalNumber } from '../../utils/helperFuncs';
 
 import {
-  CHANGE_QUESTION, CHANGE_DURATION, CHANGE_PRIZE, CHANGE_MULTIPLE_WINNERS, CHANGE_END_EARLY
+  CHANGE_QUESTION, CHANGE_DURATION, CHANGE_PRIZE, CHANGE_MULTIPLE_WINNERS, CHANGE_END_EARLY, CHANGE_DELETE_DIALOG_OPEN
 } from './questionDisplayActions';
 import { SELECT_QUESTION } from '../questionList/questionListActions';
 
@@ -12,7 +12,8 @@ const defaultState = {
   prize: '',
   duration: '',
   multipleWinners: false,
-  endEarly: false
+  endEarly: false,
+  deleteDialogOpen: false
 };
 
 export default (
@@ -36,6 +37,8 @@ export default (
       return { ...state, endEarly: payload.value };
     case SELECT_QUESTION:
       return { ...state, question: payload.question };
+    case CHANGE_DELETE_DIALOG_OPEN:
+      return { ...state, deleteDialogOpen: payload.open };
     default:
       break;
   }
