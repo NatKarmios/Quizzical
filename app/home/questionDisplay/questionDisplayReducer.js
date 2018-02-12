@@ -3,7 +3,8 @@
 import { isInteger, isNaturalNumber } from '../../utils/helperFuncs';
 
 import {
-  CHANGE_QUESTION, CHANGE_DURATION, CHANGE_PRIZE, CHANGE_MULTIPLE_WINNERS, CHANGE_END_EARLY, CHANGE_DELETE_DIALOG_OPEN
+  CHANGE_QUESTION, CHANGE_DURATION, CHANGE_PRIZE, CHANGE_MULTIPLE_WINNERS, CHANGE_END_EARLY, CHANGE_DELETE_DIALOG_OPEN,
+  DELETE_QUESTION
 } from './questionDisplayActions';
 import { SELECT_QUESTION, QUESTIONS_LOADED } from '../questionList/questionListActions';
 
@@ -40,6 +41,8 @@ export default (
       return { ...state, question: payload.question };
     case CHANGE_DELETE_DIALOG_OPEN:
       return { ...state, deleteDialogOpen: payload.open };
+    case DELETE_QUESTION:
+      return { ...state, busy: true, question: null };
     case QUESTIONS_LOADED:
       return { ...state, busy: false };
     default:
