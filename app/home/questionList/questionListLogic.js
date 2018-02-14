@@ -1,6 +1,8 @@
 // @flow
 import { createLogic } from 'redux-logic';
 
+import { notify } from '../../utils/helperFuncs';
+
 import { getQuestionCount, getQuestionList, insertQuestion } from '../../_modules/db/dbQueries';
 
 import { ADD_QUESTION, LOAD_QUESTIONS, IMPORT_QUESTIONS, questionsLoaded, loadQuestions } from './questionListActions';
@@ -27,7 +29,9 @@ const addQuestionLogic = createLogic({
     const { question, answer, incorrectAnswers } = payload;
     try {
       await insertQuestion(question, answer, incorrectAnswers, false);
+      notify('Question saved successfully.', 'success');
     } catch (e) {
+      notify('Failed to add question - it may already exist!', 'error');
       console.error("Failed to insert to SQLite DB!", e);
     }
     dispatch(loadQuestions(getState().questionList.currentPage));
