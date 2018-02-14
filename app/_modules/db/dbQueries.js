@@ -13,7 +13,7 @@ export type QuestionType = {
 
 const CREATE_QUESTIONS_TABLE =
   'CREATE TABLE IF NOT EXISTS Questions ' +
-  '(questionID INTEGER PRIMARY KEY ASC, content TEXT, correctAnswer TEXT, ' +
+  '(questionID INTEGER PRIMARY KEY ASC, content TEXT UNIQUE, correctAnswer TEXT, ' +
   'incorrectAnswers TEXT, external BOOLEAN);';
 const INSERT_QUESTION =
   'INSERT INTO Questions(content, correctAnswer, incorrectAnswers, external) ' +
