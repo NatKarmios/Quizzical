@@ -19,8 +19,16 @@ export const retrieveExternalQuestions = async (amount, difficulty='medium') => 
 };
 
 export const addExternalQuestions = async (amount, difficulty) => {
+  let missed = 0;
   const questions = await retrieveExternalQuestions(amount, difficulty);
-  await Promise.all(questions.map(question => insertQuestion(
-      question.content, question.correctAnswer, question.incorrectAnswers, true
-  )));
+
+  await Promise.all(questions.map(async question => {
+    try {
+      await insertQuestion(question.content, question.correctAnswer, question.incorrectAnswers, true);
+    } catch (e) {
+      missed++;
+    }
+  }));
+
+  return missed;
 };
