@@ -1,6 +1,7 @@
 import fs from 'fs';
 import rp from 'request-promise-native';
 import { remote, BrowserWindow } from 'electron';
+import Noty from 'noty';
 
 const { app } = remote;
 
@@ -55,3 +56,10 @@ export const isNaturalNumber = str =>
 
 export const isInteger = str =>
   INTEGER.test(str);
+
+export const notify = (text, type='info', timeout=3000) =>
+  new Noty({
+    type, text, timeout,
+    layout: 'bottomRight',
+    progressBar: true,
+  }).show();
