@@ -25,7 +25,11 @@ const addQuestionLogic = createLogic({
   process: async ({ action, getState }, dispatch, done) => {
     const { payload } = action;
     const { question, answer, incorrectAnswers } = payload;
-    await insertQuestion(question, answer, incorrectAnswers, false);
+    try {
+      await insertQuestion(question, answer, incorrectAnswers, false);
+    } catch (e) {
+      console.error("Failed to insert to SQLite DB!", e);
+    }
     dispatch(loadQuestions(getState().questionList.currentPage));
     done();
   }
