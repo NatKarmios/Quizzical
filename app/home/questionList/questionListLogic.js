@@ -8,6 +8,10 @@ import { getQuestionCount, getQuestionList, insertQuestion } from '../../_module
 import { ADD_QUESTION, LOAD_QUESTIONS, IMPORT_QUESTIONS, questionsLoaded, loadQuestions } from './questionListActions';
 import {addExternalQuestions} from "../../_modules/externalQuestions";
 
+
+const IMPORT_QUESTIONS_MAX_RETRIES = 5;
+
+
 const loadQuestionsLogic = createLogic({
   type: LOAD_QUESTIONS,
   process: async ({ action }, dispatch, done) => {
@@ -44,7 +48,34 @@ const importQuestionsLogic = createLogic({
   process: async ({ action, getState }, dispatch, done) => {
     const { payload } = action;
     const { amount, difficulty } = payload;
-    await addExternalQuestions(amount, difficulty);
+
+    let triesLeft = IMPORT_QUESTIONS_MAX_RETRIES;
+    let leftToAdd = amount;
+    while(triesLeft > 0 && leftToAdd > 0) {
+      if (triesLeft === IMPORT_QUESTIONS_MAX_RETRIES)
+        notify(`Importing ${leftToAdd} question${leftToAdd === 1 ? '' : 's'}...`);
+
+      leftToAdd = await addExternalQuestions(leftToAdd, difficulty);
+      triesLeft--;
+    }
+
+    const added = amount - leftToAdd;
+    if (leftToAdd === 0)
+      notify(
+        `Successfully imported ${added} question${added === 1 ? '' : 's'}`,
+        'success'
+      );
+    else if (added === 0)
+      notify(
+        'Failed to import any questions.',
+        'error'
+      );
+    else
+      notify(
+        `${added} question${leftToAdd === 1 ? '' : 's'} imported successfully; ${leftToAdd} couldn't be imported.`,
+        'warning'
+      );
+
     dispatch(loadQuestions(getState().questionList.currentPage));
     done();
   }
