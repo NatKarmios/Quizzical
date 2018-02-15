@@ -2,7 +2,7 @@
 
 import { combineReducers } from 'redux';
 
-import settings from './settingsReducer';
+import settings from './settings/settingsReducer';
 
 export default combineReducers({
   settings
