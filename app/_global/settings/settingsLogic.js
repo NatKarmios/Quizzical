@@ -2,11 +2,12 @@
 
 import { createLogic } from 'redux-logic';
 
-import {loadSettings, saveSettings} from '../../_modules/savedSettings';
+import { loadSettings, saveSettings } from '../../_modules/savedSettings';
+import { testSavedTokens } from '../login/loginActions';
+
 import {
   LOAD_SETTINGS, SETTINGS_LOADED, CHANGE_SETTINGS, settingsLoaded, settingsReady, settingsChanged
 } from './settingsActions';
-import { testSavedTokens } from '../actions';
 
 
 const loadSettingsLogic = createLogic({

@@ -1,6 +1,6 @@
 // @flow
-import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../_global/actions';
-// import type { ActionType } from '../global/actions';
+
+import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../_global/login/loginActions';
 
 export type NavbarStateType = {
   streamerLoggedIn: boolean,

@@ -1,4 +1,5 @@
 // @flow
+
 import React from 'react';
 import { Redirect } from 'react-router';
 import { bindActionCreators } from 'redux';

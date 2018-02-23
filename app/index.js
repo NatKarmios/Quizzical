@@ -2,11 +2,12 @@ import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Root from './root/Root';
+// noinspection ES6CheckImport
 import { configureStore, history } from './store/configureStore';
+
 import './app.global.scss';
-import { testSavedTokens } from './_global/actions';
 import { setUpDB } from './_modules/db/dbSetup';
-import { loadSettings } from './_global/actions';
+import { loadSettings } from './_global/settings/settingsActions';
 import { setStore as supplyStore } from './store';
 
 const store = configureStore();

@@ -2,7 +2,7 @@
 import { createLogic } from 'redux-logic';
 
 import { guiLogin, tokenLogin } from '../../_modules/twitch/login';
-import type { LoginDataType, AccountDetailsType } from '../../_modules/twitch/login';
+import type { LoginDataType } from '../../_modules/twitch/login';
 import { connect } from '../../_modules/twitch/chat';
 import { getSetting, setSetting } from '../../_modules/savedSettings';
 
@@ -13,7 +13,7 @@ import {
   streamerLoginStarted, botLoginStarted,
   streamerLoginCancelled, botLoginCancelled,
   streamerLoggedIn, botLoggedIn
-} from '../actions';
+} from '../login/loginActions';
 
 
 const accountMap = {

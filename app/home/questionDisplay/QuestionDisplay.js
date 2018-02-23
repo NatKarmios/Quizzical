@@ -13,7 +13,7 @@ import Divider from 'material-ui/Divider';
 import Button from 'material-ui/Button';
 
 import { getSetting } from '../../_modules/savedSettings';
-import { activeQuestionStart } from '../../_global/actions';
+import { activeQuestionStart } from '../../_global/activeQuestion/activeQuestionActions';
 
 import QuestionDetails from '../QuestionDetails';
 import * as QuestionDisplayActions from './questionDisplayActions';

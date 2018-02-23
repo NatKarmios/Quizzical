@@ -3,7 +3,7 @@ import {
   STREAMER_LOGIN_STARTED, BOT_LOGIN_STARTED,
   STREAMER_LOGIN_CANCELLED, BOT_LOGIN_CANCELLED,
   STREAMER_LOGGED_IN, BOT_LOGGED_IN
-} from '../_global/actions';
+} from '../_global/login/loginActions';
 
 export default function setup(state, action) {
   const { streamerLoginStage, botLoginStage } =
