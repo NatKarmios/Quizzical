@@ -4,52 +4,57 @@ import React from 'react';
 import style from './style.scss';
 
 import Avatar from 'material-ui/Avatar';
-import { VerticalSeparator } from '../utils/components';
-import { MDIcon } from "../utils/components";
-import vars, { AccountDataType } from '../_modules/vars';
+import Tooltip from 'material-ui/Tooltip';
+import { MDIcon, Space } from "../utils/components";
 
 
 type Props = {
   streamerLoggedIn: boolean,
-  botLoggedIn: boolean
+  botLoggedIn: boolean,
+  accountData: {
+    streamer: {},
+    bot: {}
+  }
 };
 
 const avatarStyles = {
   display: 'inline-block',
-  marginRight: '10px',
+  // marginRight: '10px',
   verticalAlign: 'middle'
 };
 
 const NotLoggedIn = ({ icon }) => (
-  <i className={style.userDisplay}>
-    <Avatar style={avatarStyles}>
-      <MDIcon style={{ marginLeft: '8px', marginTop: '5px' }}>{icon}</MDIcon>
-    </Avatar>
-    Not logged in
-  </i>
+  <span className={style.userDisplay}>
+    <Tooltip title={<i>Not logged in</i>}>
+      <Avatar style={avatarStyles}>
+        <MDIcon style={{ marginLeft: '8px', marginTop: '5px' }}>{icon}</MDIcon>
+      </Avatar>
+    </Tooltip>
+  </span>
 );
 
-const LoggedIn = ({ details }: { details: AccountDataType }) => (
-  <i className={style.userDisplay}>
-    <Avatar
-      style={avatarStyles}
-      alt={details.display}
-      src={details.avatar}
-    />
-    {details.display}
-  </i>
+const LoggedIn = ({ details }) => (
+  <span className={style.userDisplay}>
+    <Tooltip title={<i>{details.displayName}</i>}>
+      <Avatar
+        style={avatarStyles}
+        alt={details.displayName}
+        src={details.avatar}
+      />
+    </Tooltip>
+  </span>
 );
 
-const NavbarUsers = ({ streamerLoggedIn, botLoggedIn }: Props) => (
+const NavbarUsers = ({ streamerLoggedIn, botLoggedIn, accountData }: Props) => (
   <div className={style.users}>
     {!streamerLoggedIn ?
       <NotLoggedIn icon="account"/> :
-      <LoggedIn details={vars.accountData.streamer} />
+      <LoggedIn details={accountData.streamer} />
     }
-    <VerticalSeparator>{{ size: '30px', color: 'rgba(0, 0, 0, 0)' }}</VerticalSeparator>
+    <Space>4</Space>
     {!botLoggedIn ?
       <NotLoggedIn icon="robot"/> :
-      <LoggedIn details={vars.accountData.bot} />
+      <LoggedIn details={accountData.bot} />
     }
   </div>
 );

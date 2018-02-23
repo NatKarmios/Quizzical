@@ -10,9 +10,9 @@ export const expandPanel = (oldPanel, newPanel: number) => ({
   payload: { expanded: oldPanel === newPanel ? 0 : newPanel }
 });
 
-export const updateTempSetting = (category: string, label: string, value) => ({
+export const updateTempSetting = (settings, category: string, label: string, value, validator=()=>true) => ({
   type: TEMP_SETTING_UPDATE,
-  payload: { category, label, value }
+  payload: { settings, category, label, value, validator }
 });
 
 export const saveTempSettings = () => ({ type: SAVE_TEMP_SETTINGS });

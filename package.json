@@ -170,6 +170,7 @@
     "node-sass": "^4.5.3",
     "react-addons-test-utils": "^15.6.0",
     "react-test-renderer": "^15.6.1",
+    "redux-devtools-extension": "^2.13.2",
     "redux-logger": "^3.0.6",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.6",
@@ -191,8 +192,10 @@
     "electron-debug": "^1.2.0",
     "font-awesome": "^4.7.0",
     "history": "^4.6.3",
+    "immutable": "^3.8.2",
     "material-ui": "^1.0.0-beta.25",
     "mdi": "^2.1.19",
+    "noty": "^3.2.0-beta",
     "qs": "^6.5.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -204,7 +207,7 @@
     "redux": "^3.7.1",
     "redux-logic": "^0.12.3",
     "redux-thunk": "^2.2.0",
-    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
     "source-map-support": "^0.4.15"
   },
   "devEngines": {

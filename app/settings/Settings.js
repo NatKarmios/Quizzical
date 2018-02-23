@@ -2,17 +2,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
-import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
-import { MDIcon, InlineIcon } from '../utils/components';
-import Typography from 'material-ui/es/Typography/Typography';
+import { MDIcon, HeaderLinkButton } from '../utils/components';
+import Typography from 'material-ui/Typography';
 
 import * as SettingsActions from './settingsActions';
+import ControlButtons from './SettingsControlButtons'
 import Panels from './SettingsPanels';
 import DangerZone from './SettingsDangerZone';
-import Space from "../utils/components/Space";
 import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings';
+import { deleteAllQuestions } from '../_modules/db/dbQueries';
 import { restart } from '../utils/helperFuncs';
 
 
@@ -30,26 +29,36 @@ const checkIfUnsavedChanges = tempSettings => {
 };
 
 
-const logOutOfTwitch = async () => {
-  mergeOntoSettings({
+const logOutOfTwitch = async settings => {
+  const newSettings = mergeOntoSettings(settings, {
     login: {
       streamerAuthToken: null,
       botAuthToken: null
     }
   });
-  await saveSettings();
-  restart()
+  await saveSettings(newSettings);
+  restart();
 };
 
-const resetToDefaultSettings = async () => {
-  resetSettings();
-  await saveSettings();
+const deleteQuestions = async () => {
+  await deleteAllQuestions();
+  restart();
+};
+
+const resetToDefaultSettings = async settings => {
+  const newSettings = resetSettings(settings);
+  await saveSettings(newSettings);
   restart();
 };
 
 
-const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings }) => {
+const Settings = ({
+  settings, expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings, canSave
+}) => {
   const unsavedSettings = checkIfUnsavedChanges(tempSettings);
+
+  const logout = () => logOutOfTwitch(settings);
+  const reset = () => resetToDefaultSettings(settings);
 
   return (
     <div style={{ margin: '20px' }}>
@@ -57,47 +66,35 @@ const Settings = ({ expanded, tempSettings, expandPanel, updateTempSetting, save
         <Typography type="headline">
           <MDIcon color="black" style={{ marginRight: '5px' }}>settings</MDIcon>
           Settings
-          <Link to="/home">
-            <Button raised color="primary" style={{ float: 'right', top: '-5px' }}>
-              <MDIcon>arrow-left-bold</MDIcon>
-              <MDIcon>home</MDIcon>
-            </Button>
-          </Link>
+          <HeaderLinkButton tooltipText="Back to home" linkTo="/home" icons={['arrow-left-bold', 'home']} width="80px"/>
         </Typography>
       </Paper>
 
       <br/>
 
-      <div style={{ width: '100%', textAlign: 'center' }}>
-        <Button raised color="primary" onClick={saveTempSettings} disabled={!unsavedSettings}>
-          <InlineIcon>content-save</InlineIcon>
-          Save
-        </Button>
-        <Space>4</Space>
-        <Button raised color="accent" onClick={clearTempSettings} disabled={!unsavedSettings}>
-          <InlineIcon>delete</InlineIcon>
-          Discard Changes
-        </Button>
-      </div>
+      <ControlButtons saveEnabled={canSave && unsavedSettings} clearEnabled={unsavedSettings} onSave={saveTempSettings} onClear={clearTempSettings}/>
 
       <br/>
 
       <Panels
+        settings={settings}
         expanded={expanded}
         tempSettings={tempSettings}
         expandPanel={expandPanel}
         onTempSettingChange={updateTempSetting}
       />
 
-      <DangerZone onLogout={logOutOfTwitch} onReset={resetToDefaultSettings}/>
+      <DangerZone onLogout={logout} onDeleteQuestions={deleteQuestions} onReset={reset}/>
     </div>
   );
 };
 
 function mapStateToProps(state) {
   return {
+    settings: state.global.settings,
     expanded: state.settings.expanded,
-    tempSettings: state.settings.tempSettings
+    tempSettings: state.settings.tempSettings,
+    canSave: state.settings.errorFields.size === 0
   }
 }
 
