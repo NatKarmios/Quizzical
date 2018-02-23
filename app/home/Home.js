@@ -1,13 +1,16 @@
 // @flow
 import React from 'react';
+import { connect } from 'react-redux';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/Typography';
 import QuestionList from './questionList/QuestionList';
 import QuestionDisplay from './questionDisplay/QuestionDisplay';
+import ActiveQuestionDisplay from './activeQuestion/ActiveQuestionDisplay';
+import ActiveQuestionUserList from './activeQuestion/ActiveQuestionUserList';
 
-const Home = () => (
+const Home = ({ activeQuestionUI }) => (
   <div style={{ margin: '20px' }}>
     <Paper style={{ padding: '20px' }}>
       <Typography type="headline">
@@ -21,16 +24,20 @@ const Home = () => (
     <Grid container>
       <Grid item xs={12} sm={6}>
         <Paper style={{ padding: '20px' }}>
-          <QuestionDisplay/>
+          {activeQuestionUI ? <ActiveQuestionDisplay/> : <QuestionDisplay/>}
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6}>
         <Paper>
-          <QuestionList/>
+          {activeQuestionUI ? <ActiveQuestionUserList/> : <QuestionList/>}
         </Paper>
       </Grid>
     </Grid>
   </div>
 );
 
-export default Home;
+const mapStateToProps = state => ({
+  activeQuestionUI: state.global.activeQuestion.uiActive
+});
+
+export default connect(mapStateToProps)(Home);

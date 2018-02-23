@@ -3,6 +3,8 @@ import rp from 'request-promise-native';
 import { remote, BrowserWindow } from 'electron';
 import Noty from 'noty';
 
+import { getState } from '../store';
+
 const { app } = remote;
 
 const NATURAL_NUMBER = RegExp('^([1-9]\\d*)?$');
@@ -63,3 +65,33 @@ export const notify = (text, type='info', timeout=3000) =>
     layout: 'bottomRight',
     progressBar: true,
   }).show();
+
+export const shuffleArray = arr =>
+  arr.map(a => [Math.random(), a])
+     .sort((a, b) => a[0] - b[0])
+     .map(a => a[1]);
+
+export const range = (length, offset=0) =>
+  Array.from({ length }, (x,i) => i+offset);
+
+export const formatWithContext = (str, context) => {
+  const state = getState();
+  const { settings, login } = state['global'];
+  let newStr = str;
+
+  const fullContext = {
+    pointName: settings['misc']['pointName'],
+    pointsName: settings['misc']['pointsName'],
+    streamer: login['streamer']['displayName'],
+    bot: login['bot']['displayName'],
+    ...context
+  };
+
+  Object.keys(fullContext).forEach(key => {
+    newStr = newStr.replace(`{${key}}`, fullContext[key]);
+  });
+  return newStr;
+};
+
+export const numPages = (count, pageSize=10) =>
+  Math.max(Math.ceil(count / pageSize), 1);

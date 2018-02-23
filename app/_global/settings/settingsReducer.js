@@ -1,6 +1,6 @@
 // @flow
 
-import {CHANGE_SETTINGS, SETTINGS_LOADED} from "../actions/settingsActions";
+import {CHANGE_SETTINGS, SETTINGS_LOADED} from "./settingsActions";
 import {mergeOntoSettings} from "../../_modules/savedSettings";
 
 const settings = (state=null, { type, payload }) => {

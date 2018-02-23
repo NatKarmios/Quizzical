@@ -16,16 +16,19 @@ export function testSavedTokens() {
 }
 
 
-function login(type) {
-  return { type };
+function login(type, username, displayName, avatar) {
+  return {
+    type,
+    payload: { username, displayName, avatar }
+  };
 }
 
-export function streamerLoggedIn() {
-  return login(STREAMER_LOGGED_IN);
+export function streamerLoggedIn(username, displayName, avatar) {
+  return login(STREAMER_LOGGED_IN, username, displayName, avatar);
 }
 
-export function botLoggedIn() {
-  return login(BOT_LOGGED_IN);
+export function botLoggedIn(username, displayName, avatar) {
+  return login(BOT_LOGGED_IN, username, displayName, avatar);
 }
 
 export function streamerLoginCancelled() {

@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 
 import { MDIcon } from '../../utils/components';
+import { numPages } from '../../utils/helperFuncs';
 
 import PageButtons from './QuestionListPageButtons';
 import AddButtons from './QuestionListAddButtons';
@@ -64,7 +65,7 @@ const QuestionList = ({
       <PageButtons
         loading={loading}
         currentPage={currentPage}
-        questionCount={questionCount}
+        maxPage={numPages(questionCount)}
         loadNextPage={() => loadQuestions(currentPage+1)}
         loadPrevPage={() => loadQuestions(currentPage-1)}
       />

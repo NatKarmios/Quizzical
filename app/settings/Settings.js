@@ -29,14 +29,14 @@ const checkIfUnsavedChanges = tempSettings => {
 };
 
 
-const logOutOfTwitch = async () => {
-  mergeOntoSettings({
+const logOutOfTwitch = async settings => {
+  const newSettings = mergeOntoSettings(settings, {
     login: {
       streamerAuthToken: null,
       botAuthToken: null
     }
   });
-  await saveSettings();
+  await saveSettings(newSettings);
   restart();
 };
 
@@ -45,17 +45,20 @@ const deleteQuestions = async () => {
   restart();
 };
 
-const resetToDefaultSettings = async () => {
-  resetSettings();
-  await saveSettings();
+const resetToDefaultSettings = async settings => {
+  const newSettings = resetSettings(settings);
+  await saveSettings(newSettings);
   restart();
 };
 
 
 const Settings = ({
-  settings, expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings
+  settings, expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings, canSave
 }) => {
   const unsavedSettings = checkIfUnsavedChanges(tempSettings);
+
+  const logout = () => logOutOfTwitch(settings);
+  const reset = () => resetToDefaultSettings(settings);
 
   return (
     <div style={{ margin: '20px' }}>
@@ -69,7 +72,7 @@ const Settings = ({
 
       <br/>
 
-      <ControlButtons enabled={unsavedSettings} onSave={saveTempSettings} onClear={clearTempSettings}/>
+      <ControlButtons saveEnabled={canSave && unsavedSettings} clearEnabled={unsavedSettings} onSave={saveTempSettings} onClear={clearTempSettings}/>
 
       <br/>
 
@@ -81,7 +84,7 @@ const Settings = ({
         onTempSettingChange={updateTempSetting}
       />
 
-      <DangerZone onLogout={logOutOfTwitch} onDeleteQuestions={deleteQuestions} onReset={resetToDefaultSettings}/>
+      <DangerZone onLogout={logout} onDeleteQuestions={deleteQuestions} onReset={reset}/>
     </div>
   );
 };
@@ -90,7 +93,8 @@ function mapStateToProps(state) {
   return {
     settings: state.global.settings,
     expanded: state.settings.expanded,
-    tempSettings: state.settings.tempSettings
+    tempSettings: state.settings.tempSettings,
+    canSave: state.settings.errorFields.size === 0
   }
 }
 

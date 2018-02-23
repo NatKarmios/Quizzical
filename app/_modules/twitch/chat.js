@@ -1,29 +1,25 @@
 // @flow
 
-import { getSetting } from '../savedSettings';
-import vars from '../vars';
+import { getState } from '../../store';
+import { getSetting as injectAndGetSetting } from '../savedSettings';
 import { IntervalQueue } from '../../utils/IntervalQueue';
-import { parseMsg, MsgData } from './msgData';
+
+import hardcodedListeners, { logMessage } from './listeners';
 
 const TWITCH_CHAT_URL = 'wss://irc-ws.chat.twitch.tv:443';
 const PREFIX = '/me - ';
 const LOG_TWITCH = false;
 let connectionStarted = false;
-const getChannel = () => { return `#${vars.accountData.streamer.nick}`; };
-const getNick = () => { return vars.accountData.bot.nick; };
+const getLoginData = () => getState()['global']['login'];
+const getChannel = () => `#${getLoginData()['streamer']['username']}`;
+const getNick = () => getLoginData()['bot']['username'];
+const getSetting = (category, key) => injectAndGetSetting(getState()['global']['settings'], category, key);
 let queue: IntervalQueue;
 
 let socket: WebSocket;
-const listeners: Array<string => void> = [
-  // The Twitch IRC server will send a PING message, which must reply with PONG
-  // to prove that the bot is not inactive.
-  msg => { if (msg === 'PING :tmi.twitch.tv') sendRaw('PONG :tmi.twitch.tv'); },
-  msg => {
-    const msgData: ?MsgData = parseMsg(msg);
-    if (msgData !== null && msgData.msg.startsWith('!hello')) queueMessage('Hi there!');
-  }
-];
-if (LOG_TWITCH) listeners.push(msg => { console.log(`< ${msg}`); });
+const listeners: Array<string => void> = [ ...hardcodedListeners ];
+
+if (LOG_TWITCH) listeners.push(logMessage);
 
 
 // <editor-fold desc="Sending Functions">
@@ -38,9 +34,12 @@ const sendMessage = (msg) => {
            ${getChannel()} :${msg}\r\n`);
 };
 
-export const queueMessage = (msg, prefix=true) => {
+export const queueMessage = (msg, prefix=true) =>
   queue.put(`${prefix ? PREFIX : ''}${msg}`);
-};
+
+export const queueWhisper = (msg, recipient) =>
+
+  queueMessage(`/w ${recipient} ${msg}`, false);
 
 // </editor-fold>
 
@@ -50,6 +49,7 @@ const login = () => {
   sendRaw(`NICK ${getNick()}`);
   sendRaw(`JOIN ${getChannel()}`);
   sendRaw('CAP REQ :twitch.tv/tags');
+  sendRaw('CAP REQ :twitch.tv/commands');
 };
 
 export const close = () => {
@@ -72,6 +72,6 @@ export const connect = () => {
       queueMessage(getSetting('chatMessages', 'joinMessage'));
       resolve();
     });
-    socket.addEventListener('message', event => { listeners.forEach(func => func(event.data)); });
+    socket.addEventListener('message', event => listeners.forEach(func => func(event.data)));
   });
 };

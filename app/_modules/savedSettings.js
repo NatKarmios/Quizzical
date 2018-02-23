@@ -12,11 +12,23 @@ const DEFAULT_SETTINGS = {
     botAuthToken: null
   },
   chatMessages: {
-    joinMessage: 'Quizzical initialized!'
+    joinMessage: 'Quizzical initialized!',
+    questionStarted: 'A question has started for {prize}! You have {timeLeft} seconds to answer; ' +
+                     'whisper your choice to me using \'/w {bot} [choice]\'.',
+    showQuestion: 'Your question is: {question}',
+    questionCancelled: 'Question cancelled.',
+    questionEndNoWinners: 'Nobody answered correctly!',
+    questionEndSingleWinner: 'Time is up! The winner is {winner}!',
+    questionEndMultipleWinners: 'Time is up! The winners are {winners}!',
+    answerReceived: 'Answer received!',
+    alreadyAnswered: 'You\'ve already answered!',
+    invalidAnswer: 'That answer\'s invalid!'
   },
   misc: {
     pointName: 'point',
-    pointsName: 'points'
+    pointsName: 'points',
+    defaultPrize: '50',
+    defaultDuration: '120'
   }
 };
 
@@ -55,7 +67,7 @@ export const mergeOntoSettings = (settings, loaded) => {
   return newSettings;
 };
 
-export const resetSettings = () => {
+export const resetSettings = settings => {
   const login = settings.login;
   const newSettings = cloneObject(DEFAULT_SETTINGS);
   newSettings.login = login;

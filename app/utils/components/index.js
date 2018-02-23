@@ -5,6 +5,7 @@ import Space from './Space';
 import HeaderLinkButton from './HeaderLinkButton';
 import CenteredListItem from './CenteredListItem';
 import Dialog from './Dialog';
+import ListedChip from './ListedChip';
 
 export {
   MDIcon,
@@ -13,5 +14,6 @@ export {
   Space,
   HeaderLinkButton,
   CenteredListItem,
-  Dialog
+  Dialog,
+  ListedChip
 };

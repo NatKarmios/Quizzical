@@ -12,6 +12,7 @@ import NavbarWindowControls from './windowControls';
 type Props = {
   streamerLoggedIn: boolean,
   botLoggedIn: boolean,
+  accountData: {}
 };
 
 const styles = {
@@ -20,12 +21,12 @@ const styles = {
   }
 };
 
-const Navbar = ({ streamerLoggedIn, botLoggedIn }: Props) => (
+const Navbar = ({ streamerLoggedIn, botLoggedIn, accountData }: Props) => (
   <AppBar position="fixed" style={{ WebkitAppRegion: 'drag', height: '64px' }}>
     <Toolbar>
       <Typography type="headline" color="inherit">Quizzical</Typography>
       <div style={{ flex: 1, height: '100%' }}>
-        <NavbarUsers streamerLoggedIn={streamerLoggedIn} botLoggedIn={botLoggedIn} />
+        <NavbarUsers streamerLoggedIn={streamerLoggedIn} botLoggedIn={botLoggedIn} accountData={accountData} />
       </div>
       <NavbarWindowControls />
     </Toolbar>
@@ -35,7 +36,8 @@ const Navbar = ({ streamerLoggedIn, botLoggedIn }: Props) => (
 function mapStateToProps(state) {
   return {
     streamerLoggedIn: state.navbar.streamerLoggedIn,
-    botLoggedIn: state.navbar.botLoggedIn
+    botLoggedIn: state.navbar.botLoggedIn,
+    accountData: state.global.login
   };
 }
 

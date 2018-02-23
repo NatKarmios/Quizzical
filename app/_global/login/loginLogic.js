@@ -5,7 +5,6 @@ import { guiLogin, tokenLogin } from '../../_modules/twitch/login';
 import type { LoginDataType, AccountDetailsType } from '../../_modules/twitch/login';
 import { connect } from '../../_modules/twitch/chat';
 import { getSetting, setSetting } from '../../_modules/savedSettings';
-import vars from '../../_modules/vars';
 
 import {
   TEST_SAVED_TOKENS,
@@ -44,15 +43,6 @@ type AccountVarsType = {
 };
 
 
-const storeAccountDetails = (accountType: string, details: AccountDetailsType) => {
-  const { username, displayName, avatarURL } = details;
-  vars.accountData[accountType] = {
-    nick: username,
-    display: displayName,
-    avatar: avatarURL
-  };
-};
-
 const testSavedTokensLogic = createLogic({
   type: TEST_SAVED_TOKENS,
   process: async ({ action, getState }, dispatch, done) => {
@@ -66,8 +56,8 @@ const testSavedTokensLogic = createLogic({
       const token = getSetting(settings, 'login', `${accountType}AuthToken`);
       const details: ?{username: string, displayName: string, avatarURL: string} = await tokenLogin(token);
       if (details !== undefined && details !== null) {
-        storeAccountDetails(accountType, details);
-        dispatch(successActionCreator());
+        const { username, displayName, avatarURL } = details;
+        dispatch(successActionCreator(username, displayName, avatarURL));
       } else { dispatch(failureActionCreator()); }
     };
 
@@ -95,7 +85,8 @@ const processLogin = (
 
     const loginData: ?LoginDataType = await guiLogin(sessionPartition, scopes);
     if (loginData !== null && loginData !== undefined) {
-      storeAccountDetails(accountType, loginData.details);
+      const { username, displayName, avatarURL } = loginData.details;
+      dispatch(successActionCreator(username, displayName, avatarURL));
       await setSetting(settings, 'login', `${accountType}AuthToken`, loginData.token);
 
       dispatch(successActionCreator());

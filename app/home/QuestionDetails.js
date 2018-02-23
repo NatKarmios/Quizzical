@@ -3,10 +3,10 @@ import React from 'react';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 
-import { InlineIcon } from '../../utils/components';
+import { InlineIcon } from '../utils/components/index';
 
 
-const QuestionDisplayQuestionDetails = ({ question, onDeleteButton }) => (
+const QuestionDetails = ({ question, onDeleteButton, deleteButtonHidden=false }) => (
   <div style={{ width: '100%' }}>
     <Typography type="subheading" style={{ marginBottom: '5px' }}><i>{question.content}</i></Typography>
     <div style={{ textAlign: 'left', display: 'inline-block' }}>
@@ -25,12 +25,17 @@ const QuestionDisplayQuestionDetails = ({ question, onDeleteButton }) => (
         )
       }
     </div>
-    <br/><br/>
-    <Button dense color="accent" onClick={onDeleteButton}>
-      <InlineIcon padded>delete</InlineIcon>
-      Delete Question
-    </Button>
+    {
+      deleteButtonHidden ? null :
+      <div>
+        <br/><br/>
+        <Button dense color="accent" onClick={onDeleteButton}>
+          <InlineIcon padded>delete</InlineIcon>
+          Delete Question
+        </Button>
+      </div>
+    }
   </div>
 );
 
-export default QuestionDisplayQuestionDetails;
+export default QuestionDetails;

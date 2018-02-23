@@ -5,15 +5,8 @@ import TextField from 'material-ui/TextField';
 import { InputAdornment } from 'material-ui/Input';
 import IconButton from 'material-ui/IconButton';
 
-import { MDIcon, Dialog } from '../../../utils/components/index';
+import { MDIcon, Dialog, ListedChip } from '../../../utils/components';
 
-const AnswerChip = ({ onDelete = ()=>{}, children }) => (
-  <Chip
-    label={children}
-    onDelete={onDelete}
-    style={{ marginRight: '5px', marginBottom: '5px', display: 'flex' }}
-  />
-);
 
 const QuestionListAddDialog = ({
   open, question, answer, incorrectAnswers, tempIncorrectAnswer,
@@ -63,12 +56,12 @@ const QuestionListAddDialog = ({
           <div style={{ display: 'flex', margin: '10px 0', flexWrap: 'wrap' }}>
             {
               incorrectAnswers.map((incorrectAnswer, i) =>
-                  <AnswerChip
+                  <ListedChip
                     key={`incorrectAnswer${i}`}
                     onDelete={onIncorrectAnswerDelete(i)}
                   >
                     {incorrectAnswer}
-                  </AnswerChip>
+                  </ListedChip>
               )
             }
           </div>

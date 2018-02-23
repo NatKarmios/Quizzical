@@ -1,5 +1,5 @@
 // @flow
-import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../global/actions';
+import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../_global/actions';
 // import type { ActionType } from '../global/actions';
 
 export type NavbarStateType = {

@@ -3,7 +3,9 @@
 import { createLogic } from 'redux-logic';
 
 import {loadSettings, saveSettings} from '../../_modules/savedSettings';
-import { LOAD_SETTINGS, SETTINGS_LOADED, CHANGE_SETTINGS, settingsLoaded, settingsReady, settingsChanged } from '../actions';
+import {
+  LOAD_SETTINGS, SETTINGS_LOADED, CHANGE_SETTINGS, settingsLoaded, settingsReady, settingsChanged
+} from './settingsActions';
 import { testSavedTokens } from '../actions';
 
 

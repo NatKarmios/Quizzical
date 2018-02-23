@@ -6,12 +6,15 @@ import style from './style.scss';
 import Avatar from 'material-ui/Avatar';
 import Tooltip from 'material-ui/Tooltip';
 import { MDIcon, Space } from "../utils/components";
-import vars, { AccountDataType } from '../_modules/vars';
 
 
 type Props = {
   streamerLoggedIn: boolean,
-  botLoggedIn: boolean
+  botLoggedIn: boolean,
+  accountData: {
+    streamer: {},
+    bot: {}
+  }
 };
 
 const avatarStyles = {
@@ -30,28 +33,28 @@ const NotLoggedIn = ({ icon }) => (
   </span>
 );
 
-const LoggedIn = ({ details }: { details: AccountDataType }) => (
+const LoggedIn = ({ details }) => (
   <span className={style.userDisplay}>
-    <Tooltip title={<i>{details.display}</i>}>
+    <Tooltip title={<i>{details.displayName}</i>}>
       <Avatar
         style={avatarStyles}
-        alt={details.display}
+        alt={details.displayName}
         src={details.avatar}
       />
     </Tooltip>
   </span>
 );
 
-const NavbarUsers = ({ streamerLoggedIn, botLoggedIn }: Props) => (
+const NavbarUsers = ({ streamerLoggedIn, botLoggedIn, accountData }: Props) => (
   <div className={style.users}>
     {!streamerLoggedIn ?
       <NotLoggedIn icon="account"/> :
-      <LoggedIn details={vars.accountData.streamer} />
+      <LoggedIn details={accountData.streamer} />
     }
     <Space>4</Space>
     {!botLoggedIn ?
       <NotLoggedIn icon="robot"/> :
-      <LoggedIn details={vars.accountData.bot} />
+      <LoggedIn details={accountData.bot} />
     }
   </div>
 );

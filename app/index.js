@@ -4,11 +4,13 @@ import { AppContainer } from 'react-hot-loader';
 import Root from './root/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.scss';
-import { testSavedTokens } from './global/actions';
+import { testSavedTokens } from './_global/actions';
 import { setUpDB } from './_modules/db/dbSetup';
-import { loadSettings } from './global/actions/settingsActions';
+import { loadSettings } from './_global/actions';
+import { setStore as supplyStore } from './store';
 
 const store = configureStore();
+supplyStore(store);
 
 const ready = () => {
   render(
@@ -32,10 +34,7 @@ const ready = () => {
 };
 
 const setup = async () => {
-  await Promise.all([
-    setUpDB(),
-    loadSettings()
-  ]);
+  await setUpDB();
   ready();
   store.dispatch(loadSettings());
 };

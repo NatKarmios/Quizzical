@@ -7,7 +7,7 @@ import { createLogger } from 'redux-logger';
 import arrLogic from '../logic';
 import rootReducer from '../reducers';
 import * as counterActions from '../counter/counterActions';
-import * as globalActions from '../global/actions';
+import * as globalActions from '../_global/actions';
 // import type { GlobalStateType } from '../global/types';
 
 const history = createHashHistory();
@@ -46,6 +46,7 @@ const configureStore = (initialState) => {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
+      actionsBlacklist: [globalActions.ACTIVE_QUESTION_TICK],
       actionCreators,
     })
     : compose;

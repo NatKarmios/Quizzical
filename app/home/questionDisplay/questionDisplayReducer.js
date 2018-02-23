@@ -12,7 +12,7 @@ const defaultState = {
   question: null,
   prize: '',
   duration: '',
-  multipleWinners: false,
+  multipleWinners: true,
   endEarly: false,
   deleteDialogOpen: false,
   busy: false

@@ -3,7 +3,7 @@ import { createLogic } from 'redux-logic';
 
 import { mergeOntoSettings } from '../_modules/savedSettings';
 
-import { changeSettings } from '../global/actions/settingsActions';
+import { changeSettings } from '../_global/actions';
 import { clearTempSettings, SAVE_TEMP_SETTINGS } from './settingsActions';
 
 

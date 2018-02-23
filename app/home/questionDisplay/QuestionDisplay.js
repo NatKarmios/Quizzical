@@ -13,16 +13,22 @@ import Divider from 'material-ui/Divider';
 import Button from 'material-ui/Button';
 
 import { getSetting } from '../../_modules/savedSettings';
+import { activeQuestionStart } from '../../_global/actions';
 
-import QuestionDetails from './QuestionDisplayQuestionDetails';
+import QuestionDetails from '../QuestionDetails';
 import * as QuestionDisplayActions from './questionDisplayActions';
 import { InlineIcon, Space, Dialog } from '../../utils/components';
+import { isInteger, isNaturalNumber } from '../../utils/helperFuncs';
+
+
+const actions = { ...QuestionDisplayActions, activeQuestionStart };
 
 
 const QuestionDisplay = ({
   settings, question, prize, duration, multipleWinners, endEarly, busy,
   changeQuestion, changePrize, changeDuration, changeMultipleWinners, changeEndEarly,
   deleteQuestion, openDeleteDialog, closeDeleteDialog, deleteDialogOpen,
+  activeQuestionStart
 }) => {
   const callWithInputValue = handler => e => handler(e.target.value);
   const onPrizeChange = callWithInputValue(changePrize);
@@ -31,6 +37,14 @@ const QuestionDisplay = ({
     if (confirm) deleteQuestion(question.questionID);
     closeDeleteDialog();
   };
+  const defaultPrize = getSetting(settings, 'misc', 'defaultPrize');
+  const defaultDuration = getSetting(settings, 'misc', 'defaultDuration');
+  const startQuestion = () => activeQuestionStart(question,
+    duration === '' ? defaultDuration : duration,
+    prize === '' ? defaultPrize : prize,
+    !multipleWinners && endEarly, multipleWinners
+  );
+  const startButtonDisabled = busy || question === null || !isInteger(prize) || !isNaturalNumber(duration);
 
   return (
     <div>
@@ -43,6 +57,7 @@ const QuestionDisplay = ({
             type="number"
             value={prize}
             onChange={onPrizeChange}
+            placeholder={defaultPrize}
             InputProps={{endAdornment: (
               <InputAdornment position="end">
                 {getSetting(settings, 'misc', `point${Math.abs(prize) === 1 ? '' : 's'}Name`)}
@@ -57,9 +72,10 @@ const QuestionDisplay = ({
             type="number"
             value={duration}
             onChange={onDurationChange}
+            placeholder={defaultDuration}
             InputProps={{endAdornment: (
               <InputAdornment position="end">
-                seconds
+                {`second${duration === 1 ? '' : 's'}`}
               </InputAdornment>
             )}}
           />
@@ -106,7 +122,7 @@ const QuestionDisplay = ({
       <br/>
       <Divider/>
       <br/>
-      <Button raised color="primary" style={{ width: '100%'}} disabled={busy}>
+      <Button raised color="primary" style={{ width: '100%'}} disabled={startButtonDisabled} onClick={startQuestion}>
         Go!
         <Space>1</Space>
         <InlineIcon>arrow-right-thick</InlineIcon>
@@ -133,6 +149,6 @@ const mapStateToProps = state => ({
   ...state.questionDisplay
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(QuestionDisplayActions, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionDisplay);
