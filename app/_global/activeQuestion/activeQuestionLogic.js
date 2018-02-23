@@ -43,7 +43,7 @@ const activeQuestionStartLogic = createLogic({
   process: async ({ getState }, dispatch, done) => {
     const globalState = getState()['global'];
     const state = globalState['activeQuestion'];
-    const { question, timeLeft, prize, answerMap } = state;
+    const { question, answerMap } = state;
     const { settings } = globalState;
     const { chatMessages } = settings;
 
