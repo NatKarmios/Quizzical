@@ -6,9 +6,7 @@ import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import arrLogic from '../logic';
 import rootReducer from '../reducers';
-import * as counterActions from '../counter/counterActions';
 import * as globalActions from '../_global/actions';
-// import type { GlobalStateType } from '../global/types';
 
 const history = createHashHistory();
 
@@ -37,7 +35,6 @@ const configureStore = (initialState) => {
 
   // Redux DevTools Configuration
   const actionCreators = {
-    ...counterActions,
     ...globalActions,
     ...routerActions,
   };
