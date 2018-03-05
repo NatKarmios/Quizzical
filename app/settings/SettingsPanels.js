@@ -1,36 +1,52 @@
 // @flow
+
 import React from 'react';
+import type { Node } from 'react';
 import TextField from 'material-ui/TextField';
 
-import { OptionList, OptionListItem } from './option';
-import { getDefaultSetting, getSetting } from '../_modules/savedSettings';
-import {isInteger, isNaturalNumber} from '../utils/helperFuncs';
+import OptionList from './option/OptionList';
+import OptionListItem from './option/OptionListItem';
+import { getDefaultSetting, getSetting } from '../_modules/savedSettings/savedSettings';
+import type { SettingsType } from '../utils/types';
+import { isInteger, isNaturalNumber } from '../utils/helperFuncs';
 
+type OnChangeEventType = {
+  target: {
+    value: string
+  }
+};
 
 type OptionType = {
-  componentProducer?: ?any,
-  validator?: ?any,
-  label?: ?any,
-  subtitle?: ?string,
+  componentProducer: (string, ?string, ?string, OnChangeEventType=>void, boolean) => mixed,
+  validator: (?string) => boolean,
+  label: ?Node,
+  subtitle: ?string,
   settingLabel: string
 };
 
 type OptionCategoryType = {
-  title: any,
-  subtitle?: ?any,
+  title: Node,
+  subtitle: ?Node,
   options: Array<OptionType>,
   settingCategory: string
 };
 
 
-const basicTextField = (id, value, label, onChange, error=false, fullWidth=true) => (
-  <TextField id={id} label={label} value={value} onChange={onChange} fullWidth={fullWidth} error={error}/>
+const basicTextField = (id, value, label, onChange, error = false, fullWidth = true) => (
+  <TextField
+    id={id}
+    label={label}
+    value={value}
+    onChange={onChange}
+    fullWidth={fullWidth}
+    error={error}
+  />
 );
 
 const makeOption = (
-  settingLabel, label, optionSubtitle, validator=()=>true, componentProducer=basicTextField
-) => ({
-  settingLabel, label, optionSubtitle, componentProducer, validator
+  settingLabel, label = '', subtitle = '', validator = () => true, componentProducer = basicTextField
+): OptionType => ({
+  settingLabel, label, subtitle, componentProducer, validator
 });
 
 
@@ -71,27 +87,52 @@ const OPTIONS = [
   }
 ];
 
+type SettingsPanelsProps = {
+  settings: SettingsType,
+  expanded: number,
+  tempSettings: SettingsType,
+  expandPanel: (number, number) => void,
+  onTempSettingChange: (
+    SettingsType, string, string, ?string, string=>boolean
+  ) => void
+};
 
-const SettingsPanels = ({ settings, expanded, tempSettings, expandPanel, onTempSettingChange }) => {
+
+const SettingsPanels = ({
+  settings, expanded, tempSettings, expandPanel, onTempSettingChange
+}: SettingsPanelsProps) => {
   const handleExpansion = (newPanel) => () => { expandPanel(expanded, newPanel); };
 
-  const optionCategoryToComponent = ({ title, subtitle, options, settingCategory }: OptionCategoryType, i) => {
-    const optionToComponent = ({ componentProducer, label, settingLabel, optionSubtitle, validator }: OptionType) => {
-      const savedSettingValue = getSetting(settings, settingCategory, settingLabel);
+  const optionCategoryToComponent = ({
+     title, subtitle: categorySubtitle, options, settingCategory
+  }: OptionCategoryType, i) => {
+    const optionToComponent = ({
+      componentProducer, label, settingLabel, subtitle: optionSubtitle, validator
+    }: OptionType) => {
+      const savedSettingValue: ?string = getSetting(settings, settingCategory, settingLabel);
       let tempSettingValue = null;
       if (tempSettings[settingCategory] !== null &&
           tempSettings[settingCategory] !== undefined &&
           tempSettings[settingCategory][settingLabel] !== null &&
-          tempSettings[settingCategory][settingLabel] !== undefined)
+          tempSettings[settingCategory][settingLabel] !== undefined) {
         tempSettingValue = tempSettings[settingCategory][settingLabel];
+      }
 
       const changed = tempSettingValue !== null;
-      const value = tempSettingValue !== null && tempSettingValue !== undefined ? tempSettingValue : savedSettingValue;
+      const value: ?string = tempSettingValue !== null && tempSettingValue !== undefined ?
+          tempSettingValue :
+          savedSettingValue;
 
       const defaultSetting = getDefaultSetting(settingCategory, settingLabel);
       const isResettable = value !== defaultSetting;
 
-      const updateTempSetting = (value, validator=()=>true) => onTempSettingChange(settings, settingCategory, settingLabel, value, validator);
+      const updateTempSetting = (
+        updatedValue: ?string, updatedValidator: (?string)=>boolean=() => true
+      ) => {
+        onTempSettingChange(
+          settings, settingCategory, settingLabel, updatedValue, updatedValidator
+        );
+      };
 
       return (
         <OptionListItem
@@ -107,7 +148,9 @@ const SettingsPanels = ({ settings, expanded, tempSettings, expandPanel, onTempS
               `${settingCategory}_${settingLabel}`,
               value,
               label,
-              event => updateTempSetting(event.target.value, validator),
+              event => {
+                updateTempSetting(event.target.value, validator);
+              },
               !validator(value)
             )
           }
@@ -118,9 +161,9 @@ const SettingsPanels = ({ settings, expanded, tempSettings, expandPanel, onTempS
     return (
       <OptionList
         title={title}
-        subtitle={subtitle}
-        expanded={expanded === i+1}
-        onExpand={handleExpansion(i+1)}
+        subtitle={categorySubtitle}
+        expanded={expanded === i + 1}
+        onExpand={handleExpansion(i + 1)}
         key={settingCategory}
       >
         {options.map(optionToComponent)}

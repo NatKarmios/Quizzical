@@ -2,11 +2,13 @@
 
 import { createLogic } from 'redux-logic';
 
-import {loadSettings, saveSettings} from '../../_modules/savedSettings';
+import { loadSettings, saveSettings } from '../../_modules/savedSettings/savedSettings';
+import { testSavedTokens } from '../login/loginActions';
+import { notify } from '../../utils/helperFuncs';
+
 import {
   LOAD_SETTINGS, SETTINGS_LOADED, CHANGE_SETTINGS, settingsLoaded, settingsReady, settingsChanged
 } from './settingsActions';
-import { testSavedTokens } from '../actions';
 
 
 const loadSettingsLogic = createLogic({
@@ -39,6 +41,7 @@ const changeSettingsLogic = createLogic({
   process: async ({ getState }, dispatch, done) => {
     await saveSettings(getState().global.settings);
     dispatch(settingsChanged());
+    notify('Settings saved.', 'success');
     done();
   }
 });

@@ -3,12 +3,18 @@
 import type { CommandType, CommandDetailsType } from '../../twitch/commands/parse';
 
 
-const mapCommand = ({name, usage, description}: CommandDetailsType) => [
-  `## ${name}`,
-  `Usage: ${usage}`,
-  '',
-  description
-].join('\r');
+const mapCommand = (commandDetails: ?CommandDetailsType) => {
+  if (commandDetails === null || commandDetails === undefined) {
+    throw Error('Logic error!');
+  }
+  const { name, usage, description } = commandDetails;
+  [
+    `## ${name}`,
+    `Usage: ${usage}`,
+    '',
+    description
+  ].join('\r');
+};
 
 const commandListFormatter = (commandList: Array<CommandType>) => [
   '*To use a command, either whisper it to me, or post it in chat prefixed with `?`.*',

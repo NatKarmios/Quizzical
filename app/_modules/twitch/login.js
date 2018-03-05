@@ -1,9 +1,10 @@
 // @flow
+
 import { remote } from 'electron';
 import { createServer } from 'http';
 import connect from 'connect';
 import qs from 'qs';
-import { delay, httpGet } from "../../utils/helperFuncs";
+import { delay, httpGet } from '../../utils/helperFuncs';
 
 
 const { BrowserWindow, session } = remote;
@@ -64,7 +65,9 @@ export type LoginDataType = {
 // </editor-fold>
 
 
-function loadPopup(sessionPartition: ?string, persist: boolean, cache: boolean, scopes: Array<string>) {
+function loadPopup(
+  sessionPartition: ?string, persist: boolean, cache: boolean, scopes: Array<string>
+) {
   const realPartition = (sessionPartition !== null && sessionPartition !== undefined) ?
     `${persist ? 'persist:' : ''}${sessionPartition}` :
     sessionPartition;
@@ -109,7 +112,7 @@ async function loginWithLocalAuthWebserver(
   const app = connect();
 
   const replyPromise = new Promise(resolve => {
-    app.use((req/*: LoginRawQueryType*/, res) => {
+    app.use((req/* : LoginRawQueryType */, res) => {
       if (req.url.startsWith('/auth')) {
         // eslint-disable-next-line no-underscore-dangle
         const queryRaw = req._parsedUrl.query;
@@ -157,7 +160,7 @@ async function loginWithLocalAuthWebserver(
   return token;
 }
 
-async function retrieveAccountDetails(token: string): AccountDetailsType {
+async function retrieveAccountDetails(token: string): Promise<?AccountDetailsType> {
   const username = await retrieveUsername(token);
   if (username === null || username === undefined) return null;
 
@@ -166,10 +169,10 @@ async function retrieveAccountDetails(token: string): AccountDetailsType {
   const avatarAndDisplayName = await retrieveAvatarAndDisplayName(token, username);
   if (avatarAndDisplayName === null || avatarAndDisplayName === undefined) return null;
 
-  return {username, ...avatarAndDisplayName};
+  return { username, ...avatarAndDisplayName };
 }
 
-async function retrieveUsername(token: string): string {
+async function retrieveUsername(token: string): Promise<?string> {
   try {
     const reply: LoginUsernameReplyType = await httpGet({
       uri: 'https://api.twitch.tv/kraken',
@@ -179,7 +182,7 @@ async function retrieveUsername(token: string): string {
       },
       json: true
     });
-    return reply.token.user_name
+    return reply.token.user_name;
   } catch (e) {
     console.log('There was a problem retrieving a username!', e);
     return null;
@@ -197,16 +200,16 @@ async function retrieveAvatarAndDisplayName(token: string, username: string) {
       json: true
     });
     const allDetails = reply.data[0];
-    return { avatarURL: allDetails['profile_image_url'], displayName: allDetails['display_name'] };
+    return { avatarURL: allDetails.profile_image_url, displayName: allDetails.display_name };
   } catch (e) {
     console.log('There was a problem retrieving a display name and avatar URL!', e);
     return null;
   }
 }
 
-export async function tokenLogin(token: ?string): AccountDetailsType {
+export async function tokenLogin(token: ?string): Promise<?AccountDetailsType> {
   if (token === undefined || token === null || token === '') return null;
-  return await retrieveAccountDetails(token);
+  return retrieveAccountDetails(token);
 }
 
 export async function guiLogin(
@@ -215,7 +218,8 @@ export async function guiLogin(
   persist: boolean = false,
   cache: boolean = false,
 ): Promise<?LoginDataType> {
-  const token: ?string = await loginWithLocalAuthWebserver(sessionPartition, persist, cache, scopes);
+  const token: ?string =
+    await loginWithLocalAuthWebserver(sessionPartition, persist, cache, scopes);
   if (token === null || token === undefined) return null;
 
   const details = await retrieveAccountDetails(token);

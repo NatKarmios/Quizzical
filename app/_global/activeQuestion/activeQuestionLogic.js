@@ -13,37 +13,38 @@ import {
 
 
 const lower = str => str.toLowerCase();
-const getContextFromState = (state, settings, extra={}) => {
+const getContextFromState = (state, settings, extra = {}) => {
   const { prize, question, correctAnswerers, timeLeft } = state;
   const winners = [...correctAnswerers];
 
   const context = {
-    prize: `${prize} ${settings['misc'][`point${Math.abs(prize) === 1 ? '' : 's'}Name`]}`,
+    prize: `${prize} ${settings.misc[`point${Math.abs(prize) === 1 ? '' : 's'}Name`]}`,
     rawPrize: prize,
     question: question.content,
     timeLeft,
     ...extra
   };
 
-  if (winners.length === 1)
+  if (winners.length === 1) {
     context.winner = winners[0];
-  else if (winners.length > 1)
-    context.winners = `${[...winners].slice(0, -1).join(', ')} and ${winners[winners.length-1]}`;
+  } else if (winners.length > 1) {
+    context.winners = `${[...winners].slice(0, -1).join(', ')} and ${winners[winners.length - 1]}`;
+  }
 
   return context;
 };
-const sendFormatted = (msg, state, settings, extraContext={}, sender=queueMessage) =>
+const sendFormatted = (msg, state, settings, extraContext = {}, sender = queueMessage) =>
   sender(formatWithContext(msg, getContextFromState(state, settings, extraContext)));
-const getSender = (state, settings, extraContext={}, sender=queueMessage) => msg =>
+const getSender = (state, settings, extraContext = {}, sender = queueMessage) => msg =>
   sendFormatted(msg, state, settings, extraContext, sender);
 
 
 const activeQuestionStartLogic = createLogic({
   type: ACTIVE_QUESTION_START,
   process: async ({ getState }, dispatch, done) => {
-    const globalState = getState()['global'];
-    const state = globalState['activeQuestion'];
-    const { question, timeLeft, prize, answerMap } = state;
+    const globalState = getState().global;
+    const state = globalState.activeQuestion;
+    const { question, answerMap } = state;
     const { settings } = globalState;
     const { chatMessages } = settings;
 
@@ -54,8 +55,8 @@ const activeQuestionStartLogic = createLogic({
     indexedAnswers.sort((a, b) => a[0] - b[0]);
     const parsedAnswers = indexedAnswers.map(indexedAnswer => indexedAnswer[1]);
 
-    send(chatMessages['questionStarted']);
-    send(chatMessages['showQuestion']);
+    send(chatMessages.questionStarted);
+    send(chatMessages.showQuestion);
     queueMessage(parsedAnswers.join(' | '));
 
     await delay(1000);
@@ -68,7 +69,7 @@ const activeQuestionStartLogic = createLogic({
 const activeQuestionTickLogic = createLogic({
   type: ACTIVE_QUESTION_TICK,
   process: async ({ getState }, dispatch, done) => {
-    const { timeLeft, running } = getState()['global']['activeQuestion'];
+    const { timeLeft, running } = getState().global.activeQuestion;
 
     if (running) {
       if (timeLeft > 0) {
@@ -85,34 +86,40 @@ const activeQuestionTickLogic = createLogic({
 const activeQuestionHandleAnswerLogic = createLogic({
   type: ACTIVE_QUESTION_HANDLE_ANSWER,
   process: ({ action, getState }, dispatch, done) => {
-    const globalState = getState()['global'];
-    const state = globalState['activeQuestion'];
+    const globalState = getState().global;
+    const state = globalState.activeQuestion;
     const { settings } = globalState;
     const { chatMessages } = settings;
 
-    const msgData: MsgData = action['payload']['msgData'];
+    const msgData: MsgData = action.payload.msgData;
 
     const reply = getSender(state, settings, { target: msgData.sender.display }, msgData.reply);
 
-    if (state['running'] && msgData.isWhisper) {
-      const choice = parseInt(msgData.msg);
-      const answerMap: Array<number> = state['answerMap'];
+    if (state.running && msgData.isWhisper) {
+      const choice = parseInt(msgData.msg, 10);
+      const answerMap: Array<number> = state.answerMap;
       const { correctAnswerers, incorrectAnswerers, endEarly } = state;
 
       if ([...correctAnswerers, ...incorrectAnswerers].map(lower).includes(msgData.sender.raw)) {
-        reply(chatMessages['alreadyAnswered']);
-      } else if (isNaN(choice) || Math.floor(choice) !== choice || choice <= 0 || choice > answerMap.length ) {
-        reply(chatMessages['invalidAnswer']);
+        reply(chatMessages.alreadyAnswered);
+      } else if (
+        isNaN(choice) || Math.floor(choice) !== choice || choice <= 0 || choice > answerMap.length
+      ) {
+        reply(chatMessages.invalidAnswer);
       } else {
-        reply(chatMessages['answerReceived']);
+        reply(chatMessages.answerReceived);
         const isCorrect = answerMap.indexOf(choice) === 0;
 
-        if (!endEarly || correctAnswerers.size === 0)
+        if (!endEarly || correctAnswerers.size === 0) {
           dispatch(activeQuestionStoreAnswerer(
-            msgData.sender.display, isCorrect && (correctAnswerers.size === 0 || state['multipleWinners'])
+            msgData.sender.display,
+            isCorrect && (correctAnswerers.size === 0 || state.multipleWinners)
           ));
-        if (isCorrect && endEarly)
+        }
+
+        if (isCorrect && endEarly) {
           dispatch(activeQuestionEnd());
+        }
       }
     }
 
@@ -123,29 +130,28 @@ const activeQuestionHandleAnswerLogic = createLogic({
 const activeQuestionEndLogic = createLogic({
   type: ACTIVE_QUESTION_END,
   process: ({ action, getState }, dispatch, done) => {
-    const globalState = getState()['global'];
+    const globalState = getState().global;
     const { settings } = globalState;
     const { chatMessages } = settings;
-    const state = globalState['activeQuestion'];
+    const state = globalState.activeQuestion;
 
     const send = getSender(state, settings);
     const { cancelled } = action.payload;
 
     if (cancelled) {
-      send(chatMessages['questionCancelled']);
+      send(chatMessages.questionCancelled);
     } else {
       const { correctAnswerers } = state;
       const numWinners = [...correctAnswerers].length;
       if (numWinners === 0) {
-        send(chatMessages['questionEndNoWinners']);
+        send(chatMessages.questionEndNoWinners);
+      } else if (numWinners === 1) {
+        send(chatMessages.questionEndSingleWinner);
       } else {
-        if (numWinners === 1)
-          send(chatMessages['questionEndSingleWinner']);
-        else
-          send(chatMessages['questionEndMultipleWinners']);
-
-        // TODO: add points to bot
+        send(chatMessages.questionEndMultipleWinners);
       }
+
+      // TODO: add points to bot
     }
 
     done();
@@ -158,4 +164,4 @@ export default [
   activeQuestionTickLogic,
   activeQuestionHandleAnswerLogic,
   activeQuestionEndLogic
-]
+];

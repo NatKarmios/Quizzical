@@ -1,9 +1,9 @@
 // @flow
+
 import { createLogic } from 'redux-logic';
 
-import { mergeOntoSettings } from '../_modules/savedSettings';
+import { changeSettings } from '../_global/settings/settingsActions';
 
-import { changeSettings } from '../_global/actions';
 import { clearTempSettings, SAVE_TEMP_SETTINGS } from './settingsActions';
 
 

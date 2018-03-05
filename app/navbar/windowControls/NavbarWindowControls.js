@@ -23,14 +23,11 @@ getWindow().on('maximize', () => { setMaximized(true); });
 getWindow().on('unmaximize', () => { setMaximized(false); });
 
 
-type DefaultProps = {};
 type Props = {};
 type State = { maximized: boolean };
 
 
-class NavbarWindowControls extends Component<DefaultProps, Props, State> {
-  // noinspection JSUnusedGlobalSymbols
-  static defaultProps = {};
+class NavbarWindowControls extends Component<void, Props, State> {
   state = { maximized: false };
 
   render() {

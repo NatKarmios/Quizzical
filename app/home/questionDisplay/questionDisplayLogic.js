@@ -8,7 +8,7 @@ import { DELETE_QUESTION } from './questionDisplayActions';
 const deleteQuestionLogic = createLogic({
   type: DELETE_QUESTION,
   process: async ({ action, getState }, dispatch, done) => {
-    const questionID = action.payload['id'];
+    const questionID = action.payload.id;
     const state = getState();
 
     await deleteQuestionByID(questionID);

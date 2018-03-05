@@ -1,4 +1,5 @@
 // @flow
+// eslint-disable-next-line import/extensions
 import sqlite from 'sqlite';
 import { sep } from 'path';
 import { getDataDir } from '../../utils/helperFuncs';

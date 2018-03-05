@@ -1,9 +1,25 @@
 // @flow
+
 import React from 'react';
+import type { Node } from 'react';
 import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
 import Typography from 'material-ui/Typography';
-import { withStyles } from "material-ui/es/styles";
-import { MDIcon } from "../utils/components";
+import { withStyles } from 'material-ui/styles';
+
+import { MDIcon } from '../utils/components';
+
+
+type Props = {
+  primary: Node,
+  secondary: Node,
+  expanded: boolean,
+  onChange: () => any,
+  children: Node,
+  classes: {
+    heading: mixed,
+    secondaryHeading: mixed
+  }
+};
 
 
 const styles = theme => ({
@@ -18,7 +34,9 @@ const styles = theme => ({
   }
 });
 
-const SettingsExpansionPanel = ({primary, secondary, expanded, onChange, children, classes}) => (
+const SettingsExpansionPanel = ({
+  primary, secondary, expanded, onChange, children, classes
+}: Props) => (
   <ExpansionPanel expanded={expanded} onChange={onChange}>
     <ExpansionPanelSummary expandIcon={<MDIcon color="rgba(0, 0, 0, 0.5)" >chevron-down</MDIcon>}>
       <Typography className={classes.heading} >
@@ -26,7 +44,7 @@ const SettingsExpansionPanel = ({primary, secondary, expanded, onChange, childre
       </Typography>
       <Typography className={classes.secondaryHeading} >
         {secondary}
-        </Typography>
+      </Typography>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
       {children}

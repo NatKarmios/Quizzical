@@ -1,4 +1,3 @@
-/* eslint flowtype-errors/show-errors: 0 */
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 import App from './root/App';
@@ -8,7 +7,7 @@ import SettingsPage from './settings/Settings';
 
 export default () => (
   <App>
-    <Switch style={{overflowY: 'scroll'}}>
+    <Switch style={{ overflowY: 'scroll' }}>
       <Route exact path="/" render={() => (<Redirect to="/setup" />)} />
       <Route path="/home" component={HomePage} />
       <Route path="/setup" component={SetupPage} />

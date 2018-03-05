@@ -4,9 +4,20 @@ import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
+
 import arrLogic from '../logic';
 import rootReducer from '../reducers';
-import * as globalActions from '../_global/actions';
+
+// Global state actions
+import * as globalSettingsActions from '../_global/settings/settingsActions';
+import * as loginActions from '../_global/login/loginActions';
+import * as activeQuestionActions from '../_global/activeQuestion/activeQuestionActions';
+
+// Specific component state actions
+import * as setupActions from '../setup/setupActions';
+import * as settingsActions from '../settings/settingsActions';
+import * as questionListActions from '../home/questionList/questionListActions';
+import * as questionDisplayActions from '../home/questionDisplay/questionDisplayActions';
 
 const history = createHashHistory();
 
@@ -35,7 +46,13 @@ const configureStore = (initialState) => {
 
   // Redux DevTools Configuration
   const actionCreators = {
-    ...globalActions,
+    ...globalSettingsActions,
+    ...loginActions,
+    ...activeQuestionActions,
+    ...setupActions,
+    ...settingsActions,
+    ...questionListActions,
+    ...questionDisplayActions,
     ...routerActions,
   };
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
@@ -43,7 +60,7 @@ const configureStore = (initialState) => {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
-      actionsBlacklist: [globalActions.ACTIVE_QUESTION_TICK],
+      actionsBlacklist: [activeQuestionActions.ACTIVE_QUESTION_TICK],
       actionCreators,
     })
     : compose;
