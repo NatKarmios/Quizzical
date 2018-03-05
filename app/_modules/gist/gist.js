@@ -3,7 +3,7 @@
 
 import { httpGet } from '../../utils/helperFuncs';
 
-export const upload = async (title, content, fileType='.md') => {
+const upload = async (title: string, content: string, fileType: string='.md') => {
   const data = {
     description: title,
     public: true,
@@ -13,7 +13,6 @@ export const upload = async (title, content, fileType='.md') => {
   data.files[`${title}${fileType}`] = { content };
 
   try {
-
     const reply = await httpGet({
       url: 'https://api.github.com/gists',
       headers: {
@@ -24,9 +23,10 @@ export const upload = async (title, content, fileType='.md') => {
       body: data
     });
 
-    return reply['html_url'];
-
+    return reply.html_url;
   } catch (e) {
     return 'Something went wrong!';
   }
 };
+
+export default upload;

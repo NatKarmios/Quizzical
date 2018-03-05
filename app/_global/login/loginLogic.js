@@ -1,10 +1,12 @@
 // @flow
+
 import { createLogic } from 'redux-logic';
 
 import { guiLogin, tokenLogin } from '../../_modules/twitch/login';
 import type { LoginDataType } from '../../_modules/twitch/login';
 import { connect } from '../../_modules/twitch/chat';
-import { getSetting, setSetting } from '../../_modules/savedSettings';
+import { getSetting, setSetting } from '../../_modules/savedSettings/savedSettings';
+import { notify } from '../../utils/helperFuncs';
 
 import {
   TEST_SAVED_TOKENS,
@@ -36,7 +38,7 @@ const accountMap = {
 
 type AccountVarsType = {
   startedActionCreator: () => {},
-  successActionCreator: string => {},
+  successActionCreator: (string, string, string) => {},
   failureActionCreator: () => {},
   scopes: Array<string>,
   accountType: 'streamer' | 'bot'
@@ -48,17 +50,22 @@ const testSavedTokensLogic = createLogic({
   process: async ({ action, getState }, dispatch, done) => {
     const settings = getState().global.settings;
 
-    const doLogin = async (
-      { startedActionCreator, successActionCreator, failureActionCreator, accountType }: AccountVarsType
-    ) => {
+    const doLogin = async ({
+      startedActionCreator, successActionCreator, failureActionCreator, accountType
+    }: AccountVarsType) => {
       dispatch(startedActionCreator());
 
       const token = getSetting(settings, 'login', `${accountType}AuthToken`);
-      const details: ?{username: string, displayName: string, avatarURL: string} = await tokenLogin(token);
+      const details: ?{username: string, displayName: string, avatarURL: string} =
+        await tokenLogin(token);
       if (details !== undefined && details !== null) {
         const { username, displayName, avatarURL } = details;
         dispatch(successActionCreator(username, displayName, avatarURL));
-      } else { dispatch(failureActionCreator()); }
+        notify(`Successfully logged into ${accountType} account.`, 'success', 1500);
+      } else {
+        dispatch(failureActionCreator());
+        notify(`Failed to log into ${accountType} account!`, 'warning');
+      }
     };
 
     await Promise.all([doLogin(accountMap.streamer), doLogin(accountMap.bot)]);
@@ -72,9 +79,9 @@ let partitionCount = 0;
 let atLeastOneLoggedIn = false;
 
 
-const processLogin = (
-  {startedActionCreator, successActionCreator, failureActionCreator, scopes, accountType }: AccountVarsType
-) =>
+const processLogin = ({
+  startedActionCreator, successActionCreator, failureActionCreator, scopes, accountType
+}: AccountVarsType) =>
   async ({ action, getState }, dispatch, done) => {
     dispatch(startedActionCreator());
 
@@ -88,10 +95,10 @@ const processLogin = (
       const { username, displayName, avatarURL } = loginData.details;
       dispatch(successActionCreator(username, displayName, avatarURL));
       await setSetting(settings, 'login', `${accountType}AuthToken`, loginData.token);
-
-      dispatch(successActionCreator());
+      notify(`Successfully logged into ${accountType} account.`, 'success', 1500);
     } else {
       dispatch(failureActionCreator());
+      notify(`Failed to log into ${accountType} account!`, 'warning');
     }
     done();
   };
@@ -111,7 +118,7 @@ const loginFinishedLogic = createLogic({
   type: [STREAMER_LOGGED_IN, BOT_LOGGED_IN],
   process: ({ action }, dispatch, done) => {
     if (atLeastOneLoggedIn) {
-      connect();
+      connect().catch();
     }
     atLeastOneLoggedIn = true;
     done();

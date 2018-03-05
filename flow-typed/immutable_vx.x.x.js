@@ -1,4 +1,4 @@
 
-declare module 'module' {
+declare module 'immutable' {
   declare module.exports: any;
 }

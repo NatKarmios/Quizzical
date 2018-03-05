@@ -1,14 +1,7 @@
 // @flow
+
 import { getDB } from './dbSetup';
-
-
-export type QuestionType = {
-  questionID: number,
-  content: string,
-  correctAnswer: string,
-  incorrectAnswers: Array<string>,
-  external: boolean
-}
+import type { QuestionType } from '../../utils/types';
 
 
 const CREATE_QUESTIONS_TABLE =
@@ -25,37 +18,55 @@ const GET_QUESTION_SELECTION = 'SELECT * FROM Questions LIMIT ? OFFSET ?';
 const DELETE_ALL_QUESTIONS = 'DELETE FROM Questions';
 const DELETE_QUESTION_BY_ID = 'DELETE FROM Questions WHERE questionID = ?';
 
-const parseRawQuestion: mixed => QuestionType =
-    rawQuestion => ({
-      ...rawQuestion,
+
+const parseRawQuestion = (rawQuestion: mixed): QuestionType => {
+  if (
+    rawQuestion && typeof rawQuestion === 'object'
+    && typeof rawQuestion.questionID === 'number'
+    && typeof rawQuestion.content === 'string'
+    && typeof rawQuestion.correctAnswer === 'string'
+    && typeof rawQuestion.incorrectAnswers === 'string'
+    && typeof rawQuestion.external === 'number'
+  ) {
+    return {
+      questionID: rawQuestion.questionID,
+      content: rawQuestion.content,
+      correctAnswer: rawQuestion.correctAnswer,
       incorrectAnswers: rawQuestion.incorrectAnswers.split('|'),
       external: rawQuestion.external === 1
-    });
+    };
+  }
 
-export const createTable: () => Promise<void> =
-  () => getDB().run(CREATE_QUESTIONS_TABLE);
+  throw Error(`Parsed question didn't match types!\n${JSON.stringify(rawQuestion)}`);
+};
 
-export const insertQuestion: (string, string, Array<string>, boolean) => Promise<void> =
-  (content: string, correctAnswer: string, incorrectAnswers: Array<string>, external: boolean) =>
+
+export const createTable = (): Promise<any> =>
+  getDB().run(CREATE_QUESTIONS_TABLE);
+
+export const insertQuestion = (
+  content: string, correctAnswer: string, incorrectAnswers: Array<string>, external: boolean
+): Promise<any> =>
     getDB().run(INSERT_QUESTION, [content, correctAnswer, incorrectAnswers.join('|'), external]);
 
-export const getAllQuestions: () => Promise<Array<QuestionType>> =
-  async () => (await getDB().all(GET_ALL_QUESTIONS)).map(parseRawQuestion);
+export const getAllQuestions = async (): Promise<Array<QuestionType>> =>
+  (await getDB().all(GET_ALL_QUESTIONS)).map(parseRawQuestion);
 
-export const getQuestionByID: number => Promise<QuestionType> =
-  async id => parseRawQuestion(await getDB().get(GET_QUESTION_BY_ID, [id]));
+export const getQuestionByID = async (id: number): Promise<QuestionType> =>
+  parseRawQuestion(await getDB().get(GET_QUESTION_BY_ID, [id]));
 
-export const getQuestionCount: () => Promise<number> =
-  async () => (await getDB().get(GET_QUESTION_COUNT))['COUNT(*)'];
+export const getQuestionCount = async (): Promise<number> =>
+  (await getDB().get(GET_QUESTION_COUNT))['COUNT(*)'];
 
-export const getQuestionList: (number, ?number) => Promise<Array<QuestionType>> =
-  async (page: number, numQuestions: number = 10) =>
+export const getQuestionList = async (
+  page: number, numQuestions: number = 10
+): Promise<Array<QuestionType>> =>
     (await getDB().all(
-      GET_QUESTION_SELECTION, [numQuestions, page*numQuestions]
+      GET_QUESTION_SELECTION, [numQuestions, page * numQuestions]
     )).map(parseRawQuestion);
 
-export const deleteAllQuestions: () => Promise<void> =
+export const deleteAllQuestions: () => Promise<any> =
   () => getDB().run(DELETE_ALL_QUESTIONS);
 
-export const deleteQuestionByID: number => Promise<void> =
-  id => getDB().run(DELETE_QUESTION_BY_ID, [id]);
+export const deleteQuestionByID =
+  (id: number): Promise<any> => getDB().run(DELETE_QUESTION_BY_ID, [id]);

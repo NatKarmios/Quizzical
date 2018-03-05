@@ -4,9 +4,9 @@ import { createLogic } from 'redux-logic';
 import { notify } from '../../utils/helperFuncs';
 
 import { getQuestionCount, getQuestionList, insertQuestion } from '../../_modules/db/dbQueries';
+import { addExternalQuestions } from '../../_modules/externalQuestions';
 
 import { ADD_QUESTION, LOAD_QUESTIONS, IMPORT_QUESTIONS, questionsLoaded, loadQuestions } from './questionListActions';
-import {addExternalQuestions} from "../../_modules/externalQuestions";
 
 
 const IMPORT_QUESTIONS_MAX_RETRIES = 5;
@@ -15,9 +15,9 @@ const IMPORT_QUESTIONS_MAX_RETRIES = 5;
 const loadQuestionsLogic = createLogic({
   type: LOAD_QUESTIONS,
   process: async ({ action }, dispatch, done) => {
-    const targetPage = action.payload['page'];
+    const targetPage = action.payload.page;
     const questionCount = await getQuestionCount();
-    const maxPage = Math.floor(Math.max(questionCount-1, 0)/10);
+    const maxPage = Math.floor(Math.max(questionCount - 1, 0) / 10);
     const page = Math.min(targetPage, maxPage);
     const loadedQuestions = await getQuestionList(page);
 
@@ -36,7 +36,7 @@ const addQuestionLogic = createLogic({
       notify('Question saved successfully.', 'success');
     } catch (e) {
       notify('Failed to add question - it may already exist!', 'error');
-      console.error("Failed to insert to SQLite DB!", e);
+      console.error('Failed to insert to SQLite DB!', e);
     }
     dispatch(loadQuestions(getState().questionList.currentPage));
     done();
@@ -51,30 +51,33 @@ const importQuestionsLogic = createLogic({
 
     let triesLeft = IMPORT_QUESTIONS_MAX_RETRIES;
     let leftToAdd = amount;
-    while(triesLeft > 0 && leftToAdd > 0) {
-      if (triesLeft === IMPORT_QUESTIONS_MAX_RETRIES)
+    while (triesLeft > 0 && leftToAdd > 0) {
+      if (triesLeft === IMPORT_QUESTIONS_MAX_RETRIES) {
         notify(`Importing ${leftToAdd} question${leftToAdd === 1 ? '' : 's'}...`);
+      }
 
+      // eslint-disable-next-line no-await-in-loop
       leftToAdd = await addExternalQuestions(leftToAdd, difficulty);
-      triesLeft--;
+      triesLeft -= 1;
     }
 
     const added = amount - leftToAdd;
-    if (leftToAdd === 0)
+    if (leftToAdd === 0) {
       notify(
         `Successfully imported ${added} question${added === 1 ? '' : 's'}`,
         'success'
       );
-    else if (added === 0)
+    } else if (added === 0) {
       notify(
         'Failed to import any questions.',
         'error'
       );
-    else
+    } else {
       notify(
         `${added} question${leftToAdd === 1 ? '' : 's'} imported successfully; ${leftToAdd} couldn't be imported.`,
         'warning'
       );
+    }
 
     dispatch(loadQuestions(getState().questionList.currentPage));
     done();

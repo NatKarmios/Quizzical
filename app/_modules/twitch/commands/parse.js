@@ -14,11 +14,11 @@ export type CommandType = {
   pattern: RegExp,
   func: MsgData => void,
   modOnly: boolean,
-  details: CommandDetailsType
+  details: ?CommandDetailsType
 };
 
 
-export const parseCommand: MsgData => void = (msgData: MsgData) => {
+const parseCommand: MsgData => void = (msgData: MsgData) => {
   // Non-whisper messages are ignored if they don't start with '?', the command prefix.
   if (!msgData.msg.startsWith('?') && !msgData.isWhisper) return;
 
@@ -28,8 +28,11 @@ export const parseCommand: MsgData => void = (msgData: MsgData) => {
   // Iterate through the list of commands; if the command's regex matches the user message,
   // then call the command's function with the message data.
   commands.forEach(cmd => {
-    if (cmd.pattern.test(msg))
+    if (cmd.pattern.test(msg)) {
       cmd.func(msgData);
+    }
   });
 };
 
+
+export default parseCommand;

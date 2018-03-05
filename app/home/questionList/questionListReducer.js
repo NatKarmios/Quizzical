@@ -1,16 +1,19 @@
 // @flow
 
-import type { QuestionType } from '../../_modules/db/dbQueries';
+import type { QuestionType, ActionType } from '../../utils/types';
 
-import { ADD_QUESTION, IMPORT_QUESTIONS, LOAD_QUESTIONS, QUESTIONS_LOADED } from './questionListActions';
+import {
+  ADD_QUESTION, IMPORT_QUESTIONS, LOAD_QUESTIONS, QUESTIONS_LOADED
+} from './questionListActions';
 
-export type QuestionListStateType = {
+export type QuestionListState = {
   initialLoad: boolean,
   loading: boolean,
   questionCount: number,
   currentPage: number,
   loadedQuestions: Array<QuestionType>
-}
+};
+
 
 const defaultState = {
   initialLoad: false,
@@ -21,18 +24,27 @@ const defaultState = {
 };
 
 export default function questionList(
-  state = defaultState,
-  { type, payload }
+  state: QuestionListState=defaultState,
+  action: ActionType
 ) {
-  if ([ADD_QUESTION, LOAD_QUESTIONS, IMPORT_QUESTIONS].includes(type))
+  if ([ADD_QUESTION, LOAD_QUESTIONS, IMPORT_QUESTIONS].includes(action.type)) {
     return { ...state, loading: true };
-  if (type === QUESTIONS_LOADED)
-    return {
-      initialLoad: true,
-      loading: false,
-      questionCount: payload['questionCount'],
-      currentPage: payload['page'],
-      loadedQuestions: payload['questions']
-    };
+  }
+  if (action.type === QUESTIONS_LOADED) {
+    if (
+      action.payload !== undefined && action.payload !== null && typeof action.payload === 'object'
+      && action.payload.questionCount !== undefined && action.payload.questionCount !== null
+      && action.payload.page !== undefined && action.payload.page !== null
+      && action.payload.loadedQuestions !== undefined && action.payload.loadedQuestions !== null
+    ) {
+      return {
+        initialLoad: true,
+        loading: false,
+        questionCount: action.payload.questionCount,
+        currentPage: action.payload.page,
+        loadedQuestions: action.payload.questions
+      };
+    }
+  }
   return state;
 }

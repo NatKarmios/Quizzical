@@ -1,35 +1,44 @@
 // @flow
+/* eslint-disable flowtype/no-weak-types */
+
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Paper from 'material-ui/Paper';
-import { MDIcon, HeaderLinkButton } from '../utils/components';
 import Typography from 'material-ui/Typography';
 
+import { MDIcon, HeaderLinkButton } from '../utils/components';
+
 import * as SettingsActions from './settingsActions';
-import ControlButtons from './SettingsControlButtons'
+import ControlButtons from './SettingsControlButtons';
 import Panels from './SettingsPanels';
 import DangerZone from './SettingsDangerZone';
-import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings';
+import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings/savedSettings';
+import type { SettingsType } from '../utils/types';
 import { deleteAllQuestions } from '../_modules/db/dbQueries';
 import { restart } from '../utils/helperFuncs';
 
 
 const checkIfUnsavedChanges = tempSettings => {
   let unsavedChanges = false;
-  if (tempSettings !== null && typeof tempSettings === 'object')
+  if (tempSettings !== null && typeof tempSettings === 'object') {
     Object.keys(tempSettings).forEach(category => {
-      if (tempSettings[category] !== null && typeof tempSettings[category] === 'object')
+      if (tempSettings[category] !== null && typeof tempSettings[category] === 'object') {
         Object.keys(tempSettings[category]).forEach(label => {
-          if (tempSettings[category][label] !== undefined && tempSettings[category][label] !== null)
+          if (
+            tempSettings[category][label] !== undefined && tempSettings[category][label] !== null
+          ) {
             unsavedChanges = true;
+          }
         });
+      }
     });
+  }
   return unsavedChanges;
 };
 
 
-const logOutOfTwitch = async settings => {
+const logOutOfTwitch = async (settings: SettingsType): Promise<void> => {
   const newSettings = mergeOntoSettings(settings, {
     login: {
       streamerAuthToken: null,
@@ -40,25 +49,42 @@ const logOutOfTwitch = async settings => {
   restart();
 };
 
-const deleteQuestions = async () => {
+const deleteQuestions = async (): Promise<void> => {
   await deleteAllQuestions();
   restart();
 };
 
-const resetToDefaultSettings = async settings => {
+const resetToDefaultSettings = async (settings: SettingsType): Promise<void> => {
   const newSettings = resetSettings(settings);
   await saveSettings(newSettings);
   restart();
 };
 
 
+type Props = {
+  settings: SettingsType,
+  expanded: number,
+  tempSettings: {},
+  expandPanel: (number, number) => any,
+  updateTempSetting: () => any,
+  saveTempSettings: () => any,
+  clearTempSettings: () => any,
+  canSave: boolean
+};
+
+
 const Settings = ({
-  settings, expanded, tempSettings, expandPanel, updateTempSetting, saveTempSettings, clearTempSettings, canSave
-}) => {
+  settings, expanded, tempSettings, expandPanel, updateTempSetting,
+  saveTempSettings, clearTempSettings, canSave
+}: Props) => {
   const unsavedSettings = checkIfUnsavedChanges(tempSettings);
 
-  const logout = () => logOutOfTwitch(settings);
-  const reset = () => resetToDefaultSettings(settings);
+  const logout = () => {
+    logOutOfTwitch(settings).catch();
+  };
+  const reset = () => {
+    resetToDefaultSettings(settings).catch();
+  };
 
   return (
     <div style={{ margin: '20px' }}>
@@ -66,15 +92,20 @@ const Settings = ({
         <Typography type="headline">
           <MDIcon color="black" style={{ marginRight: '5px' }}>settings</MDIcon>
           Settings
-          <HeaderLinkButton tooltipText="Back to home" linkTo="/home" icons={['arrow-left-bold', 'home']} width="80px"/>
+          <HeaderLinkButton tooltipText="Back to home" linkTo="/home" icons={['arrow-left-bold', 'home']} width="80px" />
         </Typography>
       </Paper>
 
-      <br/>
+      <br />
 
-      <ControlButtons saveEnabled={canSave && unsavedSettings} clearEnabled={unsavedSettings} onSave={saveTempSettings} onClear={clearTempSettings}/>
+      <ControlButtons
+        saveEnabled={canSave && unsavedSettings}
+        clearEnabled={unsavedSettings}
+        onSave={saveTempSettings}
+        onClear={clearTempSettings}
+      />
 
-      <br/>
+      <br />
 
       <Panels
         settings={settings}
@@ -84,7 +115,7 @@ const Settings = ({
         onTempSettingChange={updateTempSetting}
       />
 
-      <DangerZone onLogout={logout} onDeleteQuestions={deleteQuestions} onReset={reset}/>
+      <DangerZone onLogout={logout} onDeleteQuestions={deleteQuestions} onReset={reset} />
     </div>
   );
 };
@@ -95,11 +126,13 @@ function mapStateToProps(state) {
     expanded: state.settings.expanded,
     tempSettings: state.settings.tempSettings,
     canSave: state.settings.errorFields.size === 0
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(SettingsActions, dispatch);
 }
 
+
+// $FlowFixMe
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);

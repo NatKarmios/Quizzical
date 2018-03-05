@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Root from './root/Root';
-// noinspection ES6CheckImport
 import { configureStore, history } from './store/configureStore';
 
 import './app.global.scss';
@@ -23,10 +22,12 @@ const ready = () => {
 
   if (module.hot) {
     module.hot.accept('./root/Root', () => {
-      const NextRoot = require('./root/Root'); // eslint-disable-line global-require
+      const NextRoot =
+      // eslint-disable-next-line
+      require('./root/Root');
       render(
         <AppContainer>
-          <NextRoot store={store} history={history}/>
+          <NextRoot store={store} history={history} />
         </AppContainer>,
         document.getElementById('root')
       );

@@ -11,6 +11,8 @@ import CheckNodeEnv from './internals/scripts/CheckNodeEnv';
 
 CheckNodeEnv('production');
 
+// noinspection Annotator
+// noinspection Annotator
 export default merge.smart(baseConfig, {
   devtool: 'source-map',
 
@@ -31,8 +33,8 @@ export default merge.smart(baseConfig, {
     new BabiliPlugin(),
 
     new BundleAnalyzerPlugin({
-      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
+      analyzerMode: process.env['OPEN_ANALYZER'] === 'true' ? 'server' : 'disabled',
+      openAnalyzer: process.env['OPEN_ANALYZER'] === 'true'
     }),
 
     /**

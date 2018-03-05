@@ -4,15 +4,19 @@ import type { MsgData } from '../msgData';
 import type { CommandType, CommandDetailsType } from './parse';
 import { getQuestionCount, getQuestionList, getQuestionByID } from '../../db/dbQueries';
 import { numPages } from '../../../utils/helperFuncs';
-import { upload } from '../../gist/gist';
+import upload from '../../gist/gist';
 import questionListFormatter from '../../gist/formatters/questionList';
 import commandListFormatter from '../../gist/formatters/commandList';
 import { getState, dispatch } from '../../../store';
 import { activeQuestionStart, activeQuestionEnd } from '../../../_global/activeQuestion/activeQuestionActions';
 
 const makeCommand = (
-  pattern: RegExp, func: MsgData => void, details: ?CommandDetailsType=undefined, modOnly: boolean=true
-) => ({
+  pattern: RegExp,
+// eslint-disable-next-line flowtype/no-weak-types
+  func: MsgData => any,
+  details: ?CommandDetailsType=undefined,
+  modOnly: boolean=true
+): CommandType => ({
   pattern, func, modOnly, details
 });
 
@@ -45,8 +49,8 @@ const questionListCombined = async (msgData: MsgData, page) => {
   }
 
   const questions = await getQuestionList(page, 30);
-  const formattedData = questionListFormatter(questions, page+1, maxPage);
-  const url = await upload(`Quizzical Question List | Page ${page+1}`, formattedData);
+  const formattedData = questionListFormatter(questions, page + 1, maxPage);
+  const url = await upload(`Quizzical Question List | Page ${page + 1}`, formattedData);
   msgData.reply(url);
 };
 
@@ -58,22 +62,49 @@ export const questionList = makeCommand(
 
 export const questionListWithPageNumber = makeCommand(
   /^questionList [1-9]\d*$/,
-  async (msgData: MsgData) => questionListCombined(msgData, parseInt(msgData.words[1]) - 1)
+  async (msgData: MsgData) => questionListCombined(msgData, parseInt(msgData.words[1], 10) - 1)
 );
 
 export const startQuestion = makeCommand(
   /^startQuestion /,
   async (msgData: MsgData) => {
-    let state = getState();
-    let { settings, activeQuestion } = state['global'];
+    const state = getState();
+    if (
+      state.global === null || state.global === undefined
+      || state.global.settings === null || state.global.settings === undefined
+      || state.global.activeQuestion === null || state.global.activeQuestion === undefined
+    ) {
+      throw Error('Type error!');
+    }
+    const settings = state.global;
+    const activeQuestion = state.global;
 
     if (activeQuestion.running) {
       msgData.reply('A question is already running.');
       return;
     }
 
-    let duration = settings['misc']['defaultDuration'];
-    let prize = settings['misc']['defaultPrize'];
+    if (settings.misc === null || settings.misc === undefined || typeof settings.misc !== 'object') {
+      throw Error('Type error!');
+    }
+    const miscSettings: {} = settings.misc;
+
+    if (
+      miscSettings.defaultDuration === null || miscSettings.defaultDuration === undefined
+      || typeof miscSettings.defaultDuration !== 'string'
+    ) {
+      throw Error('Type error!');
+    }
+    let duration = parseInt(miscSettings.defaultDuration, 10);
+
+    if (
+      miscSettings.defaultPrize === null || miscSettings.defaultPrize === undefined
+      || typeof miscSettings.defaultPrize !== 'string'
+    ) {
+      throw Error('Type error!');
+    }
+    let prize = parseInt(miscSettings.defaultPrize, 10);
+
     let mode = 0;
 
     const args = msgData.words.slice(1).map(parseInt);
@@ -91,8 +122,9 @@ export const startQuestion = makeCommand(
       }
     }
 
-    if (args.length >= 3)
+    if (args.length >= 3) {
       prize = args[2];
+    }
 
     if (args.length >= 2) {
       duration = args[1];
@@ -110,7 +142,6 @@ export const startQuestion = makeCommand(
       console.error(e);
       msgData.reply('Something went wrong; that question might not exist.');
     }
-
   },
   cmdDetails(
     'Start Question', '`startQuestion [id] [duration?] [prize?] [mode?]`',
@@ -128,7 +159,18 @@ export const startQuestion = makeCommand(
 
 
 const finishOrCancelQuestion = (cancelled: boolean) => (msgData: MsgData) => {
-  const { running } = getState()['global']['activeQuestion'];
+  const state = getState();
+  if (
+    state === null || state === undefined || state.global === null || state.global === undefined
+    || state.global.activeQuestion === null || state.activeQuestion === undefined
+    || typeof state.global.activeQuestion !== 'object'
+    || state.global.activeQuestion.running === null
+    || state.global.activeQuestion.running === undefined
+    || typeof state.global.activeQuestion.running !== 'boolean'
+  ) {
+    throw Error('Type error!');
+  }
+  const running = state.global.activeQuestion.running;
   if (!running) {
     msgData.reply('There is no question currently running.');
     return;
