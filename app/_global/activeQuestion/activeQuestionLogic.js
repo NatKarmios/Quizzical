@@ -27,7 +27,7 @@ const lower = str => str.toLowerCase();
  *          be substituted into the user's custom chat messages.
  */
 const getContextFromState = (state, settings, extra = {}) => {
-  const { prize, question, correctAnswerers, timeLeft } = state;
+  const { prize, question, correctAnswerers, duration, timeLeft } = state;
   const winners = [...correctAnswerers];
 
   const context = {
@@ -35,6 +35,7 @@ const getContextFromState = (state, settings, extra = {}) => {
     prize: `${prize} ${settings.misc[`point${Math.abs(prize) === 1 ? '' : 's'}Name`]}`,
     rawPrize: prize,
     question: question.content,
+    duration,
     timeLeft,
 
     // Insert extra variables

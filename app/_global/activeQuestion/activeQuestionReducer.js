@@ -21,6 +21,8 @@ const defaultState = {
   running: false,
   // The quesetion being asked
   question: null,
+  // The total duration of the question
+  duration: -1,
   // The amount of time left on the question
   timeLeft: -1,
   // The number of points distributed to any winners
@@ -53,7 +55,6 @@ const activeQuestion = (
       const { question, duration, prize, endEarly, multipleWinners } = payload;
       const typedQuestion = refineToQuestionType(question);
       if (typedQuestion !== undefined && typedQuestion !== null) {
-        const timeLeft = duration;
         const answerMap = shuffleArray(range(typedQuestion.incorrectAnswers.length + 1, 1));
 
         return {
@@ -62,7 +63,8 @@ const activeQuestion = (
           prize,
           endEarly,
           multipleWinners,
-          timeLeft,
+          duration,
+          timeLeft: duration,
           answerMap,
           uiActive: true,
           running: true

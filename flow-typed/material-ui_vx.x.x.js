@@ -11,6 +11,10 @@ declare module 'material-ui/transitions/Slide' {
   declare module.exports: any;
 }
 
+declare module 'material-ui/Progress' {
+  declare module.exports: any;
+}
+
 declare module 'material-ui/Tooltip' {
   declare module.exports: any;
 }

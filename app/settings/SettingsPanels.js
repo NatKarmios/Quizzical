@@ -62,14 +62,14 @@ const OPTIONS = [
     options: [
       makeOption('joinMessage', 'Join message', 'This is sent to chat once the bot connects.'),
       makeOption('questionStarted', 'Question announcement', 'Variables: {prize}, {rawPrize}, {timeLeft}'),
-      makeOption('showQuestion', 'Show question', 'Variables: {question}, {prize}, {rawPrize}, {timeLeft}'),
-      makeOption('questionCancelled', 'Question cancelled', 'Variables: {question}, {prize}, {rawPrize}'),
-      makeOption('questionEndNoWinners', 'No winners', 'Variables: {question}, {prize}, {rawPrize}'),
-      makeOption('questionEndSingleWinner', 'One winner', 'Variables: {question}, {prize}, {rawPrize}, {winner}'),
-      makeOption('questionEndMultipleWinners', 'Multiple winners', 'Variables: {question}, {prize}, {rawPrize}, {winners}'),
-      makeOption('answerReceived', 'Answer received', 'Variables: {question}, {prize}, {rawPrize}, {timeLeft}, {target}'),
-      makeOption('alreadyAnswered', 'Viewer already answered', 'Variables: {question}, {prize}, {rawPrize}, {timeLeft}, {target}'),
-      makeOption('invalidAnswer', 'Invalid answer', 'Variables: {question}, {prize}, {rawPrize}, {timeLeft}, {target}')
+      makeOption('showQuestion', 'Show question', 'Variables: {question}, {prize}, {rawPrize}, {duration}, {timeLeft}'),
+      makeOption('questionCancelled', 'Question cancelled', 'Variables: {question}, {prize}, {rawPrize}, {duration}'),
+      makeOption('questionEndNoWinners', 'No winners', 'Variables: {question}, {prize}, {rawPrize}, {duration}'),
+      makeOption('questionEndSingleWinner', 'One winner', 'Variables: {question}, {prize}, {rawPrize}, {duration}, {winner}'),
+      makeOption('questionEndMultipleWinners', 'Multiple winners', 'Variables: {question}, {prize}, {rawPrize}, {duration}, {winners}'),
+      makeOption('answerReceived', 'Answer received', 'Variables: {question}, {prize}, {rawPrize}, {duration}, {timeLeft}, {target}'),
+      makeOption('alreadyAnswered', 'Viewer already answered', 'Variables: {question}, {prize}, {rawPrize}, {duration}, {timeLeft}, {target}'),
+      makeOption('invalidAnswer', 'Invalid answer', 'Variables: {question}, {prize}, {rawPrize}, {duration}, {timeLeft}, {target}')
     ]
   },
   {

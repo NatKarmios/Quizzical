@@ -17,7 +17,7 @@ const DEFAULT_SETTINGS = {
   },
   chatMessages: {
     joinMessage: 'Quizzical initialized!',
-    questionStarted: 'A question has started for {prize}! You have {timeLeft} seconds to answer; ' +
+    questionStarted: 'A question has started for {prize}! You have {duration} seconds to answer; ' +
     'whisper your choice to me using \'/w {bot} [choice]\'.',
     showQuestion: 'Your question is: {question}',
     questionCancelled: 'Question cancelled.',
