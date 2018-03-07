@@ -2,7 +2,7 @@
 
 import { createLogic } from 'redux-logic';
 
-import { loadSettings, saveSettings } from '../../_modules/savedSettings/savedSettings';
+import { loadSettings, saveSettings } from '../../_modules/savedSettings';
 import { testSavedTokens } from '../login/loginActions';
 import { notify } from '../../utils/helperFuncs';
 
