@@ -11,7 +11,6 @@ const CREATE_QUESTIONS_TABLE =
 const INSERT_QUESTION =
   'INSERT INTO Questions(content, correctAnswer, incorrectAnswers, external) ' +
   'VALUES (?, ?, ?, ?)';
-const GET_ALL_QUESTIONS = 'SELECT * FROM Questions';
 const GET_QUESTION_BY_ID = 'SELECT * FROM Questions WHERE questionID = ?';
 const GET_QUESTION_COUNT = 'SELECT COUNT(*) FROM Questions';
 const GET_QUESTION_SELECTION = 'SELECT * FROM Questions LIMIT ? OFFSET ?';
@@ -49,8 +48,6 @@ export const insertQuestion = (
 ): Promise<any> =>
     getDB().run(INSERT_QUESTION, [content, correctAnswer, incorrectAnswers.join('|'), external]);
 
-export const getAllQuestions = async (): Promise<Array<QuestionType>> =>
-  (await getDB().all(GET_ALL_QUESTIONS)).map(parseRawQuestion);
 
 export const getQuestionByID = async (id: number): Promise<QuestionType> =>
   parseRawQuestion(await getDB().get(GET_QUESTION_BY_ID, [id]));
