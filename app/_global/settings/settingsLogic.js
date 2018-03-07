@@ -5,6 +5,7 @@ import { createLogic } from 'redux-logic';
 import { loadSettings, saveSettings } from '../../_modules/savedSettings';
 import { testSavedTokens } from '../login/loginActions';
 import { notify } from '../../utils/helperFuncs';
+import { testConnection } from '../../_modules/streamlabsBot';
 
 import {
   LOAD_SETTINGS, SETTINGS_LOADED, CHANGE_SETTINGS, settingsLoaded, settingsReady, settingsChanged
@@ -49,7 +50,12 @@ const settingsLoadedLogic = createLogic({
 const settingsReadyLogic = createLogic({
   type: SETTINGS_LOADED,
   process: async ({ action }, dispatch, done) => {
+    // Test connection to StreamLabs Bot
+    testConnection().catch();
+
+    // Attept to log in with saved Twitch authentication tokens
     dispatch(testSavedTokens());
+
     done();
   }
 });

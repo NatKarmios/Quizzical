@@ -5,6 +5,7 @@ import { createLogic } from 'redux-logic';
 import { delay, formatWithContext } from '../../utils/helperFuncs';
 import { queueMessage } from '../../_modules/twitch/chat';
 import type { MsgData } from '../../_modules/twitch/msgData';
+import { distributePoints } from '../../_modules/streamlabsBot';
 
 import {
   ACTIVE_QUESTION_START, ACTIVE_QUESTION_TICK, ACTIVE_QUESTION_HANDLE_ANSWER, ACTIVE_QUESTION_END,
@@ -271,7 +272,8 @@ const activeQuestionEndLogic = createLogic({
         send(chatMessages.questionEndMultipleWinners);
       }
 
-      // TODO: add points to bot
+      // Distribute points to the winners
+      distributePoints([...state.correctAnswerers], state.prize).catch();
     }
 
     done();
