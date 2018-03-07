@@ -53,9 +53,14 @@ const testSavedTokensLogic = createLogic({
     const doLogin = async ({
       startedActionCreator, successActionCreator, failureActionCreator, accountType
     }: AccountVarsType) => {
+      const token = getSetting(settings, 'login', `${accountType}AuthToken`);
+
+      if (token === null || token === undefined) {
+        return;
+      }
+
       dispatch(startedActionCreator());
 
-      const token = getSetting(settings, 'login', `${accountType}AuthToken`);
       const details: ?{username: string, displayName: string, avatarURL: string} =
         await tokenLogin(token);
       if (details !== undefined && details !== null) {
@@ -93,8 +98,12 @@ const processLogin = ({
     const loginData: ?LoginDataType = await guiLogin(sessionPartition, scopes);
     if (loginData !== null && loginData !== undefined) {
       const { username, displayName, avatarURL } = loginData.details;
+      dispatch(changeSettings({
+        ['login']: {
+          [`${accountType}AuthToken`]: loginData.token
+        }
+      }))
       dispatch(successActionCreator(username, displayName, avatarURL));
-      await setSetting(settings, 'login', `${accountType}AuthToken`, loginData.token);
       notify(`Successfully logged into ${accountType} account.`, 'success', 1500);
     } else {
       dispatch(failureActionCreator());
