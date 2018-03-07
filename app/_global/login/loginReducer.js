@@ -4,12 +4,33 @@ import { BOT_LOGGED_IN, STREAMER_LOGGED_IN } from './loginActions';
 import type { LoginStateType, ActionType } from '../../utils/types';
 
 
+// The login state consists of:
 const defaultState = {
-  streamer: { username: null, displayName: null, avatar: null },
-  bot: { username: null, displayName: null, avatar: null }
+  streamer: {
+    // The streamer account's username
+    username: null,
+    // The streamer account's display name
+    displayName: null,
+    // The URL of the streamer account's display picture
+    avatar: null
+  },
+  bot: {
+    // The bot account's username
+    username: null,
+    // The bot account's display name
+    displayName: null,
+    // The URL of the bot account's display picture
+    avatar: null
+  }
 };
 
-
+/**
+ *  Reducer for login state
+ *
+ * @param state
+ * @param action
+ * @returns The new login state
+ */
 const login = (state: LoginStateType=defaultState, action: ActionType) => {
   switch (action.type) {
     case STREAMER_LOGGED_IN:
