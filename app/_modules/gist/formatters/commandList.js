@@ -8,7 +8,7 @@ const mapCommand = (commandDetails: ?CommandDetailsType) => {
     throw Error('Logic error!');
   }
   const { name, usage, description } = commandDetails;
-  [
+  return [
     `## ${name}`,
     `Usage: ${usage}`,
     '',
