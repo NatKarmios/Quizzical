@@ -13,19 +13,38 @@ import {
 } from './activeQuestionActions';
 
 
+// The active question state consists of:
 const defaultState = {
+  // Whether the active question UI is shown
   uiActive: false,
+  // Whether there is a question currently running
   running: false,
+  // The quesetion being asked
   question: null,
+  // The amount of time left on the question
   timeLeft: -1,
+  // The number of points distributed to any winners
   prize: -1,
+  // Whether the question should end as soon as someone answers correctly
   endEarly: false,
+  // Whether more than one person should be able to win
   multipleWinners: true,
+  // An array that maps indeces of answers to those that the viewers see
   answerMap: null,
+  // An immutable list of viewers who have answered correctly
   correctAnswerers: List(),
+  // An immutable list of viewers who have answered incorrectly
   incorrectAnswerers: List()
 };
 
+/**
+ *  Reducer for active question state
+ *
+ * @param state
+ * @param type
+ * @param payload
+ * @returns The new active question state
+ */
 const activeQuestion = (
   state: ActiveQuestionStateType=defaultState, { type, payload }: ActionType
 ) => {
