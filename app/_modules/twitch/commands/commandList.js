@@ -76,8 +76,8 @@ export const startQuestion = makeCommand(
     ) {
       throw Error('Type error!');
     }
-    const settings = state.global;
-    const activeQuestion = state.global;
+    const settings = state.global.settings;
+    const activeQuestion = state.global.activeQuestion;
 
     if (activeQuestion.running) {
       msgData.reply('A question is already running.');
@@ -162,7 +162,7 @@ const finishOrCancelQuestion = (cancelled: boolean) => (msgData: MsgData) => {
   const state = getState();
   if (
     state === null || state === undefined || state.global === null || state.global === undefined
-    || state.global.activeQuestion === null || state.activeQuestion === undefined
+    || state.global.activeQuestion === null || state.global.activeQuestion === undefined
     || typeof state.global.activeQuestion !== 'object'
     || state.global.activeQuestion.running === null
     || state.global.activeQuestion.running === undefined
