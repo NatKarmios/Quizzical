@@ -83,10 +83,7 @@ const QuestionList = ({
       ));
   }
 
-  return (
-    <List>
-      {listContent}
-      <Divider />
+  const pageButtons = (
       <PageButtons
         loading={loading}
         currentPage={currentPage}
@@ -94,8 +91,17 @@ const QuestionList = ({
         loadNextPage={() => loadQuestions(currentPage + 1)}
         loadPrevPage={() => loadQuestions(currentPage - 1)}
       />
-      <Divider />
+  );
+
+  return (
+    <List>
       <AddButtons addQuestion={addQuestion} importQuestions={importQuestions} />
+      <Divider />
+      {pageButtons}
+      <Divider />
+      {listContent}
+      <Divider />
+      {pageButtons}
     </List>
   );
 };

@@ -33,13 +33,13 @@ const Home = ({ activeQuestionUI }: Props) => (
     <br />
     <Grid container>
       <Grid item xs={12} sm={6}>
-        <Paper style={{ padding: '20px' }}>
-          {activeQuestionUI ? <ActiveQuestionDisplay /> : <QuestionDisplay />}
+        <Paper>
+          {activeQuestionUI ? <ActiveQuestionUserList /> : <QuestionList />}
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Paper>
-          {activeQuestionUI ? <ActiveQuestionUserList /> : <QuestionList />}
+        <Paper style={{ padding: '20px' }}>
+          {activeQuestionUI ? <ActiveQuestionDisplay /> : <QuestionDisplay />}
         </Paper>
       </Grid>
     </Grid>
