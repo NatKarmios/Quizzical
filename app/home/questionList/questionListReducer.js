@@ -35,7 +35,7 @@ export default function questionList(
       action.payload !== undefined && action.payload !== null && typeof action.payload === 'object'
       && action.payload.questionCount !== undefined && action.payload.questionCount !== null
       && action.payload.page !== undefined && action.payload.page !== null
-      && action.payload.loadedQuestions !== undefined && action.payload.loadedQuestions !== null
+      && action.payload.questions !== undefined && action.payload.questions !== null
     ) {
       return {
         initialLoad: true,
