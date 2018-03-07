@@ -12,7 +12,7 @@ import { InputAdornment } from 'material-ui/Input';
 import Divider from 'material-ui/Divider';
 import Button from 'material-ui/Button';
 
-import { getSetting } from '../../_modules/savedSettings/savedSettings';
+import { getSetting } from '../../_modules/savedSettings';
 import type { SettingsType, QuestionType } from '../../utils/types';
 import { activeQuestionStart } from '../../_global/activeQuestion/activeQuestionActions';
 

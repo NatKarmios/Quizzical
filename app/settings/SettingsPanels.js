@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 
 import OptionList from './option/OptionList';
 import OptionListItem from './option/OptionListItem';
-import { getDefaultSetting, getSetting } from '../_modules/savedSettings/savedSettings';
+import { getDefaultSetting, getSetting } from '../_modules/savedSettings';
 import type { SettingsType } from '../utils/types';
 import { isInteger, isNaturalNumber } from '../utils/helperFuncs';
 

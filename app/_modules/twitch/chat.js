@@ -1,7 +1,7 @@
 // @flow
 
 import { getState } from '../../store';
-import { getSetting as injectAndGetSetting } from '../savedSettings/savedSettings';
+import { getSetting as injectAndGetSetting } from '../savedSettings';
 import IntervalQueue from '../../utils/IntervalQueue';
 import type { GlobalStateType } from '../../utils/types';
 

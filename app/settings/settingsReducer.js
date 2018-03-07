@@ -2,7 +2,7 @@
 
 import { List } from 'immutable';
 
-import { getSetting } from '../_modules/savedSettings/savedSettings';
+import { getSetting } from '../_modules/savedSettings';
 import { SETTINGS_PANEL_EXPANDED, TEMP_SETTING_UPDATE, CLEAR_TEMP_SETTINGS } from './settingsActions';
 import { cloneObject } from '../utils/helperFuncs';
 import type { ActionType } from '../utils/types';

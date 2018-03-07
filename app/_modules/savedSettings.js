@@ -2,8 +2,8 @@
 
 import { sep } from 'path';
 
-import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../../utils/helperFuncs';
-import type { SettingsType } from '../../utils/types';
+import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../utils/helperFuncs';
+import type { SettingsType } from '../utils/types';
 
 
 const SETTINGS_FILENAME: string = 'settings.json';
@@ -56,7 +56,6 @@ export const mergeOntoSettings = (settings: SettingsType, loaded: SettingsType):
 
   // Iterate through setting categories
   Object.keys(settings).forEach(processCategory);
-
   return newSettings;
 };
 
@@ -70,7 +69,7 @@ export const resetSettings = (settings: SettingsType) => {
 export const loadSettings = async (): SettingsType => {
   if (!await fileExists(SETTINGS_FILE_PATH)) {
     await saveSettings(DEFAULT_SETTINGS);
-    return;
+    return cloneObject(DEFAULT_SETTINGS);
   }
   let loadedSettings = {};
   try {
@@ -103,7 +102,10 @@ export const setSetting = async (
   const newSettings: SettingsType = cloneObject(settings);
   try {
     newSettings[category][settingKey] = newVal;
-  } catch (e) { if (e !== undefined && e !== null) console.error(e); }
+  } catch (e) {
+    if (e !== undefined && e !== null) console.error(e);
+  }
+
   return newSettings;
 };
 

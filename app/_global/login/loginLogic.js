@@ -5,7 +5,7 @@ import { createLogic } from 'redux-logic';
 import { guiLogin, tokenLogin } from '../../_modules/twitch/login';
 import type { LoginDataType } from '../../_modules/twitch/login';
 import { connect } from '../../_modules/twitch/chat';
-import { getSetting, setSetting } from '../../_modules/savedSettings/savedSettings';
+import { getSetting, setSetting } from '../../_modules/savedSettings';
 import { notify } from '../../utils/helperFuncs';
 
 import {

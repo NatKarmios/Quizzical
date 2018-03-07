@@ -1,7 +1,7 @@
 // @flow
 
 import { CHANGE_SETTINGS, SETTINGS_LOADED } from './settingsActions';
-import { mergeOntoSettings } from '../../_modules/savedSettings/savedSettings';
+import { mergeOntoSettings } from '../../_modules/savedSettings';
 import type { SettingsType, ActionType } from '../../utils/types';
 
 
