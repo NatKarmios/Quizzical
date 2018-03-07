@@ -29,8 +29,8 @@ export type ActiveQuestionStateType = {
 };
 
 export type SettingsType = {
-  [string]: {
-    [string]: ?string
+  [category: string]: {
+    [label: string]: ?string
   }
 };
 
