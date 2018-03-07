@@ -7,10 +7,10 @@ const upload = async (title: string, content: string, fileType: string='.md') =>
   const data = {
     description: title,
     public: true,
-    files: {}
+    files: {
+      [`${title}${fileType}`]: { content }
+    }
   };
-
-  data.files[`${title}${fileType}`] = { content };
 
   try {
     const reply = await httpGet({
