@@ -3,13 +3,23 @@
 @import "~noty/src/noty.scss";
 @import "~noty/src/themes/mint.scss";
 
+$bgcolor: desaturate(#3f51b5, 15);
+$stripe1: darken($bgcolor, 15);
+$stripe2: darken($bgcolor, 18);
+
 body {
   position: relative;
   color: white;
   height: 100vh;
   margin: 0;
   padding: 64px 0 0;
-  background: #232c39;
+  background: repeating-linear-gradient(
+      -45deg,
+      $stripe1,
+      $stripe1 5px,
+      $stripe2 5px,
+      $stripe2 10px
+  );
   font-family: Roboto, Helvetica, Helvetica Neue, serif;
   overflow-y: scroll;
 }

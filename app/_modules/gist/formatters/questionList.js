@@ -34,8 +34,9 @@ const questionListFormatter = (
   `*Showing page ${page} of ${maxPage}.*`,
   '',
   questionList.map(mapQuestion).join('\r\r'),
-  '<br/><br/>',
-  '*Imported questions courtesy of [Open Trivia Database](opentdb.com).*'
+  '',
+  '',
+  '*Imported questions courtesy of [Open Trivia Database](https://opentdb.com).*'
 ].join('\r');
 
 

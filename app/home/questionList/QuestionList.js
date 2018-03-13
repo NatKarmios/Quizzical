@@ -11,11 +11,10 @@ import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 
 import type { QuestionType } from '../../utils/types';
-import { MDIcon } from '../../utils/components';
+import { MDIcon, PageButtons } from '../../utils/components';
 import { numPages } from '../../utils/helperFuncs';
 
-import PageButtons from './QuestionListPageButtons';
-import AddButtons from './QuestionListAddButtons';
+import QuestionListButtons from './QuestionListAddButtons';
 import * as QuestionListActions from './questionListActions';
 import CenteredListItem from '../../utils/components/CenteredListItem';
 
@@ -95,7 +94,7 @@ const QuestionList = ({
 
   return (
     <List>
-      <AddButtons addQuestion={addQuestion} importQuestions={importQuestions} />
+      <QuestionListButtons addQuestion={addQuestion} importQuestions={importQuestions} />
       <Divider />
       {pageButtons}
       <Divider />

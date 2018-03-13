@@ -7,13 +7,8 @@ import Chip from 'material-ui/Chip';
 
 type Props = {
 // eslint-disable-next-line flowtype/no-weak-types
-  onDelete: () => any,
+  onDelete: ?() => any,
   children: Node
-};
-
-
-const defaultProps = {
-  onDelete: () => {}
 };
 
 
@@ -24,9 +19,6 @@ const ListedChip = ({ onDelete, children }: Props) => (
     style={{ marginRight: '5px', marginBottom: '5px', display: 'flex' }}
   />
 );
-
-
-ListedChip.defaultProps = defaultProps;
 
 
 export default ListedChip;

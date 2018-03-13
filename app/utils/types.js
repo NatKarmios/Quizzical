@@ -15,6 +15,28 @@ export type QuestionType = {
   external: boolean
 };
 
+export type UsedQuestionType = {
+  usedQuestionID: number,
+  questionID: number,
+  cancelled: boolean,
+  finishTime: Date,
+  duration: number,
+  prize: number,
+  winners: number,
+  question: QuestionType
+};
+
+export type WinnerType = {
+  winnerID: number,
+  usedQuestionID: number,
+  name: string
+};
+
+export type WinnerTotalType = {
+  name: string,
+  total: number
+};
+
 export type ActiveQuestionStateType = {
   uiActive: boolean,
   running: boolean,

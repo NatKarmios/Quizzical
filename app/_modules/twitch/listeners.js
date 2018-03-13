@@ -21,7 +21,7 @@ export const logMessage = (msg: string, msgData: ?MsgData) => {
 // to prove that the bot is not inactive.
 // eslint-disable-next-line no-unused-vars
 const replyToPing = (msg: string, ignored: ?MsgData) => {
-  if (msg === 'PING :tmi.twitch.tv') {
+  if (msg.trim() === 'PING :tmi.twitch.tv') {
     sendRaw('PONG :tmi.twitch.tv');
   }
 };

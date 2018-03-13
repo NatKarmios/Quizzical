@@ -3,6 +3,7 @@
 import { getState } from '../../store';
 import { getSetting as injectAndGetSetting } from '../savedSettings';
 import IntervalQueue from '../../utils/IntervalQueue';
+import { formatWithContext } from '../../utils/helperFuncs';
 import type { GlobalStateType } from '../../utils/types';
 
 import { parseMsg } from './msgData';
@@ -131,8 +132,8 @@ export const connect = (): Promise<void> => {
       queue = new IntervalQueue(sendMessage);
       console.log('Connected to chat.');
       const joinMessage = getSetting('chatMessages', 'joinMessage');
-      if (joinMessage !== undefined && joinMessage !== null) {
-        queueMessage(joinMessage);
+      if (joinMessage !== undefined && joinMessage !== null && joinMessage !== '') {
+        queueMessage(formatWithContext(joinMessage));
       }
       resolve();
     });

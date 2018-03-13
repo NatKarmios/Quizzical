@@ -2,13 +2,17 @@
 
 import type { MsgData } from '../msgData';
 import type { CommandType, CommandDetailsType } from './parse';
-import { getQuestionCount, getQuestionList, getQuestionByID } from '../../db/dbQueries';
-import { numPages } from '../../../utils/helperFuncs';
+import {
+  getQuestionCount, getQuestionList, getQuestionByID, insertQuestion, getTopWinners
+} from '../../db/dbQueries';
+import { notify, numPages } from '../../../utils/helperFuncs';
 import upload from '../../gist/gist';
 import questionListFormatter from '../../gist/formatters/questionList';
 import commandListFormatter from '../../gist/formatters/commandList';
+import leaderboardFormatter from '../../gist/formatters/leaderboard';
 import { getState, dispatch } from '../../../store';
 import { activeQuestionStart, activeQuestionEnd } from '../../../_global/activeQuestion/activeQuestionActions';
+import { loadQuestions } from '../../../home/questionList/questionListActions';
 
 
 /**
@@ -312,13 +316,67 @@ export const cancelQuestion = makeCommand(
 );
 
 
+export const addQuestion = makeCommand(
+  /^addQuestion /,
+  async (msgData: MsgData) => {
+    const args = msgData.words.slice(1).join(' ').split('|').map(s => s.trim());
+     if (args.length < 3) {
+       msgData.reply('Not enough arguments - make sure they\'re split up with `|`.');
+       return;
+     }
+     const questionContent = args[0];
+     const correctAnswer =  args[1];
+     const incorrectAnswers = args.slice(2);
+
+      try {
+        await insertQuestion(questionContent, correctAnswer, incorrectAnswers, false);
+        msgData.reply('Question saved successfully.');
+        notify(`Question added by ${msgData.sender.display}.`)
+      } catch (e) {
+        msgData.reply('Failed to add question - it may already exist!');
+        console.error('Failed to insert to SQLite DB!', e);
+      }
+
+      const state = getState();
+      if (
+        state.questionList !== undefined && state.questionList !== null
+          && typeof state.questionList === 'object'
+        && state.questionList.currentPage !== undefined && state.questionList.currentPage !== null
+          && typeof state.questionList.currentPage === 'number'
+      ) {
+        dispatch(loadQuestions(state.questionList.currentPage));
+      }
+  },
+  cmdDetails(
+    'Add Question', '`addQuestion [question] | [correct answer] | [incorrect answer 1] | [incorrect answer 2] | ...`',
+    'Adds a new question to the database.'
+  )
+)
+
+
+export const leaderboard = makeCommand(
+  /^leaderboard$/,
+  async (msgData: MsgData) => {
+    const winners = await getTopWinners();
+    const formatted = leaderboardFormatter(winners);
+    const url = await upload('Quizzical Leaderboard', formatted);
+    msgData.reply(url);
+  },
+  cmdDetails(
+    'View Leaderboard', '`leaderboard`', 'Gets a list of up to 50 top quiz winners.'
+  )
+);
+
+
 const commands = [
   help,
   questionList,
   questionListWithPageNumber,
   startQuestion,
   finishQuestion,
-  cancelQuestion
+  cancelQuestion,
+  addQuestion,
+  leaderboard
 ];
 
 

@@ -4,7 +4,7 @@
 import sqlite from 'sqlite';
 import { sep } from 'path';
 import { getDataDir } from '../../utils/helperFuncs';
-import { createTable } from './dbQueries';
+import { createTables } from './dbQueries';
 
 
 // The filename of the SQLite database stored on disk
@@ -33,12 +33,12 @@ const loadDB = async () => {
 /**
  *  Perform initialization steps for the database
  *
- * @returns {Promise<void>}
+ * @returns A promise that resolves once initialization completes.
  */
 export const setUpDB = async () => {
   // Load the database
   await loadDB();
 
   // Create any necessary tables that might not exist
-  await createTable();
+  await createTables();
 };

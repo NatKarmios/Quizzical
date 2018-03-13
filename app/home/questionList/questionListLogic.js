@@ -1,7 +1,7 @@
 // @flow
 import { createLogic } from 'redux-logic';
 
-import { notify } from '../../utils/helperFuncs';
+import { notify, numPages } from '../../utils/helperFuncs';
 
 import { getQuestionCount, getQuestionList, insertQuestion } from '../../_modules/db/dbQueries';
 import { addExternalQuestions } from '../../_modules/externalQuestions';
@@ -17,7 +17,7 @@ const loadQuestionsLogic = createLogic({
   process: async ({ action }, dispatch, done) => {
     const targetPage = action.payload.page;
     const questionCount = await getQuestionCount();
-    const maxPage = Math.floor(Math.max(questionCount - 1, 0) / 10);
+    const maxPage = numPages(questionCount);
     const page = Math.min(targetPage, maxPage);
     const loadedQuestions = await getQuestionList(page);
 

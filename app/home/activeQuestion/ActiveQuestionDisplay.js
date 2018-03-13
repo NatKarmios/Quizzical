@@ -39,7 +39,7 @@ const ActiveQuestionDisplay = ({
   const hrsPrinted = hrs > 0 ? `${hrs < 10 ? '0' : ''}${hrs}:` : '';
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
       <CircularProgress
         color="primary"
         mode="determinate"

@@ -7,7 +7,7 @@ import { httpGet, notify } from '../utils/helperFuncs';
 // May be changed for debugging purposes
 const BOT_IP = process.env.NODE_ENV === 'production' ?
   '127.0.0.1' :
-  '10.0.0.5';
+  '10.0.0.22';
 
 // The HTTP URL of the Quizzical companion script's HTTP server
 const BOT_URL = `http://${BOT_IP}:23120`;

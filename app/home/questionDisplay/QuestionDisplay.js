@@ -95,8 +95,7 @@ const QuestionDisplay = ({
     busy || question === null || !isInteger(prize) || !isNaturalNumber(duration);
 
   return (
-    <div>
-      <Typography type="title" style={{ marginBottom: '10px' }}>Start a question:</Typography>
+    <div style={{ padding: '20px' }}>
       <Grid container>
         <Grid item xs={12} sm={6}>
           <TextField
