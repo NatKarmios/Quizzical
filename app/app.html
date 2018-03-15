@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
       (function() {
-        if (!process.env.HOT) {
+        if (!process.env['HOT']) {
           const link = document.createElement('link');
           link.rel = 'stylesheet';
           link.href = './dist/style.css';
@@ -30,9 +30,9 @@
         }
 
         // Dynamically insert the bundled app script in the renderer process
-        const port = process.env.PORT || 1212;
+        const port = process.env['PORT'] || 1212;
         scripts.push(
-          (process.env.HOT)
+          (process.env['HOT'])
             ? 'http://localhost:' + port + '/dist/renderer.dev.js'
             : './dist/renderer.prod.js'
         );

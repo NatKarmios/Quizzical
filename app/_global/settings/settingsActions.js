@@ -1,5 +1,13 @@
 // @flow
 
+import type { SettingsType } from '../../utils/types';
+
+
+/*
+ *  Actions that relate to settings state
+ */
+
+
 export const LOAD_SETTINGS = 'LOAD_SETTINGS';
 export const SETTINGS_LOADED = 'SETTINGS_LOADED';
 export const SETTINGS_READY = 'SETTINGS_READY';
@@ -8,14 +16,14 @@ export const SETTINGS_CHANGED = 'SETTINGS_CHANGED';
 
 export const loadSettings = () => ({ type: LOAD_SETTINGS });
 
-export const settingsLoaded = settings => ({
+export const settingsLoaded = (settings: SettingsType) => ({
   type: SETTINGS_LOADED,
   payload: { settings }
 });
 
 export const settingsReady = () => ({ type: SETTINGS_READY });
 
-export const changeSettings = changes => ({
+export const changeSettings = (changes: {}) => ({
   type: CHANGE_SETTINGS,
   payload: { changes }
 });

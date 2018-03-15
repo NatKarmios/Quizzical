@@ -1,11 +1,23 @@
 // @flow
+import type { ActionType } from '../utils/types';
 import {
   STREAMER_LOGIN_STARTED, BOT_LOGIN_STARTED,
   STREAMER_LOGIN_CANCELLED, BOT_LOGIN_CANCELLED,
   STREAMER_LOGGED_IN, BOT_LOGGED_IN
-} from '../_global/actions';
+} from '../_global/login/loginActions';
 
-export default function setup(state, action) {
+type SetupState = {
+  streamerLoginStage: number,
+  botLoginStage: number
+};
+
+const defaultState = {
+  streamerLoginStage: 0,
+  botLoginStage: 0
+};
+
+
+export default function setup(state: SetupState=defaultState, action: ActionType) {
   const { streamerLoginStage, botLoginStage } =
     (state === undefined) ? { streamerLoginStage: 0, botLoginStage: 0 } : state;
   switch (action.type) {

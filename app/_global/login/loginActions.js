@@ -1,5 +1,11 @@
 // @flow
 
+
+/*
+ *  Actions that relate to login state
+ */
+
+
 export const TEST_SAVED_TOKENS = 'TEST_SAVED_TOKENS';
 export const STREAMER_LOGGED_IN = 'STREAMER_LOGGED_IN';
 export const BOT_LOGGED_IN = 'BOT_LOGGED_IN';
@@ -23,11 +29,11 @@ function login(type, username, displayName, avatar) {
   };
 }
 
-export function streamerLoggedIn(username, displayName, avatar) {
+export function streamerLoggedIn(username: string, displayName: string, avatar: string) {
   return login(STREAMER_LOGGED_IN, username, displayName, avatar);
 }
 
-export function botLoggedIn(username, displayName, avatar) {
+export function botLoggedIn(username: string, displayName: string, avatar: string) {
   return login(BOT_LOGGED_IN, username, displayName, avatar);
 }
 
@@ -52,5 +58,5 @@ export function startStreamerLogin() {
 }
 
 export function startBotLogin() {
-  return {type: START_BOT_LOGIN};
+  return { type: START_BOT_LOGIN };
 }

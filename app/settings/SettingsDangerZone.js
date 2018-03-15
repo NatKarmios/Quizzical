@@ -5,32 +5,35 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 
-import { Space, Dialog } from '../utils/components';
-import InlineIcon from "../utils/components/InlineIcon";
+import { Space, Dialog, InlineIcon } from '../utils/components';
 
 
 const DIALOG_CONTENT = (
   <span>
     This action cannot be undone, and Quizzical will automatically restart.
-    <br/>
+    <br />
     Do you wish to continue?
   </span>
 );
 
 
-type DefaultProps = {};
 type Props = {
-  onLogout: () => void,
-  onDeleteQuestions: () => void,
-  onReset: () => void
+  // eslint-disable-next-line flowtype/no-weak-types
+  onLogout: () => any,
+  // eslint-disable-next-line flowtype/no-weak-types
+  onDeleteQuestions: () => any,
+  // eslint-disable-next-line flowtype/no-weak-types
+  onReset: () => any
 };
 type State = {
   logoutDialogOpen: boolean,
   deleteQuestionsDialogOpen: boolean,
   resetDialogOpen: boolean
-}
+};
 
-class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
+
+class SettingsDangerZone extends React.Component<void, Props, State> {
+
   state = { logoutDialogOpen: false, deleteQuestionsDialogOpen: false, resetDialogOpen: false };
 
   render() {
@@ -45,12 +48,12 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
       this.setState({ ...this.state, resetDialogOpen: true });
 
     const onLogoutDialogClose = confirm => () => {
-      this.setState({...this.state, logoutDialogOpen: false });
+      this.setState({ ...this.state, logoutDialogOpen: false });
       if (confirm) onLogout();
     };
     const onDeleteQuestionsDialogClose = confirm => () => {
       this.setState({ ...this.state, deleteQuestionsDialogOpen: false });
-      if (confirm) onDeleteQuestions()
+      if (confirm) onDeleteQuestions();
     };
     const onResetDialogClose = confirm => () => {
       this.setState({ ...this.state, resetDialogOpen: false });
@@ -58,12 +61,12 @@ class SettingsDangerZone extends React.Component<DefaultProps, Props, State> {
     };
 
     return (
-      <Paper style={{marginTop: '20px', padding: '20px', backgroundColor: '#FDD'}}>
+      <Paper style={{ marginTop: '20px', padding: '20px', backgroundColor: '#FDD' }}>
         <Typography type="subheading">
           Danger Zone
         </Typography>
-        <br/>
-        <div style={{textAlign: 'center'}}>
+        <br />
+        <div style={{ textAlign: 'center' }}>
           <Tooltip title="Log out of Twitch">
             <span>
               <Button raised color="accent" onClick={onLogoutButton}>

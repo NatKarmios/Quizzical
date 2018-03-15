@@ -12,6 +12,7 @@
 [include]
 
 [libs]
+flow-typed
 ./libdefs.js
 
 [options]

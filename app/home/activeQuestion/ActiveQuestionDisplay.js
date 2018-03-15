@@ -6,38 +6,60 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
+import { CircularProgress } from 'material-ui/Progress';
 
 import { Space, InlineIcon } from '../../utils/components';
+import type { QuestionType } from '../../utils/types';
 import * as activeQuestionActions from '../../_global/activeQuestion/activeQuestionActions';
 
 import QuestionDetails from '../QuestionDetails';
 
 
-const ActiveQuestionDisplay = ({
-  question, timeLeft, running, activeQuestionReset, activeQuestionEnd, endEarly, multipleWinners
-}) => {
-  const secs = timeLeft % 60;
-  const mins = Math.floor(timeLeft/60) % 60;
-  const hrs = Math.floor(timeLeft/3600);
+type Props = {
+  question: QuestionType,
+  duration: number,
+  timeLeft: number,
+  running: boolean,
+  activeQuestionReset: () => any,
+  activeQuestionEnd: boolean => any,
+  endEarly: boolean,
+  multipleWinners: boolean
+};
 
-  const secsPrinted = `${secs<10 ? '0' : ''}${secs}`;
-  const minsPrinted = `${mins<10 ? '0' : ''}${mins}:`;
-  const hrsPrinted = hrs > 0 ? `${hrs<10 ? '0' : ''}${hrs}:` : '';
+
+const ActiveQuestionDisplay = ({
+  question, duration, timeLeft, running, activeQuestionReset, activeQuestionEnd, endEarly, multipleWinners
+}: Props) => {
+  const secs = timeLeft % 60;
+  const mins = Math.floor(timeLeft / 60) % 60;
+  const hrs = Math.floor(timeLeft / 3600);
+
+  const secsPrinted = `${secs < 10 ? '0' : ''}${secs}`;
+  const minsPrinted = `${mins < 10 ? '0' : ''}${mins}:`;
+  const hrsPrinted = hrs > 0 ? `${hrs < 10 ? '0' : ''}${hrs}:` : '';
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <CircularProgress
+        color="primary"
+        mode="determinate"
+        value={ Math.round((timeLeft / duration) * 100) }
+      />
+
+      <br />
+
       <Typography type="headline">
         {hrsPrinted}{minsPrinted}{secsPrinted}
       </Typography>
 
-      <br/>
-      <Divider/>
-      <br/>
+      <br />
+      <Divider />
+      <br />
 
       <QuestionDetails question={question} deleteButtonHidden />
 
-      <br/>
-      <br/>
+      <br />
+      <br />
 
       <Grid container>
         <Grid item xs={12} sm={6}>
@@ -50,9 +72,9 @@ const ActiveQuestionDisplay = ({
         </Grid>
       </Grid>
 
-      <br/>
-      <Divider/>
-      <br/>
+      <br />
+      <Divider />
+      <br />
 
       {
         running ? [
@@ -76,13 +98,13 @@ const ActiveQuestionDisplay = ({
             Finish now
           </Button>
         ] :
-          <Button
-            raised
-            color="primary"
-            onClick={activeQuestionReset}
-          >
-            Done
-          </Button>
+        <Button
+          raised
+          color="primary"
+          onClick={activeQuestionReset}
+        >
+          Done
+        </Button>
       }
     </div>
   );
@@ -95,4 +117,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(activeQuestionActions, dispatch);
 
+
+// $FlowFixMe
 export default connect(mapStateToProps, mapDispatchToProps)(ActiveQuestionDisplay);

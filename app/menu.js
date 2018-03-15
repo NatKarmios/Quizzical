@@ -117,7 +117,7 @@ export default class MenuBuilder {
   }
 
   buildDefaultTemplate() {
-    const templateDefault = [{
+    return [{
       label: '&File',
       submenu: [{
         label: '&Open',
@@ -180,7 +180,5 @@ export default class MenuBuilder {
         }
       }]
     }];
-
-    return templateDefault;
   }
 }

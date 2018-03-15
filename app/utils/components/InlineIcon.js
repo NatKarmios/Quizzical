@@ -1,8 +1,17 @@
 // @flow
-import React from 'react';
-import MDIcon from "./MDIcon";
 
-const InlineIcon = ({style, padded=false, ...props}) =>
+import React from 'react';
+import MDIcon from './MDIcon';
+import type { MDIconProps } from './MDIcon';
+
+
+type Props = MDIconProps & {
+  style?: {},
+  padded?: boolean
+};
+
+
+const InlineIcon = ({ style = {}, padded = false, ...props }: Props) => (
   <MDIcon
     style={{
       verticalAlign: 'middle',
@@ -12,6 +21,7 @@ const InlineIcon = ({style, padded=false, ...props}) =>
     }}
 
     {...props}
-  />;
+  />
+);
 
 export default InlineIcon;

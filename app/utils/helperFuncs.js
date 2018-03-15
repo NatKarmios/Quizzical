@@ -1,9 +1,10 @@
 import fs from 'fs';
 import rp from 'request-promise-native';
-import { remote, BrowserWindow } from 'electron';
+import { BrowserWindow, remote } from 'electron';
 import Noty from 'noty';
 
 import { getState } from '../store';
+
 
 const { app } = remote;
 
@@ -13,7 +14,6 @@ const INTEGER = RegExp('^-?\\d*$');
 
 export const restart: () => void =
   () => {
-    const app = require('electron').remote.app;
     app.relaunch();
     app.exit(0);
   };
@@ -24,11 +24,11 @@ export const delay: number => Promise<void> =
 export const getWindow: () => BrowserWindow =
   () => remote.getCurrentWindow();
 
-export const cloneObject: <T>(t) => T =
-    obj => JSON.parse(JSON.stringify(obj));
+export const cloneObject =
+  <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
-export const getDataDir: () => string =
-  () => app.getPath('userData');
+export const getDataDir =
+  (): string => app.getPath('userData');
 
 export const readFile: string => Promise<string> =
   filename => new Promise((resolve, reject) => fs.readFile(filename,
@@ -48,7 +48,7 @@ export const fileExists: string => Promise<boolean> =
 export const httpGet = async options => rp({ method: 'GET', ...options });
 
 export const decodeHtml = html => {
-  const txt = document.createElement("textarea");
+  const txt = document.createElement('textarea');
   txt.innerHTML = html;
   return txt.value;
 };
@@ -59,9 +59,11 @@ export const isNaturalNumber = str =>
 export const isInteger = str =>
   INTEGER.test(str);
 
-export const notify = (text, type='info', timeout=3000) =>
+export const notify = (text, type = 'info', timeout = 3000) =>
   new Noty({
-    type, text, timeout,
+    type,
+    text,
+    timeout,
     layout: 'bottomRight',
     progressBar: true,
   }).show();
@@ -71,19 +73,19 @@ export const shuffleArray = arr =>
      .sort((a, b) => a[0] - b[0])
      .map(a => a[1]);
 
-export const range = (length, offset=0) =>
-  Array.from({ length }, (x,i) => i+offset);
+export const range = (length, offset = 0) =>
+  Array.from({ length }, (x, i) => i + offset);
 
 export const formatWithContext = (str, context) => {
   const state = getState();
-  const { settings, login } = state['global'];
+  const { settings, login } = state.global;
   let newStr = str;
 
   const fullContext = {
-    pointName: settings['misc']['pointName'],
-    pointsName: settings['misc']['pointsName'],
-    streamer: login['streamer']['displayName'],
-    bot: login['bot']['displayName'],
+    pointName: settings.misc.pointName,
+    pointsName: settings.misc.pointsName,
+    streamer: login.streamer.displayName,
+    bot: login.bot.displayName,
     ...context
   };
 
@@ -93,5 +95,32 @@ export const formatWithContext = (str, context) => {
   return newStr;
 };
 
-export const numPages = (count, pageSize=10) =>
+export const numPages = (count, pageSize = 10) =>
   Math.max(Math.ceil(count / pageSize), 1);
+
+export const ordinal = (x: number) => {
+  var specialCase = x % 100;
+  if ([11, 12, 13].includes(specialCase) >= 0) {
+    return x + 'th';
+  }
+
+  var units = x % 10;
+
+  var end = void 0;
+  switch (units) {
+    case 1:
+      end = 'st';
+      break;
+    case 2:
+      end = 'nd';
+      break;
+    case 3:
+      end = 'rd';
+      break;
+    default:
+      end = 'th';
+  }
+
+  return `${x}${end}`;
+}
+

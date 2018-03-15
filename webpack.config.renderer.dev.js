@@ -19,7 +19,7 @@ import CheckNodeEnv from './internals/scripts/CheckNodeEnv';
 
 CheckNodeEnv('development');
 
-const port = process.env.PORT || 1212;
+const port = process.env['PORT'] || 1212;
 const publicPath = `http://localhost:${port}/dist`;
 const dll = path.resolve(process.cwd(), 'dll');
 const manifest = path.resolve(dll, 'renderer.json');
@@ -260,7 +260,7 @@ export default merge.smart(baseConfig, {
       disableDotRule: false,
     },
     before() {
-      if (process.env.START_HOT) {
+      if (process.env['START_HOT']) {
         console.log('Staring Main Process...');
         spawn(
           'npm',
