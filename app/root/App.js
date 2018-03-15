@@ -1,12 +1,18 @@
 // @flow
+<<<<<<< HEAD:app/root/App.js
 import React, { Component } from 'react';
 import type { Children } from 'react';
 import Navbar from '../navbar/Navbar';
+=======
+import * as React from 'react';
+>>>>>>> 177b3a3... v0.13.0 (#1166):app/containers/App.js
 
-export default class App extends Component {
-  props: {
-    children: Children
-  };
+type Props = {
+  children: React.Node
+};
+
+export default class App extends React.Component<Props> {
+  props: Props;
 
   render() {
     return (
