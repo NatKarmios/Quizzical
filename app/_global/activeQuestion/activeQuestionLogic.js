@@ -189,7 +189,7 @@ const activeQuestionHandleAnswerLogic = createLogic({
 
       // Extract more values from state
       const answerMap: Array<number> = state.answerMap;
-      const { correctAnswerers, incorrectAnswerers, endEarly } = state;
+      const { correctAnswerers, incorrectAnswerers, endEarly, multipleWinners } = state;
 
       if ([...correctAnswerers, ...incorrectAnswerers].map(lower).includes(msgData.sender.raw)) {
         // If either answerer list contains the viewer, ignore their answer
@@ -209,6 +209,7 @@ const activeQuestionHandleAnswerLogic = createLogic({
         // Check if the answer is correct
         const isCorrect = answerMap.indexOf(choice) === 0;
 
+console.log({isCorrect, endEarly, correctAnswerers, msgData})
         // If the question is supposed to end on the first correct answer,
         // and someone has already answered correctly, then ignore
         // any new answers
@@ -217,7 +218,7 @@ const activeQuestionHandleAnswerLogic = createLogic({
           // correctly, any subsequent answers are considered incorrect.
           dispatch(activeQuestionStoreAnswerer(
             msgData.sender.display,
-            isCorrect && (correctAnswerers.size === 0 || state.multipleWinners)
+            isCorrect && (correctAnswerers.size === 0 || multipleWinners)
           ));
         }
 

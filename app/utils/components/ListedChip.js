@@ -7,7 +7,7 @@ import Chip from 'material-ui/Chip';
 
 type Props = {
 // eslint-disable-next-line flowtype/no-weak-types
-  onDelete: ?() => any,
+  onDelete?: ?() => any,
   children: Node
 };
 
