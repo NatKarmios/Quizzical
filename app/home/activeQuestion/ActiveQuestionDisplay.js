@@ -6,6 +6,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
+import { CircularProgress } from 'material-ui/Progress';
 
 import { Space, InlineIcon } from '../../utils/components';
 import type { QuestionType } from '../../utils/types';
@@ -16,11 +17,10 @@ import QuestionDetails from '../QuestionDetails';
 
 type Props = {
   question: QuestionType,
+  duration: number,
   timeLeft: number,
   running: boolean,
-  // eslint-disable-next-line flowtype/no-weak-types
   activeQuestionReset: () => any,
-  // eslint-disable-next-line flowtype/no-weak-types
   activeQuestionEnd: boolean => any,
   endEarly: boolean,
   multipleWinners: boolean
@@ -28,7 +28,7 @@ type Props = {
 
 
 const ActiveQuestionDisplay = ({
-  question, timeLeft, running, activeQuestionReset, activeQuestionEnd, endEarly, multipleWinners
+  question, duration, timeLeft, running, activeQuestionReset, activeQuestionEnd, endEarly, multipleWinners
 }: Props) => {
   const secs = timeLeft % 60;
   const mins = Math.floor(timeLeft / 60) % 60;
@@ -39,7 +39,15 @@ const ActiveQuestionDisplay = ({
   const hrsPrinted = hrs > 0 ? `${hrs < 10 ? '0' : ''}${hrs}:` : '';
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <CircularProgress
+        color="primary"
+        mode="determinate"
+        value={ Math.round((timeLeft / duration) * 100) }
+      />
+
+      <br />
+
       <Typography type="headline">
         {hrsPrinted}{minsPrinted}{secsPrinted}
       </Typography>

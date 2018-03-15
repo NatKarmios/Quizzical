@@ -6,7 +6,7 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
 import QuestionList from './questionList/QuestionList';
-import QuestionDisplay from './questionDisplay/QuestionDisplay';
+import RightPaneTabs from './rightPaneTabs/RightPaneTabs';
 import ActiveQuestionDisplay from './activeQuestion/ActiveQuestionDisplay';
 import ActiveQuestionUserList from './activeQuestion/ActiveQuestionUserList';
 
@@ -33,8 +33,8 @@ const Home = ({ activeQuestionUI }: Props) => (
     <br />
     <Grid container>
       <Grid item xs={12} sm={6}>
-        <Paper style={{ padding: '20px' }}>
-          {activeQuestionUI ? <ActiveQuestionDisplay /> : <QuestionDisplay />}
+        <Paper>
+          <RightPaneTabs activeQuestion={activeQuestionUI} />
         </Paper>
       </Grid>
       <Grid item xs={12} sm={6}>

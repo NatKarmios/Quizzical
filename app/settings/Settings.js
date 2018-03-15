@@ -13,7 +13,7 @@ import * as SettingsActions from './settingsActions';
 import ControlButtons from './SettingsControlButtons';
 import Panels from './SettingsPanels';
 import DangerZone from './SettingsDangerZone';
-import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings/savedSettings';
+import { mergeOntoSettings, saveSettings, resetSettings } from '../_modules/savedSettings';
 import type { SettingsType } from '../utils/types';
 import { deleteAllQuestions } from '../_modules/db/dbQueries';
 import { restart } from '../utils/helperFuncs';

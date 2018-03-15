@@ -9,6 +9,7 @@ import activeQuestion from './_global/activeQuestion/activeQuestionLogic';
 import settings from './settings/settingsLogic';
 import questionList from './home/questionList/questionListLogic';
 import questionDisplay from './home/questionDisplay/questionDisplayLogic';
+import questionHistory from './home/questionHistory/questionHistoryLogic';
 
 export default [
   ...globalSettings,
@@ -16,5 +17,6 @@ export default [
   ...activeQuestion,
   ...settings,
   ...questionList,
-  ...questionDisplay
+  ...questionDisplay,
+  ...questionHistory
 ];

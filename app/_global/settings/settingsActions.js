@@ -2,6 +2,12 @@
 
 import type { SettingsType } from '../../utils/types';
 
+
+/*
+ *  Actions that relate to settings state
+ */
+
+
 export const LOAD_SETTINGS = 'LOAD_SETTINGS';
 export const SETTINGS_LOADED = 'SETTINGS_LOADED';
 export const SETTINGS_READY = 'SETTINGS_READY';

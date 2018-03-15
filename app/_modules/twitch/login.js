@@ -183,8 +183,8 @@ async function retrieveUsername(token: string): Promise<?string> {
       json: true
     });
     return reply.token.user_name;
-  } catch (e) {
-    console.log('There was a problem retrieving a username!', e);
+  } catch (exception) {
+    console.log('There was a problem retrieving a username!', {token, exception});
     return null;
   }
 }

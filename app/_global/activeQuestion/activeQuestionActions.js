@@ -3,6 +3,12 @@
 import type { QuestionType } from '../../utils/types';
 import type { MsgData } from '../../_modules/twitch/msgData';
 
+
+/*
+ *  Actions that relate to active question state
+ */
+
+
 export const ACTIVE_QUESTION_START = 'ACTIVE_QUESTION_START';
 export const ACTIVE_QUESTION_TICK = 'ACTIVE_QUESTION_TICK';
 export const ACTIVE_QUESTION_HANDLE_ANSWER = 'ACTIVE_QUESTION_HANDLE_ANSWER';

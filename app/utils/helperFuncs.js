@@ -98,3 +98,29 @@ export const formatWithContext = (str, context) => {
 export const numPages = (count, pageSize = 10) =>
   Math.max(Math.ceil(count / pageSize), 1);
 
+export const ordinal = (x: number) => {
+  var specialCase = x % 100;
+  if ([11, 12, 13].includes(specialCase) >= 0) {
+    return x + 'th';
+  }
+
+  var units = x % 10;
+
+  var end = void 0;
+  switch (units) {
+    case 1:
+      end = 'st';
+      break;
+    case 2:
+      end = 'nd';
+      break;
+    case 3:
+      end = 'rd';
+      break;
+    default:
+      end = 'th';
+  }
+
+  return `${x}${end}`;
+}
+

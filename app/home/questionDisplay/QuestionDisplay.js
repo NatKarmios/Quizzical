@@ -12,7 +12,7 @@ import { InputAdornment } from 'material-ui/Input';
 import Divider from 'material-ui/Divider';
 import Button from 'material-ui/Button';
 
-import { getSetting } from '../../_modules/savedSettings/savedSettings';
+import { getSetting } from '../../_modules/savedSettings';
 import type { SettingsType, QuestionType } from '../../utils/types';
 import { activeQuestionStart } from '../../_global/activeQuestion/activeQuestionActions';
 
@@ -95,8 +95,7 @@ const QuestionDisplay = ({
     busy || question === null || !isInteger(prize) || !isNaturalNumber(duration);
 
   return (
-    <div>
-      <Typography type="title" style={{ marginBottom: '10px' }}>Start a question:</Typography>
+    <div style={{ padding: '20px' }}>
       <Grid container>
         <Grid item xs={12} sm={6}>
           <TextField

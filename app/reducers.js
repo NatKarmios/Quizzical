@@ -13,6 +13,8 @@ import setup from './setup/setupReducer';
 import settings from './settings/settingsReducer';
 import questionList from './home/questionList/questionListReducer';
 import questionDisplay from './home/questionDisplay/questionDisplayReducer';
+import questionHistory from './home/questionHistory/questionHistoryReducer';
+import rightPaneTabs from './home/rightPaneTabs/rightPaneTabsReducer';
 
 
 const rootReducer = combineReducers({
@@ -26,7 +28,9 @@ const rootReducer = combineReducers({
   settings,
   questionList,
   questionDisplay,
-  router,
+  questionHistory,
+  rightPaneTabs,
+  router
 });
 
 export default rootReducer;

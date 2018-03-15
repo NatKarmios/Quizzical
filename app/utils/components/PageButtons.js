@@ -14,8 +14,8 @@ type Props = {
 };
 
 
-const QuestionListPageButtons = ({
-   loading, currentPage, maxPage, loadNextPage, loadPrevPage
+const PageButtons = ({
+  loading, currentPage, maxPage, loadNextPage, loadPrevPage
 }: Props) => (
   <CenteredListItem>
     <Tooltip title="Previous page">
@@ -38,4 +38,4 @@ const QuestionListPageButtons = ({
   </CenteredListItem>
 );
 
-export default QuestionListPageButtons;
+export default PageButtons;
