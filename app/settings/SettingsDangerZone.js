@@ -67,36 +67,33 @@ class SettingsDangerZone extends React.Component<void, Props, State> {
         </Typography>
         <br />
         <div style={{ textAlign: 'center' }}>
-          <Tooltip title="Log out of Twitch">
-            <span>
-              <Button raised color="accent" onClick={onLogoutButton}>
-                <InlineIcon>twitch</InlineIcon>
-                <InlineIcon>logout-variant</InlineIcon>
-              </Button>
-            </span>
-          </Tooltip>
+          <span>
+            <Button raised color="accent" onClick={onLogoutButton}>
+              <InlineIcon>twitch</InlineIcon>
+              <Space>2</Space>
+              Log out of Twitch
+            </Button>
+          </span>
 
           <Space>8</Space>
 
-          <Tooltip title="Delete all question data">
-            <span>
-              <Button raised color="accent" onClick={onDeleteQuestionsButton}>
-                <InlineIcon>comment-question-outline</InlineIcon>
-                <InlineIcon>delete-sweep</InlineIcon>
-              </Button>
-            </span>
-          </Tooltip>
+          <span>
+            <Button raised color="accent" onClick={onDeleteQuestionsButton}>
+              <InlineIcon>comment-question-outline</InlineIcon>
+              <Space>2</Space>
+              Delete question data
+            </Button>
+          </span>
 
           <Space>8</Space>
 
-          <Tooltip title="Clear all settings">
-            <span>
-              <Button raised color="accent" onClick={onResetButton}>
-                <InlineIcon>settings</InlineIcon>
-                <InlineIcon>delete-sweep</InlineIcon>
-              </Button>
-            </span>
-          </Tooltip>
+          <span>
+            <Button raised color="accent" onClick={onResetButton}>
+              <InlineIcon>settings</InlineIcon>
+              <Space>2</Space>
+              Clear all settings
+            </Button>
+          </span>
         </div>
 
         <Dialog

@@ -50,4 +50,5 @@ const mapStateToProps = state => ({
   activeQuestionUI: state.global.activeQuestion.uiActive
 });
 
+// $FlowFixMe
 export default connect(mapStateToProps)(Home);

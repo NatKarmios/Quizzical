@@ -55,7 +55,9 @@ app.on('window-all-closed', () => {
 
 
 app.on('ready', async () => {
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+  const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+  if (isDebug) {
     await installExtensions();
   }
 
@@ -64,7 +66,7 @@ app.on('ready', async () => {
     width: 1524,
     height: 728,
     minWidth: 800,
-    // frame: false
+    frame: isDebug
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);

@@ -37,6 +37,8 @@ type QuestionListProps = {
   selectQuestion: QuestionType => any
 };
 
+const p = x => { console.log(x); return x }
+
 
 const QuestionListItem = ({ question, enabled, onClick }: QuestionListItemProps) => (
   <ListItem button onClick={onClick} disabled={!enabled}>
@@ -55,10 +57,13 @@ const QuestionListItem = ({ question, enabled, onClick }: QuestionListItemProps)
   </ListItem>
 );
 
-const QuestionList = ({
-  initialLoad, loading, questionCount, currentPage,
-  loadedQuestions, loadQuestions, addQuestion, importQuestions, selectQuestion
-}: QuestionListProps) => {
+const QuestionList = (props: QuestionListProps) => {
+
+  const {
+    initialLoad, loading, questionCount, currentPage,
+    loadedQuestions, loadQuestions, addQuestion, importQuestions, selectQuestion
+  } = props;
+
   if (!initialLoad) loadQuestions(0);
 
   let listContent;
@@ -81,6 +86,7 @@ const QuestionList = ({
         />
       ));
   }
+
 
   const pageButtons = (
       <PageButtons

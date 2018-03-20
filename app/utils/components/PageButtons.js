@@ -2,7 +2,10 @@
 import React from 'react';
 import Tooltip from 'material-ui/Tooltip';
 import IconButton from 'material-ui/IconButton';
-import { MDIcon, Space, CenteredListItem } from '../../utils/components';
+
+import MDIcon from './MDIcon';
+import Space from './Space';
+import CenteredListItem from './CenteredListItem';
 
 
 type Props = {

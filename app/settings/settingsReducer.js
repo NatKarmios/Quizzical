@@ -40,7 +40,6 @@ export default (
         && typeof payload.category === 'string'
       && payload.label !== undefined && payload.label !== null
         && typeof payload.label === 'string'
-      && payload.value !== undefined && payload.value !== null
       && payload.validator !== undefined && payload.validator !== null
     ) {
       const { settings, category, label, value, validator } = payload;

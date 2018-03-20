@@ -82,7 +82,7 @@ const QuestionListAddDialog = ({
 
           <TextField
             fullWidth
-            label="Add answer"
+            label="Add incorrect answer"
             helperText={helperText}
             value={tempIncorrectAnswer}
             onChange={onTempIncorrectAnswerChange}
