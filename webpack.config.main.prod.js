@@ -11,16 +11,15 @@ import CheckNodeEnv from './internals/scripts/CheckNodeEnv';
 
 CheckNodeEnv('production');
 
-// noinspection Annotator
-// noinspection Annotator
 export default merge.smart(baseConfig, {
   devtool: 'source-map',
+
+  mode: 'production',
 
   target: 'electron-main',
 
   entry: './app/main.dev',
 
-  // 'main.js' in root
   output: {
     path: __dirname,
     filename: './app/main.prod.js'
@@ -33,8 +32,9 @@ export default merge.smart(baseConfig, {
     }),
 
     new BundleAnalyzerPlugin({
-      analyzerMode: process.env['OPEN_ANALYZER'] === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env['OPEN_ANALYZER'] === 'true'
+      analyzerMode:
+        process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     }),
 
     /**
@@ -60,5 +60,5 @@ export default merge.smart(baseConfig, {
   node: {
     __dirname: false,
     __filename: false
-  },
+  }
 });
