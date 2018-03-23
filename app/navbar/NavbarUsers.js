@@ -1,21 +1,27 @@
 // @flow
 import React from 'react';
+import Avatar from 'material-ui/Avatar';
+import Tooltip from 'material-ui/Tooltip';
+
+import { MDIcon, Space } from '../utils/components';
 
 import style from './style.scss';
 
-import Avatar from 'material-ui/Avatar';
-import Tooltip from 'material-ui/Tooltip';
-import { MDIcon, Space } from "../utils/components";
 
+export type AccountData = {
+  displayName: ?string,
+  avatar: ?string
+};
 
 type Props = {
   streamerLoggedIn: boolean,
   botLoggedIn: boolean,
   accountData: {
-    streamer: {},
-    bot: {}
+    streamer: AccountData,
+    bot: AccountData
   }
 };
+
 
 const avatarStyles = {
   display: 'inline-block',
@@ -23,7 +29,8 @@ const avatarStyles = {
   verticalAlign: 'middle'
 };
 
-const NotLoggedIn = ({ icon }) => (
+
+const NotLoggedIn = ({ icon }: { icon: string }) => (
   <span className={style.userDisplay}>
     <Tooltip title={<i>Not logged in</i>}>
       <Avatar style={avatarStyles}>
@@ -33,7 +40,7 @@ const NotLoggedIn = ({ icon }) => (
   </span>
 );
 
-const LoggedIn = ({ details }) => (
+const LoggedIn = ({ details }: { details: AccountData }) => (
   <span className={style.userDisplay}>
     <Tooltip title={<i>{details.displayName}</i>}>
       <Avatar
@@ -48,12 +55,12 @@ const LoggedIn = ({ details }) => (
 const NavbarUsers = ({ streamerLoggedIn, botLoggedIn, accountData }: Props) => (
   <div className={style.users}>
     {!streamerLoggedIn ?
-      <NotLoggedIn icon="account"/> :
+      <NotLoggedIn icon="account" /> :
       <LoggedIn details={accountData.streamer} />
     }
     <Space>4</Space>
     {!botLoggedIn ?
-      <NotLoggedIn icon="robot"/> :
+      <NotLoggedIn icon="robot" /> :
       <LoggedIn details={accountData.bot} />
     }
   </div>

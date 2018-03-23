@@ -6,27 +6,38 @@ import Typography from 'material-ui/Typography';
 import { connect } from 'react-redux';
 
 import NavbarUsers from './NavbarUsers';
+import type { AccountData } from './NavbarUsers';
 import NavbarWindowControls from './windowControls';
-
+import icon from './thinking.svg';
 
 type Props = {
   streamerLoggedIn: boolean,
   botLoggedIn: boolean,
-  accountData: {}
-};
-
-const styles = {
-  appBar: {
-    height: '64px'
+  accountData: {
+    streamer: AccountData,
+    bot: AccountData
   }
 };
 
-const Navbar = ({ streamerLoggedIn, botLoggedIn, accountData }: Props) => (
+const Navbar = (props: Props) => (
   <AppBar position="fixed" style={{ WebkitAppRegion: 'drag', height: '64px' }}>
-    <Toolbar>
-      <Typography type="headline" color="inherit">Quizzical</Typography>
+    <Toolbar disableGutters>
+      <Typography type="headline" color="inherit">
+        <img
+          width="40px"
+          height="40px"
+          src={icon}
+          alt=""
+          style={{
+            verticalAlign: 'middle',
+            display: 'inline-flex',
+            padding: '0 10px'
+          }}
+        />
+        Quizzical
+      </Typography>
       <div style={{ flex: 1, height: '100%' }}>
-        <NavbarUsers streamerLoggedIn={streamerLoggedIn} botLoggedIn={botLoggedIn} accountData={accountData} />
+        <NavbarUsers {...props} />
       </div>
       <NavbarWindowControls />
     </Toolbar>
@@ -41,4 +52,5 @@ function mapStateToProps(state) {
   };
 }
 
+// $FlowFixMe
 export default connect(mapStateToProps)(Navbar);

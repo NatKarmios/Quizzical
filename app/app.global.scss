@@ -1,7 +1,15 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
 @import "~font-awesome/css/font-awesome.css";
 @import "~mdi/css/materialdesignicons.min.css";
 @import "~noty/src/noty.scss";
 @import "~noty/src/themes/mint.scss";
+
+$bgcolor: desaturate(#3f51b5, 15);
+$stripe1: darken($bgcolor, 15);
+$stripe2: darken($bgcolor, 18);
 
 body {
   position: relative;
@@ -9,7 +17,14 @@ body {
   height: 100vh;
   margin: 0;
   padding: 64px 0 0;
-  background: #232c39;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      $stripe1,
+      $stripe1 5px,
+      $stripe2 5px,
+      $stripe2 10px
+    );
   font-family: Roboto, Helvetica, Helvetica Neue, serif;
   overflow-y: scroll;
 }
@@ -19,7 +34,7 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
 body::-webkit-scrollbar-thumb {

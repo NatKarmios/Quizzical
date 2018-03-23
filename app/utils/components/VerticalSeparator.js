@@ -24,7 +24,9 @@ const VerticalSeparator = ({ children }: Props) => {
         marginLeft: realPad,
         marginRight: realPad
       }}
-    >|</div>
+    >
+      |
+    </div>
   );
 };
 

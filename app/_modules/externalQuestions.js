@@ -8,25 +8,27 @@ const getApiUrl = (amount, difficulty) =>
 
 
 const parseRawQuestion = question => ({
-  content: decodeHtml(question['question']),
-  correctAnswer: decodeHtml(question['correct_answer']),
-  incorrectAnswers: question['incorrect_answers'].map(decodeHtml),
+  content: decodeHtml(question.question),
+  correctAnswer: decodeHtml(question.correct_answer),
+  incorrectAnswers: question.incorrect_answers.map(decodeHtml),
 });
 
-export const retrieveExternalQuestions = async (amount, difficulty='medium') => {
+export const retrieveExternalQuestions = async (amount: number, difficulty: string='medium') => {
   const questions = await httpGet({ uri: getApiUrl(amount, difficulty), json: true });
-  return questions['results'].map(parseRawQuestion);
+  return questions.results.map(parseRawQuestion);
 };
 
-export const addExternalQuestions = async (amount, difficulty) => {
+export const addExternalQuestions = async (amount: number, difficulty: string) => {
   let missed = 0;
   const questions = await retrieveExternalQuestions(amount, difficulty);
 
   await Promise.all(questions.map(async question => {
     try {
-      await insertQuestion(question.content, question.correctAnswer, question.incorrectAnswers, true);
+      await insertQuestion(
+        question.content, question.correctAnswer, question.incorrectAnswers, true
+      );
     } catch (e) {
-      missed++;
+      missed += 1;
     }
   }));
 

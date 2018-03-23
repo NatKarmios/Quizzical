@@ -1,5 +1,5 @@
 import { spy } from 'sinon';
-import * as actions from '../../app/counter/counterActions';
+import * as actions from '../../app/actions/counter';
 
 describe('actions', () => {
   it('should increment should create increment action', () => {
@@ -34,7 +34,9 @@ describe('actions', () => {
     const dispatch = spy();
     fn(dispatch);
     setTimeout(() => {
-      expect(dispatch.calledWith({ type: actions.INCREMENT_COUNTER })).toBe(true);
+      expect(dispatch.calledWith({ type: actions.INCREMENT_COUNTER })).toBe(
+        true
+      );
       done();
     }, 5);
   });

@@ -1,4 +1,5 @@
 // @flow
+
 import React from 'react';
 import { Redirect } from 'react-router';
 import { bindActionCreators } from 'redux';
@@ -9,7 +10,7 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 
 import * as setupActions from './setupActions';
-import MDIcon from "../utils/components/MDIcon";
+import MDIcon from '../utils/components/MDIcon';
 
 type Props = {
   streamerLoginStage: 0 | 1 | 2,
@@ -29,6 +30,8 @@ const getLoginButton = (stage: 0 | 1 | 2, onClick) => {
       break;
     case 2:
       content = 'Done';
+      break;
+    default:
       break;
   }
 
@@ -70,13 +73,13 @@ const Setup = ({ streamerLoginStage, botLoginStage, logInStreamer, logInBot }: P
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    streamerLoginStage: state.setup.streamerLoginStage,
-    botLoginStage: state.setup.botLoginStage
-  };
-};
+const mapStateToProps = (state) => ({
+  streamerLoginStage: state.setup.streamerLoginStage,
+  botLoginStage: state.setup.botLoginStage
+});
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(setupActions, dispatch);
 
+
+// $FlowFixMe
 export default connect(mapStateToProps, mapDispatchToProps)(Setup);

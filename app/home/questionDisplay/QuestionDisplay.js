@@ -13,42 +13,112 @@ import Divider from 'material-ui/Divider';
 import Button from 'material-ui/Button';
 
 import { getSetting } from '../../_modules/savedSettings';
-import { activeQuestionStart } from '../../_global/actions';
+import type { SettingsType, QuestionType } from '../../utils/types';
+import { activeQuestionStart } from '../../_global/activeQuestion/activeQuestionActions';
 
 import QuestionDetails from '../QuestionDetails';
 import * as QuestionDisplayActions from './questionDisplayActions';
 import { InlineIcon, Space, Dialog } from '../../utils/components';
 import { isInteger, isNaturalNumber } from '../../utils/helperFuncs';
 
+const actions = {
+  ...QuestionDisplayActions,
+  startActiveQuestion: activeQuestionStart
+};
 
-const actions = { ...QuestionDisplayActions, activeQuestionStart };
-
+type Props = {
+  settings: ?SettingsType,
+  question: ?QuestionType,
+  prize: string,
+  duration: string,
+  multipleWinners: boolean,
+  endEarly: boolean,
+  busy: boolean,
+  changePrize: string => ?mixed,
+  changeDuration: string => ?mixed,
+  changeMultipleWinners: boolean => ?mixed,
+  changeEndEarly: boolean => ?mixed,
+  deleteQuestion: number => ?mixed,
+  openDeleteDialog: () => ?mixed,
+  closeDeleteDialog: () => ?mixed,
+  deleteDialogOpen: boolean,
+  startActiveQuestion: (
+    QuestionType,
+    number,
+    number,
+    boolean,
+    boolean
+  ) => ?mixed
+};
 
 const QuestionDisplay = ({
-  settings, question, prize, duration, multipleWinners, endEarly, busy,
-  changeQuestion, changePrize, changeDuration, changeMultipleWinners, changeEndEarly,
-  deleteQuestion, openDeleteDialog, closeDeleteDialog, deleteDialogOpen,
-  activeQuestionStart
-}) => {
+  settings,
+  question,
+  prize,
+  duration,
+  multipleWinners,
+  endEarly,
+  busy,
+  changePrize,
+  changeDuration,
+  changeMultipleWinners,
+  changeEndEarly,
+  deleteQuestion,
+  openDeleteDialog,
+  closeDeleteDialog,
+  deleteDialogOpen,
+  startActiveQuestion
+}: Props) => {
+  if (settings === undefined || settings === null) {
+    return (
+      <div>
+        <Typography type="title" style={{ marginBottom: '10px' }}>
+          Settings loading...
+        </Typography>
+      </div>
+    );
+  }
+
   const callWithInputValue = handler => e => handler(e.target.value);
   const onPrizeChange = callWithInputValue(changePrize);
   const onDurationChange = callWithInputValue(changeDuration);
   const onDeleteDialogClose = confirm => () => {
-    if (confirm) deleteQuestion(question.questionID);
-    closeDeleteDialog();
+    if (question !== undefined && question !== null) {
+      if (confirm) deleteQuestion(question.questionID);
+      closeDeleteDialog();
+    }
   };
-  const defaultPrize = getSetting(settings, 'misc', 'defaultPrize');
+
   const defaultDuration = getSetting(settings, 'misc', 'defaultDuration');
-  const startQuestion = () => activeQuestionStart(question,
-    duration === '' ? defaultDuration : duration,
-    prize === '' ? defaultPrize : prize,
-    !multipleWinners && endEarly, multipleWinners
-  );
-  const startButtonDisabled = busy || question === null || !isInteger(prize) || !isNaturalNumber(duration);
+  if (defaultDuration === null || defaultDuration === undefined) {
+    throw Error('defaultDuration does not exist!');
+  }
+
+  const defaultPrize = getSetting(settings, 'misc', 'defaultPrize');
+  if (defaultPrize === null || defaultPrize === undefined) {
+    throw Error('defaultPrize does not exist!');
+  }
+
+  const startQuestion = () => {
+    if (question !== undefined && question !== null) {
+      startActiveQuestion(
+        question,
+        parseInt(duration === '' ? defaultDuration : duration, 10),
+        parseInt(prize === '' ? defaultPrize : prize, 10),
+        !multipleWinners && endEarly,
+        multipleWinners
+      );
+    }
+  };
+
+  const startButtonDisabled =
+    busy ||
+    question === null ||
+    !isInteger(prize) ||
+    !isNaturalNumber(duration);
 
   return (
-    <div>
-      <Typography type="title" style={{ marginBottom: '10px' }}>Start a question:</Typography>
+    <div style={{ padding: '20px' }}>
       <Grid container>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -58,11 +128,17 @@ const QuestionDisplay = ({
             value={prize}
             onChange={onPrizeChange}
             placeholder={defaultPrize}
-            InputProps={{endAdornment: (
-              <InputAdornment position="end">
-                {getSetting(settings, 'misc', `point${Math.abs(prize) === 1 ? '' : 's'}Name`)}
-              </InputAdornment>
-            )}}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {getSetting(
+                    settings,
+                    'misc',
+                    `point${Math.abs(parseInt(prize, 10)) === 1 ? '' : 's'}Name`
+                  )}
+                </InputAdornment>
+              )
+            }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -73,15 +149,17 @@ const QuestionDisplay = ({
             value={duration}
             onChange={onDurationChange}
             placeholder={defaultDuration}
-            InputProps={{endAdornment: (
-              <InputAdornment position="end">
-                {`second${duration === 1 ? '' : 's'}`}
-              </InputAdornment>
-            )}}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {`second${duration === 1 ? '' : 's'}`}
+                </InputAdornment>
+              )
+            }}
           />
         </Grid>
       </Grid>
-      <br/>
+      <br />
       <Grid container>
         <Grid item xs={12} sm={6} style={{ textAlign: 'center' }}>
           <FormControlLabel
@@ -108,21 +186,33 @@ const QuestionDisplay = ({
         </Grid>
       </Grid>
 
-      <br/>
-      <Divider/>
-      <br/>
+      <br />
+      <Divider />
+      <br />
 
       <div style={{ width: '100%', textAlign: 'center' }}>
-        {
-          question === null ?
-            <Typography><i>No question selected.</i></Typography> :
-            <QuestionDetails question={question} onDeleteButton={openDeleteDialog} deleteButtonEnabled={!busy}/>
-        }
+        {question === null || question === undefined ? (
+          <Typography>
+            <i>No question selected.</i>
+          </Typography>
+        ) : (
+          <QuestionDetails
+            question={question}
+            onDeleteButton={openDeleteDialog}
+            deleteButtonEnabled={!busy}
+          />
+        )}
       </div>
-      <br/>
-      <Divider/>
-      <br/>
-      <Button raised color="primary" style={{ width: '100%'}} disabled={startButtonDisabled} onClick={startQuestion}>
+      <br />
+      <Divider />
+      <br />
+      <Button
+        raised
+        color="primary"
+        style={{ width: '100%' }}
+        disabled={startButtonDisabled}
+        onClick={startQuestion}
+      >
         Go!
         <Space>1</Space>
         <InlineIcon>arrow-right-thick</InlineIcon>
@@ -133,7 +223,7 @@ const QuestionDisplay = ({
         content={
           <span>
             This action cannot be undone.
-            <br/>
+            <br />
             Do you wish to continue?
           </span>
         }
@@ -141,7 +231,7 @@ const QuestionDisplay = ({
         handleClose={onDeleteDialogClose}
       />
     </div>
-  )
+  );
 };
 
 const mapStateToProps = state => ({
@@ -149,6 +239,7 @@ const mapStateToProps = state => ({
   ...state.questionDisplay
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
 
+// $FlowFixMe
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionDisplay);

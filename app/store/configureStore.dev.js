@@ -4,11 +4,20 @@ import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
+
 import arrLogic from '../logic';
 import rootReducer from '../reducers';
-import * as counterActions from '../counter/counterActions';
-import * as globalActions from '../_global/actions';
-// import type { GlobalStateType } from '../global/types';
+
+// Global state actions
+import * as globalSettingsActions from '../_global/settings/settingsActions';
+import * as loginActions from '../_global/login/loginActions';
+import * as activeQuestionActions from '../_global/activeQuestion/activeQuestionActions';
+
+// Specific component state actions
+import * as setupActions from '../setup/setupActions';
+import * as settingsActions from '../settings/settingsActions';
+import * as questionListActions from '../home/questionList/questionListActions';
+import * as questionDisplayActions from '../home/questionDisplay/questionDisplayActions';
 
 const history = createHashHistory();
 
@@ -29,7 +38,11 @@ const configureStore = (initialState) => {
     level: 'info',
     collapsed: true
   });
-  middleware.push(logger);
+
+  // Skip redux logs in console during the tests
+  if (process.env.NODE_ENV !== 'test') {
+    middleware.push(logger);
+  }
 
   // Router Middleware
   const router = routerMiddleware(history);
@@ -37,8 +50,13 @@ const configureStore = (initialState) => {
 
   // Redux DevTools Configuration
   const actionCreators = {
-    ...counterActions,
-    ...globalActions,
+    ...globalSettingsActions,
+    ...loginActions,
+    ...activeQuestionActions,
+    ...setupActions,
+    ...settingsActions,
+    ...questionListActions,
+    ...questionDisplayActions,
     ...routerActions,
   };
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
@@ -46,7 +64,7 @@ const configureStore = (initialState) => {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
-      actionsBlacklist: [globalActions.ACTIVE_QUESTION_TICK],
+      actionsBlacklist: [activeQuestionActions.ACTIVE_QUESTION_TICK],
       actionCreators,
     })
     : compose;
@@ -60,8 +78,9 @@ const configureStore = (initialState) => {
   const store = createStore(rootReducer, initialState, enhancer);
 
   if (module.hot) {
-    module.hot.accept('../reducers', () =>
-      store.replaceReducer(require('../reducers')) // eslint-disable-line global-require
+    module.hot.accept(
+      '../reducers',
+      () => store.replaceReducer(require('../reducers')) // eslint-disable-line global-require
     );
   }
 

@@ -1,6 +1,7 @@
 // @flow
-import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../_global/actions';
-// import type { ActionType } from '../global/actions';
+
+import { STREAMER_LOGGED_IN, BOT_LOGGED_IN } from '../_global/login/loginActions';
+import type { ActionType } from '../utils/types';
 
 export type NavbarStateType = {
   streamerLoggedIn: boolean,
@@ -11,7 +12,7 @@ const defaultState = { streamerLoggedIn: false, botLoggedIn: false };
 
 export default function navbar(
   state: NavbarStateType = defaultState,
-  { type }
+  { type }: ActionType
 ): NavbarStateType {
   const { streamerLoggedIn, botLoggedIn } = state;
 

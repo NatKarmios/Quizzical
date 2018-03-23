@@ -5,47 +5,59 @@ import { MenuItem } from 'material-ui/Menu';
 
 import { Dialog } from '../../../utils/components';
 
+type Props = {
+  open: boolean,
+  handleClose: () => ?mixed,
+  amount: string,
+  onAmountChange: (SyntheticInputEvent<>) => ?mixed,
+  difficulty: string,
+  onDifficultyChange: (SyntheticInputEvent<>) => ?mixed
+};
 
 const QuestionListImportDialog = ({
-  open, handleClose,
-  amount, onAmountChange,
-  difficulty, onDifficultyChange
-}) => (
-    <Dialog
-      title="Import questions"
-      error={(+amount) > 50}
-      helperText={(+amount) > 50 ? 'Must be 50 or less!' : ''}
-      content={(
-        <span>
-          <TextField
-            fullWidth
-            label="Amount"
-            type="number"
-            value={amount}
-            onChange={onAmountChange}
-          />
+  open,
+  handleClose,
+  amount,
+  onAmountChange,
+  difficulty,
+  onDifficultyChange
+}: Props) => (
+  <Dialog
+    title="Import questions"
+    error={+amount > 50}
+    helperText={+amount > 50 ? 'Must be 50 or less!' : ''}
+    content={
+      <span>
+        <TextField
+          fullWidth
+          label="Amount"
+          type="number"
+          value={amount}
+          onChange={onAmountChange}
+        />
 
-          <br /><br />
+        <br />
+        <br />
 
-          <TextField
-            fullWidth
-            select
-            label="Difficulty"
-            value={difficulty}
-            onChange={onDifficultyChange}
-          >
-            <MenuItem value="Easy">Easy</MenuItem>
-            <MenuItem value="Medium">Medium</MenuItem>
-            <MenuItem value="Hard">Hard</MenuItem>
-          </TextField>
-        </span>
-      )}
-      open={open}
-      handleClose={handleClose}
-      confirmEnabled={difficulty !== '' && amount !== ''}
-      confirmText="Import"
-      cancelText="Cancel"
-    />
-  );
+        <TextField
+          fullWidth
+          select
+          label="Difficulty"
+          value={difficulty}
+          onChange={onDifficultyChange}
+        >
+          <MenuItem value="Easy">Easy</MenuItem>
+          <MenuItem value="Medium">Medium</MenuItem>
+          <MenuItem value="Hard">Hard</MenuItem>
+        </TextField>
+      </span>
+    }
+    open={open}
+    handleClose={handleClose}
+    confirmEnabled={difficulty !== '' && amount !== ''}
+    confirmText="Import"
+    cancelText="Cancel"
+  />
+);
 
 export default QuestionListImportDialog;
