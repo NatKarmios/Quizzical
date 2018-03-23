@@ -121,14 +121,6 @@ const processLogin = ({
   scopes,
   accountType
 }: AccountVarsType) => async (_, dispatch, done) => {
-  console.log(accountMap, accountMap.streamer);
-  console.log({
-    startedActionCreator,
-    successActionCreator,
-    failureActionCreator,
-    scopes,
-    accountType
-  });
   dispatch(startedActionCreator());
 
   // Get the session partition
