@@ -46,8 +46,8 @@ export type ActiveQuestionStateType = {
   endEarly: boolean,
   multipleWinners: boolean,
   answerMap: ?Array<number>,
-  correctAnswerers: List,
-  incorrectAnswerers: List
+  correctAnswerers: List<string>,
+  incorrectAnswerers: List<string>
 };
 
 export type SettingsType = {
@@ -73,24 +73,34 @@ export type GlobalStateType = {
   activeQuestion: ?ActiveQuestionStateType
 };
 
-
 // eslint-disable-next-line
 export const refineToQuestionType = (x: mixed): ?QuestionType => {
   if (
-    x !== undefined && x !== null && typeof x === 'object'
-    && x.questionID !== undefined && x.questionID !== null && typeof x.questionID === 'number'
-    && x.content !== undefined && x.content !== null && typeof x.content === 'string'
-    && x.correctAnswer !== undefined && x.correctAnswer !== null && typeof x.correctAnswer === 'string'
-    && x.incorrectAnswers !== undefined && x.incorrectAnswers !== null
-      && Array.isArray(x.incorrectAnswers)
-    && x.external !== undefined && x.external !== null && typeof x.external === 'boolean'
+    x !== undefined &&
+    x !== null &&
+    typeof x === 'object' &&
+    x.questionID !== undefined &&
+    x.questionID !== null &&
+    typeof x.questionID === 'number' &&
+    x.content !== undefined &&
+    x.content !== null &&
+    typeof x.content === 'string' &&
+    x.correctAnswer !== undefined &&
+    x.correctAnswer !== null &&
+    typeof x.correctAnswer === 'string' &&
+    x.incorrectAnswers !== undefined &&
+    x.incorrectAnswers !== null &&
+    Array.isArray(x.incorrectAnswers) &&
+    x.external !== undefined &&
+    x.external !== null &&
+    typeof x.external === 'boolean'
   ) {
     return {
       questionID: x.questionID,
       content: x.content,
       correctAnswer: x.correctAnswer,
       external: x.external,
-      incorrectAnswers: x.incorrectAnswers.join('|').split('|'),
+      incorrectAnswers: x.incorrectAnswers.join('|').split('|')
     };
   }
   return null;

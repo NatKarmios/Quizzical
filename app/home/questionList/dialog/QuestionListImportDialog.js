@@ -5,27 +5,28 @@ import { MenuItem } from 'material-ui/Menu';
 
 import { Dialog } from '../../../utils/components';
 
-
 type Props = {
   open: boolean,
-  handleClose: () => any,
+  handleClose: () => ?mixed,
   amount: string,
-  onAmountChange: SyntheticInputEvent<> => any,
+  onAmountChange: (SyntheticInputEvent<>) => ?mixed,
   difficulty: string,
-  onDifficultyChange: SyntheticInputEvent<> => any
+  onDifficultyChange: (SyntheticInputEvent<>) => ?mixed
 };
 
-
 const QuestionListImportDialog = ({
-  open, handleClose,
-  amount, onAmountChange,
-  difficulty, onDifficultyChange
+  open,
+  handleClose,
+  amount,
+  onAmountChange,
+  difficulty,
+  onDifficultyChange
 }: Props) => (
   <Dialog
     title="Import questions"
-    error={(+amount) > 50}
-    helperText={(+amount) > 50 ? 'Must be 50 or less!' : ''}
-    content={(
+    error={+amount > 50}
+    helperText={+amount > 50 ? 'Must be 50 or less!' : ''}
+    content={
       <span>
         <TextField
           fullWidth
@@ -35,7 +36,8 @@ const QuestionListImportDialog = ({
           onChange={onAmountChange}
         />
 
-        <br /><br />
+        <br />
+        <br />
 
         <TextField
           fullWidth
@@ -49,7 +51,7 @@ const QuestionListImportDialog = ({
           <MenuItem value="Hard">Hard</MenuItem>
         </TextField>
       </span>
-    )}
+    }
     open={open}
     handleClose={handleClose}
     confirmEnabled={difficulty !== '' && amount !== ''}

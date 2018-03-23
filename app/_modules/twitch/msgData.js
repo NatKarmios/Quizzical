@@ -4,7 +4,6 @@ const PATTERN = /^@badges=([a-z/\d,-]*);color=(#[\dA-F]{6}?);display-name=([A-Za
 
 const mods: Array<string> = [];
 
-
 export type MsgData = {
   rawMsg: string,
   isWhisper: boolean,
@@ -16,11 +15,13 @@ export type MsgData = {
   },
   color: string,
   isMod: boolean,
-  reply: string => void
+  reply: string => ?mixed
 };
 
 export const parseMsg = (
-  toParse: string, sendMessage: string => any, sendWhisper: (string, string) => any
+  toParse: string,
+  sendMessage: string => ?mixed,
+  sendWhisper: (string, string) => ?mixed
 ): ?MsgData => {
   const search = PATTERN.exec(toParse.trim());
 
@@ -29,7 +30,8 @@ export const parseMsg = (
   const msg = search[5];
   const name = search[3];
   const nick = name.toLowerCase();
-  const hasModBadge = search[1].includes('moderator') || search[0].includes('broadcaster');
+  const hasModBadge =
+    search[1].includes('moderator') || search[0].includes('broadcaster');
   const isWhisper = search[4] === 'WHISPER';
 
   if (hasModBadge && !mods.includes(nick)) {
@@ -52,7 +54,10 @@ export const parseMsg = (
     isMod: hasModBadge || mods.includes(name),
     sendMessage,
     sendWhisper,
-    reply: search[4] === 'WHISPER' ? str => sendWhisper(str, name) : str => sendMessage(str)
+    reply:
+      search[4] === 'WHISPER'
+        ? str => sendWhisper(str, name)
+        : str => sendMessage(str)
   };
 };
 

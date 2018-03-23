@@ -3,7 +3,11 @@
 import { List } from 'immutable';
 
 import { getSetting } from '../_modules/savedSettings';
-import { SETTINGS_PANEL_EXPANDED, TEMP_SETTING_UPDATE, CLEAR_TEMP_SETTINGS } from './settingsActions';
+import {
+  SETTINGS_PANEL_EXPANDED,
+  TEMP_SETTING_UPDATE,
+  CLEAR_TEMP_SETTINGS
+} from './settingsActions';
 import { cloneObject } from '../utils/helperFuncs';
 import type { ActionType } from '../utils/types';
 
@@ -25,32 +29,43 @@ export default (
 ) => {
   if (type === SETTINGS_PANEL_EXPANDED) {
     if (
-      payload !== undefined && payload !== null
-      && payload.expanded !== undefined && payload.expanded !== null
+      payload !== undefined &&
+      payload !== null &&
+      payload.expanded !== undefined &&
+      payload.expanded !== null
     ) {
       return { ...state, expanded: payload.expanded };
     }
   } else if (type === TEMP_SETTING_UPDATE) {
     if (
-      payload !== undefined && payload !== null && typeof payload === 'object'
+      payload !== undefined &&
+      payload !== null &&
+      typeof payload === 'object' &&
       // $FlowFixMe
-      && payload.settings !== undefined && payload.settings !== null
-        && typeof payload.settings === 'object'
-      && payload.category !== undefined && payload.category !== null
-        && typeof payload.category === 'string'
-      && payload.label !== undefined && payload.label !== null
-        && typeof payload.label === 'string'
-      && payload.validator !== undefined && payload.validator !== null
+      payload.settings !== undefined &&
+      payload.settings !== null &&
+      typeof payload.settings === 'object' &&
+      payload.category !== undefined &&
+      payload.category !== null &&
+      typeof payload.category === 'string' &&
+      payload.label !== undefined &&
+      payload.label !== null &&
+      typeof payload.label === 'string' &&
+      payload.validator !== undefined &&
+      payload.validator !== null
     ) {
       const { settings, category, label, value, validator } = payload;
       const newTempSettings = cloneObject(state.tempSettings);
       const savedValue = getSetting(settings, category, label);
-      if (newTempSettings[category] === null || newTempSettings[category] === undefined) {
+      if (
+        newTempSettings[category] === null ||
+        newTempSettings[category] === undefined
+      ) {
         newTempSettings[category] = {};
       }
       newTempSettings[category][label] = savedValue === value ? null : value;
 
-      let errorFields: List<string> = state.errorFields;
+      let { errorFields }: { errorFields: List<string> } = state;
       const fieldTag = `${category}_${label}`;
       // $FlowFixMe
       const valid = validator(value);

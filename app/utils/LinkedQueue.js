@@ -10,11 +10,11 @@ class Node<T> {
   }
 
   put(elem: T) {
-    if (this.next === null || this.next === undefined) this.next = new Node(elem);
+    if (this.next === null || this.next === undefined)
+      this.next = new Node(elem);
     else this.next.put(elem);
   }
 }
-
 
 export default class LinkedQueue<T> {
   head: ?Node<T>;
@@ -34,8 +34,9 @@ export default class LinkedQueue<T> {
   }
 
   pop(): T {
-    if (this.head === null || this.head === undefined) throw new Error('Tried to pop from empty queue!');
-    const elem: T = this.head.elem;
+    if (this.head === null || this.head === undefined)
+      throw new Error('Tried to pop from empty queue!');
+    const { elem } = this.head;
     this.head = this.head.next;
     this.count -= 1;
     return elem;

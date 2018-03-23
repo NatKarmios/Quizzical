@@ -2,13 +2,17 @@
 
 import { sep } from 'path';
 
-import { cloneObject, getDataDir, readFile, writeFile, fileExists } from '../utils/helperFuncs';
+import {
+  cloneObject,
+  getDataDir,
+  readFile,
+  writeFile,
+  fileExists
+} from '../utils/helperFuncs';
 import type { SettingsType } from '../utils/types';
-
 
 const SETTINGS_FILENAME: string = 'settings.json';
 const SETTINGS_FILE_PATH: string = `${getDataDir()}${sep}${SETTINGS_FILENAME}`;
-
 
 const DEFAULT_SETTINGS = {
   login: {
@@ -17,16 +21,17 @@ const DEFAULT_SETTINGS = {
   },
   chatMessages: {
     joinMessage: 'Quizzical initialized!',
-    questionStarted: 'A question has started for {prize}! You have {duration} seconds to answer; ' +
-    'whisper your choice to me using \'/w {bot} [choice]\'.',
+    questionStarted:
+      'A question has started for {prize}! You have {duration} seconds to answer; ' +
+      "whisper your choice to me using '/w {bot} [choice]'.",
     showQuestion: 'Your question is: {question}',
     questionCancelled: 'Question cancelled.',
     questionEndNoWinners: 'Nobody answered correctly!',
     questionEndSingleWinner: 'Time is up! The winner is {winner}!',
     questionEndMultipleWinners: 'Time is up! The winners are {winners}!',
     answerReceived: 'Answer received!',
-    alreadyAnswered: 'You\'ve already answered!',
-    invalidAnswer: 'That answer\'s invalid!'
+    alreadyAnswered: "You've already answered!",
+    invalidAnswer: "That answer's invalid!"
   },
   misc: {
     pointName: 'point',
@@ -36,10 +41,13 @@ const DEFAULT_SETTINGS = {
   }
 };
 
-export const mergeOntoSettings = (settings: SettingsType, loaded: SettingsType): SettingsType => {
+export const mergeOntoSettings = (
+  settings: SettingsType,
+  loaded: SettingsType
+): SettingsType => {
   const newSettings = cloneObject(settings);
   const processCategory = (category: string) => {
-    const processSetting = (settingKey) => {
+    const processSetting = settingKey => {
       if (loaded[category] !== undefined && loaded[category] !== null) {
         const loadedSetting = loaded[category][settingKey];
         if (loadedSetting !== undefined) {
@@ -60,7 +68,7 @@ export const mergeOntoSettings = (settings: SettingsType, loaded: SettingsType):
 };
 
 export const resetSettings = (settings: SettingsType) => {
-  const login = settings.login;
+  const { login } = settings;
   const newSettings = cloneObject(DEFAULT_SETTINGS);
   newSettings.login = login;
   return newSettings;
@@ -117,7 +125,10 @@ export const getSetting = (
   if (settings !== undefined && settings !== null) {
     if (settings[category] !== null && settings[category] !== undefined) {
       const settingCategory = settings[category];
-      if (settingCategory[settingKey] !== null && settings[category][settingKey] !== undefined) {
+      if (
+        settingCategory[settingKey] !== null &&
+        settings[category][settingKey] !== undefined
+      ) {
         return settings[category][settingKey];
       }
     }
@@ -126,7 +137,10 @@ export const getSetting = (
 };
 
 export const getDefaultSetting = (category: string, settingKey: string) => {
-  if (DEFAULT_SETTINGS[category] !== null && DEFAULT_SETTINGS[category] !== undefined) {
+  if (
+    DEFAULT_SETTINGS[category] !== null &&
+    DEFAULT_SETTINGS[category] !== undefined
+  ) {
     return DEFAULT_SETTINGS[category][settingKey];
   }
   return null;

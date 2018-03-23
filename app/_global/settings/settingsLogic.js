@@ -8,21 +8,25 @@ import { notify } from '../../utils/helperFuncs';
 import { testConnection } from '../../_modules/streamlabsBot';
 
 import {
-  LOAD_SETTINGS, SETTINGS_LOADED, CHANGE_SETTINGS, settingsLoaded, settingsReady, settingsChanged
+  LOAD_SETTINGS,
+  SETTINGS_LOADED,
+  CHANGE_SETTINGS,
+  settingsLoaded,
+  settingsReady,
+  settingsChanged
 } from './settingsActions';
 
 /*
- * These logics are largely used to chain Redux actions.
+ * These "logics" are largely used to chain Redux actions.
  * Not much actual logic.
  */
-
 
 /**
  *  The logic to load settings from a file.
  */
 const loadSettingsLogic = createLogic({
   type: LOAD_SETTINGS,
-  process: async ({ action }, dispatch, done) => {
+  process: async (_, dispatch, done) => {
     // Load settings from file
     const settings = await loadSettings();
 
@@ -31,35 +35,32 @@ const loadSettingsLogic = createLogic({
   }
 });
 
-
 /**
  *  The logic for when settings have been loaded.
  */
 const settingsLoadedLogic = createLogic({
   type: SETTINGS_LOADED,
-  process: async ({ action }, dispatch, done) => {
+  process: async (_, dispatch, done) => {
     dispatch(settingsReady());
     done();
   }
 });
-
 
 /**
  *  The logic for when settings are ready to be used.
  */
 const settingsReadyLogic = createLogic({
   type: SETTINGS_LOADED,
-  process: async ({ action }, dispatch, done) => {
+  process: async (_, dispatch, done) => {
     // Test connection to StreamLabs Bot
     testConnection().catch();
 
-    // Attept to log in with saved Twitch authentication tokens
+    // Attempt to log in with saved Twitch authentication tokens
     dispatch(testSavedTokens());
 
     done();
   }
 });
-
 
 /**
  *  The logic for when settings are being changed

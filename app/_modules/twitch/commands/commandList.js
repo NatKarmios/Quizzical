@@ -3,17 +3,25 @@
 import type { MsgData } from '../msgData';
 import type { CommandType, CommandDetailsType } from './parse';
 import {
-  getQuestionCount, getQuestionList, getQuestionByID, insertQuestion, getTopWinners
+  getQuestionCount,
+  getQuestionList,
+  getQuestionByID,
+  insertQuestion,
+  getTopWinners,
+  getUsedQuestionList
 } from '../../db/dbQueries';
 import { notify, numPages } from '../../../utils/helperFuncs';
 import upload from '../../gist/gist';
 import questionListFormatter from '../../gist/formatters/questionList';
 import commandListFormatter from '../../gist/formatters/commandList';
 import leaderboardFormatter from '../../gist/formatters/leaderboard';
+import recentQuestionsFormatter from '../../gist/formatters/recentQuestionsFormatter';
 import { getState, dispatch } from '../../../store';
-import { activeQuestionStart, activeQuestionEnd } from '../../../_global/activeQuestion/activeQuestionActions';
+import {
+  activeQuestionStart,
+  activeQuestionEnd
+} from '../../../_global/activeQuestion/activeQuestionActions';
 import { loadQuestions } from '../../../home/questionList/questionListActions';
-
 
 /**
  *  Convenience function; forms a command object.
@@ -27,12 +35,15 @@ import { loadQuestions } from '../../../home/questionList/questionListActions';
  */
 const makeCommand = (
   pattern: RegExp,
-// eslint-disable-next-line flowtype/no-weak-types
+  // eslint-disable-next-line flowtype/no-weak-types
   func: MsgData => any,
-  details: ?CommandDetailsType=undefined,
-  modOnly: boolean=true
+  details: ?CommandDetailsType = undefined,
+  modOnly: boolean = true
 ): CommandType => ({
-  pattern, func, modOnly, details
+  pattern,
+  func,
+  modOnly,
+  details
 });
 
 /**
@@ -44,9 +55,10 @@ const makeCommand = (
  * @returns The formed command-details object
  */
 const cmdDetails = (name: string, usage: string, description: string) => ({
-  name, usage, description
+  name,
+  usage,
+  description
 });
-
 
 // The URL to the GitHub Gist of the command list.
 let cmdListUrl;
@@ -57,11 +69,9 @@ let cmdListUrl;
  */
 export const help = makeCommand(
   /^help$/,
-  async (msgData: MsgData) =>
-    msgData.reply(await cmdListUrl),
+  async (msgData: MsgData) => msgData.reply(await cmdListUrl),
   cmdDetails('Help', '`help`', 'Get a link to this command list.')
 );
-
 
 /**
  *  Convenience function; acts as the command function for both
@@ -84,7 +94,9 @@ const questionListCombined = async (msgData: MsgData, page) => {
   // If the viewer requested too large a page number, inform them
   // of such and abort the command
   if (page >= maxPage) {
-    msgData.reply(`Invalid page number! The largest page number is ${maxPage}.`);
+    msgData.reply(
+      `Invalid page number! The largest page number is ${maxPage}.`
+    );
     return;
   }
 
@@ -96,7 +108,10 @@ const questionListCombined = async (msgData: MsgData, page) => {
   const formattedData = questionListFormatter(questions, page + 1, maxPage);
 
   // Upload the formatted question list to GitHub Gists
-  const url = await upload(`Quizzical Question List | Page ${page + 1}`, formattedData);
+  const url = await upload(
+    `Quizzical Question List | Page ${page + 1}`,
+    formattedData
+  );
 
   // Send the Gist URL to the viewer
   msgData.reply(url);
@@ -109,7 +124,11 @@ const questionListCombined = async (msgData: MsgData, page) => {
 export const questionList = makeCommand(
   /^questionList$/,
   (msgData: MsgData) => questionListCombined(msgData, 0),
-  cmdDetails('Get Question List', '`questionList` | `questionList [page]`', 'Gets a list of 30 saved questions')
+  cmdDetails(
+    'Get Question List',
+    '`questionList` | `questionList [page]`',
+    'Gets a list of 30 saved questions'
+  )
 );
 
 /**
@@ -118,9 +137,9 @@ export const questionList = makeCommand(
  */
 export const questionListWithPageNumber = makeCommand(
   /^questionList [1-9]\d*$/,
-  async (msgData: MsgData) => questionListCombined(msgData, parseInt(msgData.words[1], 10) - 1)
+  async (msgData: MsgData) =>
+    questionListCombined(msgData, parseInt(msgData.words[1], 10) - 1)
 );
-
 
 /**
  *  startQuestion
@@ -131,19 +150,23 @@ export const startQuestion = makeCommand(
   async (msgData: MsgData) => {
     // Get the current program state
     const state = getState();
+    const { global: globalState } = state;
 
-    // Veriy state
+    // Verify state
     if (
-      state.global === null || state.global === undefined
-      || state.global.settings === null || state.global.settings === undefined
-      || state.global.activeQuestion === null || state.global.activeQuestion === undefined
+      globalState === null ||
+      globalState === undefined ||
+      globalState.settings === null ||
+      globalState.settings === undefined ||
+      globalState.activeQuestion === null ||
+      globalState.activeQuestion === undefined
     ) {
       throw Error('Type error!');
     }
 
     // Extract data from state
-    const settings = state.global.settings;
-    const activeQuestion = state.global.activeQuestion;
+    const { settings } = globalState;
+    const { activeQuestion } = globalState;
 
     // If there is already a question running, inform the viewer and abort the command
     if (activeQuestion.running) {
@@ -152,34 +175,35 @@ export const startQuestion = makeCommand(
     }
 
     // Verify user settings
-    if (settings.misc === null || settings.misc === undefined || typeof settings.misc !== 'object') {
+    if (
+      settings.misc === null ||
+      settings.misc === undefined ||
+      typeof settings.misc !== 'object'
+    ) {
       throw Error('Type error!');
     }
 
     // Get a category of user settings
-    const miscSettings: {} = settings.misc;
+    const miscSettings: Object = settings.misc;
 
     // Verify 'defaultDuration' in settings
-    if (
-      miscSettings.defaultDuration === null || miscSettings.defaultDuration === undefined
-      || typeof miscSettings.defaultDuration !== 'string'
-    ) {
+    const { defaultDuration } = miscSettings;
+    if (typeof defaultDuration !== 'string') {
+      console.log({ defaultDuration, miscSettings });
       throw Error('Type error!');
     }
 
     // Parse the default question duration from user settings
-    let duration = parseInt(miscSettings.defaultDuration, 10);
+    let duration = parseInt(defaultDuration, 10);
 
     // Verify 'defaultPrize' in settings
-    if (
-      miscSettings.defaultPrize === null || miscSettings.defaultPrize === undefined
-      || typeof miscSettings.defaultPrize !== 'string'
-    ) {
+    const { defaultPrize } = miscSettings;
+    if (typeof defaultPrize !== 'string') {
       throw Error('Type error!');
     }
 
     // Parse the default question prize from user settings
-    let prize = parseInt(miscSettings.defaultPrize, 10);
+    let prize = parseInt(defaultPrize, 10);
 
     // Set the default `mode` value of 0
     // The `mode` specifies the values of `multipleWinners` and `endEarly`, such that:
@@ -194,14 +218,18 @@ export const startQuestion = makeCommand(
 
     // If there are too few or too many arguments, or any of the arguments are
     // non-integers, inform the viewer and abort command
-    if (args.length === 0 || args.length > 4 || args.map(isNaN).includes(true)) {
+    if (
+      args.length === 0 ||
+      args.length > 4 ||
+      args.map(Number.isNaN).includes(true)
+    ) {
       msgData.reply('Malformed command. Use the help command for more info.');
       return;
     }
 
     // Set the `mode` argument if specified
     if (args.length === 4) {
-      mode = args[3];
+      [, , , mode] = args;
       // If the viewer gives an invalid value for `mode`, inform them and abort command
       if (![0, 1, 2].includes(mode)) {
         msgData.reply('Mode must be 0, 1 or 2.');
@@ -211,12 +239,12 @@ export const startQuestion = makeCommand(
 
     // Set the `prize` argument if specified
     if (args.length >= 3) {
-      prize = args[2];
+      [, , prize] = args;
     }
 
     // Set the `duration` argument if specified
     if (args.length >= 2) {
-      duration = args[1];
+      [, duration] = args;
       // If the specified duration is negative, inform the user and abort command
       if (duration <= 0) {
         msgData.reply('Duration must be at least 1 second.');
@@ -224,15 +252,17 @@ export const startQuestion = makeCommand(
       }
     }
 
-    // Set the `quesionID` arguent
-    // This is the only required arguent.
-    const questionID = args[0];
+    // Set the `questionID` argument
+    // This is the only required argument.
+    const [questionID] = args;
     try {
       // Attempt to retrieve the specified question
       const question = await getQuestionByID(questionID);
 
       // Start the question
-      dispatch(activeQuestionStart(question, duration, prize, mode === 2, mode === 0));
+      dispatch(
+        activeQuestionStart(question, duration, prize, mode === 2, mode === 0)
+      );
     } catch (e) {
       // If there was a problem retrieving the question, inform the viewer and abort
       // This will most likely be due to them requesting a question that does not exist.
@@ -241,7 +271,8 @@ export const startQuestion = makeCommand(
     }
   },
   cmdDetails(
-    'Start Question', '`startQuestion [id] [duration?] [prize?] [mode?]`',
+    'Start Question',
+    '`startQuestion [id] [duration?] [prize?] [mode?]`',
     [
       'Starts the question with the specified question ID, duration, prize and mode.',
       'Duration, prize and mode are optional.',
@@ -253,7 +284,6 @@ export const startQuestion = makeCommand(
     ].join('\n')
   )
 );
-
 
 /**
  *  Convenience function; acts as the command function for both
@@ -268,17 +298,21 @@ const finishOrCancelQuestion = (cancelled: boolean) => (msgData: MsgData) => {
 
   // Verify state contents
   if (
-    state === null || state === undefined || state.global === null || state.global === undefined
-    || state.global.activeQuestion === null || state.global.activeQuestion === undefined
-    || typeof state.global.activeQuestion !== 'object'
-    || state.global.activeQuestion.running === null
-    || state.global.activeQuestion.running === undefined
-    || typeof state.global.activeQuestion.running !== 'boolean'
+    state === null ||
+    state === undefined ||
+    state.global === null ||
+    state.global === undefined ||
+    state.global.activeQuestion === null ||
+    state.global.activeQuestion === undefined ||
+    typeof state.global.activeQuestion !== 'object' ||
+    state.global.activeQuestion.running === null ||
+    state.global.activeQuestion.running === undefined ||
+    typeof state.global.activeQuestion.running !== 'boolean'
   ) {
     throw Error('Type error!');
   }
 
-  const running = state.global.activeQuestion.running;
+  const { running } = state.global.activeQuestion;
 
   // A question can't be finished or cancelled if there isn't one currently running;
   // If this is the case, inform the viewer and abort command
@@ -299,7 +333,11 @@ const finishOrCancelQuestion = (cancelled: boolean) => (msgData: MsgData) => {
 export const finishQuestion = makeCommand(
   /^finishQuestion$/,
   finishOrCancelQuestion(false),
-  cmdDetails('Finish Question', '`finishQuestion`', 'Finishes an active question immediately.')
+  cmdDetails(
+    'Finish Question',
+    '`finishQuestion`',
+    'Finishes an active question immediately.'
+  )
 );
 
 /**
@@ -309,50 +347,65 @@ export const finishQuestion = makeCommand(
  */
 export const cancelQuestion = makeCommand(
   /^cancelQuestion$/,
- finishOrCancelQuestion(true),
+  finishOrCancelQuestion(true),
   cmdDetails(
-    'Cancel Question', '`cancelQuestion`', 'Cancels an active question immediately, ignoring any potential winners.'
+    'Cancel Question',
+    '`cancelQuestion`',
+    'Cancels an active question immediately, ignoring any potential winners.'
   )
 );
-
 
 export const addQuestion = makeCommand(
   /^addQuestion /,
   async (msgData: MsgData) => {
-    const args = msgData.words.slice(1).join(' ').split('|').map(s => s.trim());
-     if (args.length < 3) {
-       msgData.reply('Not enough arguments - make sure they\'re split up with `|`.');
-       return;
-     }
-     const questionContent = args[0];
-     const correctAnswer =  args[1];
-     const incorrectAnswers = args.slice(2);
+    const args = msgData.words
+      .slice(1)
+      .join(' ')
+      .split('|')
+      .map(s => s.trim());
+    if (args.length < 3) {
+      msgData.reply(
+        "Not enough arguments - make sure they're split up with `|`."
+      );
+      return;
+    }
+    const questionContent = args[0];
+    const correctAnswer = args[1];
+    const incorrectAnswers = args.slice(2);
 
-      try {
-        await insertQuestion(questionContent, correctAnswer, incorrectAnswers, false);
-        msgData.reply('Question saved successfully.');
-        notify(`Question added by ${msgData.sender.display}.`)
-      } catch (e) {
-        msgData.reply('Failed to add question - it may already exist!');
-        console.error('Failed to insert to SQLite DB!', e);
-      }
+    try {
+      await insertQuestion(
+        questionContent,
+        correctAnswer,
+        incorrectAnswers,
+        false
+      );
+      msgData.reply('Question saved successfully.');
+      notify(`Question added by ${msgData.sender.display}.`);
+    } catch (e) {
+      msgData.reply('Failed to add question - it may already exist!');
+      console.error('Failed to insert to SQLite DB!', e);
+    }
 
-      const state = getState();
-      if (
-        state.questionList !== undefined && state.questionList !== null
-          && typeof state.questionList === 'object'
-        && state.questionList.currentPage !== undefined && state.questionList.currentPage !== null
-          && typeof state.questionList.currentPage === 'number'
-      ) {
-        dispatch(loadQuestions(state.questionList.currentPage));
-      }
+    const { questionList: questionListState } = getState();
+
+    if (
+      questionListState !== undefined &&
+      questionListState !== null &&
+      typeof questionListState === 'object' &&
+      questionListState.currentPage !== undefined &&
+      questionListState.currentPage !== null &&
+      typeof questionListState.currentPage === 'number'
+    ) {
+      dispatch(loadQuestions(questionListState.currentPage));
+    }
   },
   cmdDetails(
-    'Add Question', '`addQuestion [question] | [correct answer] | [incorrect answer 1] | [incorrect answer 2] | ...`',
+    'Add Question',
+    '`addQuestion [question] | [correct answer] | [incorrect answer 1] | [incorrect answer 2] | ...`',
     'Adds a new question to the database.'
   )
-)
-
+);
 
 export const leaderboard = makeCommand(
   /^leaderboard$/,
@@ -363,10 +416,39 @@ export const leaderboard = makeCommand(
     msgData.reply(url);
   },
   cmdDetails(
-    'View Leaderboard', '`leaderboard`', 'Gets a list of up to 50 top quiz winners.'
+    'View Leaderboard',
+    '`leaderboard`',
+    'Gets a list of up to 50 top quiz winners.'
   )
 );
 
+export const recentQuestions = makeCommand(
+  /^recentQuestions$/,
+  async (msgData: MsgData) => {
+    const usedQuestions = await getUsedQuestionList(
+      'finishTime',
+      'DESC',
+      true,
+      '',
+      0,
+      30
+    );
+
+    if (usedQuestions.length === 0) {
+      msgData.reply('There are no recently-used questions.');
+      return;
+    }
+
+    const formatted = recentQuestionsFormatter(usedQuestions);
+    const url = await upload('Quizzical Recently Used Questions', formatted);
+    msgData.reply(url);
+  },
+  cmdDetails(
+    'Get Recent Questions',
+    '`recentQuestions`',
+    'Gets a list of recently-used questions.'
+  )
+);
 
 const commands = [
   help,
@@ -376,13 +458,12 @@ const commands = [
   finishQuestion,
   cancelQuestion,
   addQuestion,
-  leaderboard
+  leaderboard,
+  recentQuestions
 ];
-
 
 // Since the list of commands does not change during runtime, the program can safely
 // upload the question list only once, on initialization.
 cmdListUrl = upload('Quizzical Command List', commandListFormatter(commands));
-
 
 export default commands;

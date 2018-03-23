@@ -3,10 +3,8 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import Tooltip from 'material-ui/Tooltip';
 
 import { Space, Dialog, InlineIcon } from '../utils/components';
-
 
 const DIALOG_CONTENT = (
   <span>
@@ -15,7 +13,6 @@ const DIALOG_CONTENT = (
     Do you wish to continue?
   </span>
 );
-
 
 type Props = {
   // eslint-disable-next-line flowtype/no-weak-types
@@ -31,14 +28,20 @@ type State = {
   resetDialogOpen: boolean
 };
 
-
 class SettingsDangerZone extends React.Component<void, Props, State> {
-
-  state = { logoutDialogOpen: false, deleteQuestionsDialogOpen: false, resetDialogOpen: false };
+  state = {
+    logoutDialogOpen: false,
+    deleteQuestionsDialogOpen: false,
+    resetDialogOpen: false
+  };
 
   render() {
     const { onLogout, onDeleteQuestions, onReset } = this.props;
-    const { logoutDialogOpen, deleteQuestionsDialogOpen, resetDialogOpen } = this.state;
+    const {
+      logoutDialogOpen,
+      deleteQuestionsDialogOpen,
+      resetDialogOpen
+    } = this.state;
 
     const onLogoutButton = () =>
       this.setState({ ...this.state, logoutDialogOpen: true });
@@ -61,10 +64,10 @@ class SettingsDangerZone extends React.Component<void, Props, State> {
     };
 
     return (
-      <Paper style={{ marginTop: '20px', padding: '20px', backgroundColor: '#FDD' }}>
-        <Typography type="subheading">
-          Danger Zone
-        </Typography>
+      <Paper
+        style={{ marginTop: '20px', padding: '20px', backgroundColor: '#FDD' }}
+      >
+        <Typography type="subheading">Danger Zone</Typography>
         <br />
         <div style={{ textAlign: 'center' }}>
           <span>
@@ -116,7 +119,6 @@ class SettingsDangerZone extends React.Component<void, Props, State> {
           open={resetDialogOpen}
           handleClose={onResetDialogClose}
         />
-
       </Paper>
     );
   }

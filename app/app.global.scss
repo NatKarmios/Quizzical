@@ -17,13 +17,14 @@ body {
   height: 100vh;
   margin: 0;
   padding: 64px 0 0;
-  background: repeating-linear-gradient(
+  background:
+    repeating-linear-gradient(
       -45deg,
       $stripe1,
       $stripe1 5px,
       $stripe2 5px,
       $stripe2 10px
-  );
+    );
   font-family: Roboto, Helvetica, Helvetica Neue, serif;
   overflow-y: scroll;
 }

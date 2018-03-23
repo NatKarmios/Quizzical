@@ -21,9 +21,10 @@ import * as QuestionDisplayActions from './questionDisplayActions';
 import { InlineIcon, Space, Dialog } from '../../utils/components';
 import { isInteger, isNaturalNumber } from '../../utils/helperFuncs';
 
-
-const actions = { ...QuestionDisplayActions, startActiveQuestion: activeQuestionStart };
-
+const actions = {
+  ...QuestionDisplayActions,
+  startActiveQuestion: activeQuestionStart
+};
 
 type Props = {
   settings: ?SettingsType,
@@ -33,28 +34,47 @@ type Props = {
   multipleWinners: boolean,
   endEarly: boolean,
   busy: boolean,
-  changePrize: string => any,
-  changeDuration: string => any,
-  changeMultipleWinners: boolean => any,
-  changeEndEarly: boolean => any,
-  deleteQuestion: number => any,
-  openDeleteDialog: () => any,
-  closeDeleteDialog: () => any,
+  changePrize: string => ?mixed,
+  changeDuration: string => ?mixed,
+  changeMultipleWinners: boolean => ?mixed,
+  changeEndEarly: boolean => ?mixed,
+  deleteQuestion: number => ?mixed,
+  openDeleteDialog: () => ?mixed,
+  closeDeleteDialog: () => ?mixed,
   deleteDialogOpen: boolean,
-  startActiveQuestion: (QuestionType, number, number, boolean, boolean) => any
+  startActiveQuestion: (
+    QuestionType,
+    number,
+    number,
+    boolean,
+    boolean
+  ) => ?mixed
 };
 
-
 const QuestionDisplay = ({
-  settings, question, prize, duration, multipleWinners, endEarly, busy,
-  changePrize, changeDuration, changeMultipleWinners, changeEndEarly,
-  deleteQuestion, openDeleteDialog, closeDeleteDialog, deleteDialogOpen,
+  settings,
+  question,
+  prize,
+  duration,
+  multipleWinners,
+  endEarly,
+  busy,
+  changePrize,
+  changeDuration,
+  changeMultipleWinners,
+  changeEndEarly,
+  deleteQuestion,
+  openDeleteDialog,
+  closeDeleteDialog,
+  deleteDialogOpen,
   startActiveQuestion
 }: Props) => {
   if (settings === undefined || settings === null) {
     return (
       <div>
-        <Typography type="title" style={{ marginBottom: '10px' }}>Settings loading...</Typography>
+        <Typography type="title" style={{ marginBottom: '10px' }}>
+          Settings loading...
+        </Typography>
       </div>
     );
   }
@@ -92,7 +112,10 @@ const QuestionDisplay = ({
   };
 
   const startButtonDisabled =
-    busy || question === null || !isInteger(prize) || !isNaturalNumber(duration);
+    busy ||
+    question === null ||
+    !isInteger(prize) ||
+    !isNaturalNumber(duration);
 
   return (
     <div style={{ padding: '20px' }}>
@@ -105,11 +128,17 @@ const QuestionDisplay = ({
             value={prize}
             onChange={onPrizeChange}
             placeholder={defaultPrize}
-            InputProps={{ endAdornment: (
-              <InputAdornment position="end">
-                {getSetting(settings, 'misc', `point${Math.abs(parseInt(prize, 10)) === 1 ? '' : 's'}Name`)}
-              </InputAdornment>
-            ) }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {getSetting(
+                    settings,
+                    'misc',
+                    `point${Math.abs(parseInt(prize, 10)) === 1 ? '' : 's'}Name`
+                  )}
+                </InputAdornment>
+              )
+            }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -120,11 +149,13 @@ const QuestionDisplay = ({
             value={duration}
             onChange={onDurationChange}
             placeholder={defaultDuration}
-            InputProps={{ endAdornment: (
-              <InputAdornment position="end">
-                {`second${duration === 1 ? '' : 's'}`}
-              </InputAdornment>
-            ) }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {`second${duration === 1 ? '' : 's'}`}
+                </InputAdornment>
+              )
+            }}
           />
         </Grid>
       </Grid>
@@ -160,20 +191,28 @@ const QuestionDisplay = ({
       <br />
 
       <div style={{ width: '100%', textAlign: 'center' }}>
-        {
-          question === null || question === undefined ?
-            <Typography><i>No question selected.</i></Typography> :
-            <QuestionDetails
-              question={question}
-              onDeleteButton={openDeleteDialog}
-              deleteButtonEnabled={!busy}
-            />
-        }
+        {question === null || question === undefined ? (
+          <Typography>
+            <i>No question selected.</i>
+          </Typography>
+        ) : (
+          <QuestionDetails
+            question={question}
+            onDeleteButton={openDeleteDialog}
+            deleteButtonEnabled={!busy}
+          />
+        )}
       </div>
       <br />
       <Divider />
       <br />
-      <Button raised color="primary" style={{ width: '100%' }} disabled={startButtonDisabled} onClick={startQuestion}>
+      <Button
+        raised
+        color="primary"
+        style={{ width: '100%' }}
+        disabled={startButtonDisabled}
+        onClick={startQuestion}
+      >
         Go!
         <Space>1</Space>
         <InlineIcon>arrow-right-thick</InlineIcon>
@@ -200,8 +239,7 @@ const mapStateToProps = state => ({
   ...state.questionDisplay
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch);
-
+const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
 
 // $FlowFixMe
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionDisplay);

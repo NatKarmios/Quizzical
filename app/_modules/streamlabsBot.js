@@ -2,16 +2,13 @@
 
 import { httpGet, notify } from '../utils/helperFuncs';
 
-
 // The IP of the Quizzical companion script's HTTP server
 // May be changed for debugging purposes
-const BOT_IP = process.env.NODE_ENV === 'production' ?
-  '127.0.0.1' :
-  '10.0.0.22';
+const BOT_IP =
+  process.env.NODE_ENV === 'production' ? '127.0.0.1' : '10.0.0.22';
 
 // The HTTP URL of the Quizzical companion script's HTTP server
 const BOT_URL = `http://${BOT_IP}:23120`;
-
 
 /**
  *  Tests connection to StreamLabs Bot; the streamer must be
@@ -24,24 +21,26 @@ export const testConnection = async (): Promise<void> => {
   try {
     reply = await httpGet({ url: `${BOT_URL}/ping`, json: true });
   } catch (e) {
-    console.error(e);
+    console.warn(e);
   }
 
   if (
-    reply !== undefined && reply !== null
-    && reply.success !== undefined && reply.success !== null
-    && typeof reply.success === 'boolean' && reply.success === true
+    reply !== undefined &&
+    reply !== null &&
+    reply.success !== undefined &&
+    reply.success !== null &&
+    typeof reply.success === 'boolean' &&
+    reply.success === true
   ) {
-    notify('Successfully pinged StreamLabs Bot',);
+    notify('Successfully pinged StreamLabs Bot');
   } else {
     notify(
-      'Couldn\'t ping StreamLabs Bot. Check Quizizcal settings,' +
-      'and make sure you are running the companion script.',
+      "Couldn't ping StreamLabs Bot. Check Quizizcal settings," +
+        'and make sure you are running the companion script.',
       'warning'
     );
   }
-}
-
+};
 
 /**
  *  Distributes the specified amount of points to the specified
@@ -51,13 +50,16 @@ export const testConnection = async (): Promise<void> => {
  * @param amount | The amount of points to give
  * @returns A promise that resolves once the action is complete
  */
-export const distributePoints = async (users: Array<string>, amount: number) => {
+export const distributePoints = async (
+  users: Array<string>,
+  amount: number
+) => {
   if (users.length === 0) {
     notify('No winners to distribute points to.');
     return;
   }
 
-  let reply = null
+  let reply = null;
   try {
     reply = await httpGet({
       url: `${BOT_URL}/add_points`,
@@ -66,27 +68,29 @@ export const distributePoints = async (users: Array<string>, amount: number) => 
       body: { amount, users }
     });
   } catch (e) {
-    console.error(e);
+    console.warn(e);
   }
 
   if (
-    reply !== undefined && reply !== null
-    && reply.success !== undefined && reply.success !== null
-      && typeof reply.success === 'boolean'
-    && reply.message !== undefined && reply.message !== null
-      && typeof reply.message === 'string'
+    reply !== undefined &&
+    reply !== null &&
+    reply.success !== undefined &&
+    reply.success !== null &&
+    typeof reply.success === 'boolean' &&
+    reply.message !== undefined &&
+    reply.message !== null &&
+    typeof reply.message === 'string'
   ) {
     if (reply.success === true) {
       notify(reply.message);
     } else {
-      notify(`Couldn't add points to winners: ${reply.message}`)
+      notify(`Couldn't add points to winners: ${reply.message}`);
     }
   } else {
     notify(
-      'Couldn\'t add points via StreamLabs Bot. Check Quizizcal settings,' +
-      'and make sure you are running the companion script.',
+      "Couldn't add points via StreamLabs Bot. Check Quizizcal settings," +
+        'and make sure you are running the companion script.',
       'warning'
     );
   }
-}
-
+};

@@ -1,8 +1,7 @@
 // @flow
 
-
 import { httpGet } from '../../utils/helperFuncs';
-
+import AUTH_TOKEN from './auth_token';
 
 /**
  *  Upload a string to GitHub Gists and get the Gist's URL
@@ -13,7 +12,11 @@ import { httpGet } from '../../utils/helperFuncs';
  *                 | name in the Gist; optional, defaults to '.md'
  * @returns The URL of the uploaded Gist
  */
-const upload = async (title: string, content: string, fileType: string='.md') => {
+const upload = async (
+  title: string,
+  content: string,
+  fileType: string = '.md'
+) => {
   // Form the POST data to be sent with the HTTP request to GitHub
   const data = {
     description: title,
@@ -26,7 +29,7 @@ const upload = async (title: string, content: string, fileType: string='.md') =>
   try {
     // Send the data to GitHub and retrieve the post details
     const reply = await httpGet({
-      url: 'https://api.github.com/gists',
+      url: `https://api.github.com/gists?access_token=${AUTH_TOKEN}`,
       headers: {
         'User-Agent': 'Quizzical'
       },
@@ -38,6 +41,7 @@ const upload = async (title: string, content: string, fileType: string='.md') =>
     // Return the viewable URL
     return reply.html_url;
   } catch (e) {
+    console.warn(e);
     return 'Something went wrong!';
   }
 };

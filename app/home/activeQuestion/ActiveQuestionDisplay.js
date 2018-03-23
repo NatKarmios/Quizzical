@@ -14,21 +14,26 @@ import * as activeQuestionActions from '../../_global/activeQuestion/activeQuest
 
 import QuestionDetails from '../QuestionDetails';
 
-
 type Props = {
   question: QuestionType,
   duration: number,
   timeLeft: number,
   running: boolean,
-  activeQuestionReset: () => any,
-  activeQuestionEnd: boolean => any,
+  activeQuestionReset: () => ?mixed,
+  activeQuestionEnd: boolean => ?mixed,
   endEarly: boolean,
   multipleWinners: boolean
 };
 
-
 const ActiveQuestionDisplay = ({
-  question, duration, timeLeft, running, activeQuestionReset, activeQuestionEnd, endEarly, multipleWinners
+  question,
+  duration,
+  timeLeft,
+  running,
+  activeQuestionReset,
+  activeQuestionEnd,
+  endEarly,
+  multipleWinners
 }: Props) => {
   const secs = timeLeft % 60;
   const mins = Math.floor(timeLeft / 60) % 60;
@@ -43,13 +48,15 @@ const ActiveQuestionDisplay = ({
       <CircularProgress
         color="primary"
         mode="determinate"
-        value={ Math.round((timeLeft / duration) * 100) }
+        value={Math.round(timeLeft / duration * 100)}
       />
 
       <br />
 
       <Typography type="headline">
-        {hrsPrinted}{minsPrinted}{secsPrinted}
+        {hrsPrinted}
+        {minsPrinted}
+        {secsPrinted}
       </Typography>
 
       <br />
@@ -64,11 +71,15 @@ const ActiveQuestionDisplay = ({
       <Grid container>
         <Grid item xs={12} sm={6}>
           <Typography type="body2">Allow multiple winners</Typography>
-          <InlineIcon color="black">{`checkbox-${multipleWinners ? 'marked' : 'blank'}-circle-outline`}</InlineIcon>
+          <InlineIcon color="black">{`checkbox-${
+            multipleWinners ? 'marked' : 'blank'
+          }-circle-outline`}</InlineIcon>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Typography type="body2">Finish on first correct answer</Typography>
-          <InlineIcon color="black">{`checkbox-${endEarly ? 'marked' : 'blank'}-circle-outline`}</InlineIcon>
+          <InlineIcon color="black">{`checkbox-${
+            endEarly ? 'marked' : 'blank'
+          }-circle-outline`}</InlineIcon>
         </Grid>
       </Grid>
 
@@ -76,8 +87,8 @@ const ActiveQuestionDisplay = ({
       <Divider />
       <br />
 
-      {
-        running ? [
+      {running ? (
+        [
           <Button
             raised
             color="accent"
@@ -97,26 +108,24 @@ const ActiveQuestionDisplay = ({
           >
             Finish now
           </Button>
-        ] :
-        <Button
-          raised
-          color="primary"
-          onClick={activeQuestionReset}
-        >
+        ]
+      ) : (
+        <Button raised color="primary" onClick={activeQuestionReset}>
           Done
         </Button>
-      }
+      )}
     </div>
   );
 };
-
 
 const mapStateToProps = state => ({
   ...state.global.activeQuestion
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(activeQuestionActions, dispatch);
-
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(activeQuestionActions, dispatch);
 
 // $FlowFixMe
-export default connect(mapStateToProps, mapDispatchToProps)(ActiveQuestionDisplay);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  ActiveQuestionDisplay
+);

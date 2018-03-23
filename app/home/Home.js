@@ -7,20 +7,19 @@ import Typography from 'material-ui/Typography';
 import { MDIcon, HeaderLinkButton } from '../utils/components';
 import QuestionList from './questionList/QuestionList';
 import RightPaneTabs from './rightPaneTabs/RightPaneTabs';
-import ActiveQuestionDisplay from './activeQuestion/ActiveQuestionDisplay';
 import ActiveQuestionUserList from './activeQuestion/ActiveQuestionUserList';
-
 
 type Props = {
   activeQuestionUI: boolean
 };
 
-
 const Home = ({ activeQuestionUI }: Props) => (
   <div style={{ margin: '20px' }}>
     <Paper style={{ padding: '20px' }}>
       <Typography type="headline">
-        <MDIcon color="black" style={{ marginRight: '5px' }}>home</MDIcon>
+        <MDIcon color="black" style={{ marginRight: '5px' }}>
+          home
+        </MDIcon>
         Home
         <HeaderLinkButton
           tooltipText="To settings"

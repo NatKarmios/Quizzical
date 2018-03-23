@@ -10,7 +10,6 @@ import QuestionHistory from '../questionHistory/QuestionHistory';
 
 import * as RightPaneTabsActions from './rightPaneTabsActions';
 
-
 const getTabContents = (activeQuestion: boolean, tab: number) => {
   switch (tab) {
     case 0:
@@ -18,17 +17,15 @@ const getTabContents = (activeQuestion: boolean, tab: number) => {
     case 1:
       return <QuestionHistory />;
     default:
-      return 'Something\'s gone wrong!';
+      return "Something's gone wrong!";
   }
-}
-
+};
 
 type Props = {
   activeQuestion: boolean,
   tab: number,
-  changeTab: number => any
-}
-
+  changeTab: number => ?mixed
+};
 
 const RightPaneTabs = ({ activeQuestion, tab, changeTab }: Props) => (
   <div>
@@ -43,17 +40,16 @@ const RightPaneTabs = ({ activeQuestion, tab, changeTab }: Props) => (
       <Tab label={activeQuestion ? 'Active Question' : 'Start a Question'} />
       <Tab label="Past Question Data" />
     </Tabs>
-    { getTabContents(activeQuestion, tab) }
+    {getTabContents(activeQuestion, tab)}
   </div>
 );
-
 
 const mapStateToProps = state => ({
   tab: state.rightPaneTabs.tab
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(RightPaneTabsActions, dispatch);
-
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(RightPaneTabsActions, dispatch);
 
 // $FlowFixMe
 export default connect(mapStateToProps, mapDispatchToProps)(RightPaneTabs);

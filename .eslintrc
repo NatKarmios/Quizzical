@@ -13,6 +13,7 @@
     "node": true
   },
   "rules": {
+    "flowtype/no-weak-types": [2, { "Object": false }],
     "arrow-parens": ["off"],
     "compat/compat": "error",
     "consistent-return": "off",

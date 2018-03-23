@@ -9,10 +9,14 @@ import { distributePoints } from '../../_modules/streamlabsBot';
 import { insertUsedQuestion } from '../../_modules/db/dbQueries';
 
 import {
-  ACTIVE_QUESTION_START, ACTIVE_QUESTION_TICK, ACTIVE_QUESTION_HANDLE_ANSWER, ACTIVE_QUESTION_END,
-  activeQuestionTick, activeQuestionEnd, activeQuestionStoreAnswerer
+  ACTIVE_QUESTION_START,
+  ACTIVE_QUESTION_TICK,
+  ACTIVE_QUESTION_HANDLE_ANSWER,
+  ACTIVE_QUESTION_END,
+  activeQuestionTick,
+  activeQuestionEnd,
+  activeQuestionStoreAnswerer
 } from './activeQuestionActions';
-
 
 const lower = str => str.toLowerCase();
 
@@ -34,7 +38,9 @@ const getContextFromState = (state, settings, extra = {}) => {
 
   const context = {
     // Insert variables from active question state
-    prize: `${prize} ${settings.misc[`point${Math.abs(prize) === 1 ? '' : 's'}Name`]}`,
+    prize: `${prize} ${
+      settings.misc[`point${Math.abs(prize) === 1 ? '' : 's'}Name`]
+    }`,
     rawPrize: prize,
     question: question.content,
     duration,
@@ -47,9 +53,13 @@ const getContextFromState = (state, settings, extra = {}) => {
   // If there are any winners for the active question, insert a
   // 'winner' or 'winners' variable as appropriate.
   if (winners.length === 1) {
-    context.winner = winners[0];
+    const [winner] = winners[0];
+    context.winner = winner;
   } else if (winners.length > 1) {
-    context.winners = `${[...winners].slice(0, -1).join(', ')} and ${winners[winners.length - 1]}`;
+    const [winnersStr] = `${[...winners].slice(0, -1).join(', ')} and ${
+      winners[winners.length - 1]
+    }`;
+    context.winners = winnersStr;
   }
 
   return context;
@@ -68,8 +78,16 @@ const getContextFromState = (state, settings, extra = {}) => {
  *                     | defaults to chat/queueMessage()
  * @returns Nothing.
  */
-const sendFormatted = (msg, state, settings, extraContext = {}, sender = queueMessage) => {
-  sender(formatWithContext(msg, getContextFromState(state, settings, extraContext)));
+const sendFormatted = (
+  msg,
+  state,
+  settings,
+  extraContext = {},
+  sender = queueMessage
+) => {
+  sender(
+    formatWithContext(msg, getContextFromState(state, settings, extraContext))
+  );
 };
 
 /**
@@ -86,9 +104,12 @@ const sendFormatted = (msg, state, settings, extraContext = {}, sender = queueMe
  * @returns A function that takes a string message, formats it, then
  *          sends it via the given sender function.
  */
-const getSender = (state, settings, extraContext = {}, sender = queueMessage) => msg =>
-  sendFormatted(msg, state, settings, extraContext, sender);
-
+const getSender = (
+  state,
+  settings,
+  extraContext = {},
+  sender = queueMessage
+) => msg => sendFormatted(msg, state, settings, extraContext, sender);
 
 /**
  *  The logic for when a question is started.
@@ -112,7 +133,10 @@ const activeQuestionStartLogic = createLogic({
 
     // Map the answers into pairs of the index numbered format, i.e.:
     // ['a', 'b', 'c'] => [[2, '2. a'], [3, '3. b'], [1, '1. c']]
-    const indexedAnswers = rawAnswers.map((answer, ix) => [answerMap[ix], `${answerMap[ix]}. ${answer}`]);
+    const indexedAnswers = rawAnswers.map((answer, ix) => [
+      answerMap[ix],
+      `${answerMap[ix]}. ${answer}`
+    ]);
 
     // Sort the answers into the shuffled answer order, i.e.:
     // [[2, '2. a'], [3, '3. b'], [1, '1. c']] =>
@@ -176,10 +200,15 @@ const activeQuestionHandleAnswerLogic = createLogic({
     const { chatMessages } = settings;
 
     // Get message data from action payload
-    const msgData: MsgData = action.payload.msgData;
+    const { msgData }: { msgData: MsgData } = action.payload;
 
     // Get sender function
-    const reply = getSender(state, settings, { target: msgData.sender.display }, msgData.reply);
+    const reply = getSender(
+      state,
+      settings,
+      { target: msgData.sender.display },
+      msgData.reply
+    );
 
     // Answer will not be handled if there is no running question, or if
     // the given message was not whispered.
@@ -188,15 +217,27 @@ const activeQuestionHandleAnswerLogic = createLogic({
       const choice = parseInt(msgData.msg, 10);
 
       // Extract more values from state
-      const answerMap: Array<number> = state.answerMap;
-      const { correctAnswerers, incorrectAnswerers, endEarly, multipleWinners } = state;
+      const { answerMap }: { answerMap: Array<number> } = state;
+      const {
+        correctAnswerers,
+        incorrectAnswerers,
+        endEarly,
+        multipleWinners
+      } = state;
 
-      if ([...correctAnswerers, ...incorrectAnswerers].map(lower).includes(msgData.sender.raw)) {
+      if (
+        [...correctAnswerers, ...incorrectAnswerers]
+          .map(lower)
+          .includes(msgData.sender.raw)
+      ) {
         // If either answerer list contains the viewer, ignore their answer
         // and notify that they've already answered.
         reply(chatMessages.alreadyAnswered);
       } else if (
-        isNaN(choice) || Math.floor(choice) !== choice || choice <= 0 || choice > answerMap.length
+        Number.isNaN(choice) ||
+        Math.floor(choice) !== choice ||
+        choice <= 0 ||
+        choice > answerMap.length
       ) {
         // If the viewer's choice is malformed, or outside the range of
         // possible answers, notify them of such and ignore their answer
@@ -209,17 +250,19 @@ const activeQuestionHandleAnswerLogic = createLogic({
         // Check if the answer is correct
         const isCorrect = answerMap.indexOf(choice) === 0;
 
-console.log({isCorrect, endEarly, correctAnswerers, msgData})
+        console.log({ isCorrect, endEarly, correctAnswerers, msgData });
         // If the question is supposed to end on the first correct answer,
         // and someone has already answered correctly, then ignore
         // any new answers
         if (!endEarly || correctAnswerers.size === 0) {
           // If only one winner is allowed, and someone has already answered
           // correctly, any subsequent answers are considered incorrect.
-          dispatch(activeQuestionStoreAnswerer(
-            msgData.sender.display,
-            isCorrect && (correctAnswerers.size === 0 || multipleWinners)
-          ));
+          dispatch(
+            activeQuestionStoreAnswerer(
+              msgData.sender.display,
+              isCorrect && (correctAnswerers.size === 0 || multipleWinners)
+            )
+          );
         }
 
         // If the question is supposed to end on the first correct answer, and
@@ -290,7 +333,6 @@ const activeQuestionEndLogic = createLogic({
     done();
   }
 });
-
 
 export default [
   activeQuestionStartLogic,

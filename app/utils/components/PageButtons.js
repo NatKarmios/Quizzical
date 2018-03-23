@@ -7,23 +7,28 @@ import MDIcon from './MDIcon';
 import Space from './Space';
 import CenteredListItem from './CenteredListItem';
 
-
 type Props = {
   loading: boolean,
   currentPage: number,
   maxPage: number,
-  loadNextPage: () => any,
-  loadPrevPage: () => any
+  loadNextPage: () => ?mixed,
+  loadPrevPage: () => ?mixed
 };
 
-
 const PageButtons = ({
-  loading, currentPage, maxPage, loadNextPage, loadPrevPage
+  loading,
+  currentPage,
+  maxPage,
+  loadNextPage,
+  loadPrevPage
 }: Props) => (
   <CenteredListItem>
     <Tooltip title="Previous page">
       <span>
-        <IconButton disabled={loading || currentPage <= 0} onClick={loadPrevPage}>
+        <IconButton
+          disabled={loading || currentPage <= 0}
+          onClick={loadPrevPage}
+        >
           <MDIcon>chevron-double-left</MDIcon>
         </IconButton>
       </span>
@@ -33,7 +38,10 @@ const PageButtons = ({
     <Space>4</Space>
     <Tooltip title="Next page">
       <span>
-        <IconButton disabled={loading || currentPage + 1 >= maxPage} onClick={loadNextPage}>
+        <IconButton
+          disabled={loading || currentPage + 1 >= maxPage}
+          onClick={loadNextPage}
+        >
           <MDIcon>chevron-double-right</MDIcon>
         </IconButton>
       </span>

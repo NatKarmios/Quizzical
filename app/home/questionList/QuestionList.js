@@ -18,7 +18,6 @@ import QuestionListButtons from './QuestionListAddButtons';
 import * as QuestionListActions from './questionListActions';
 import CenteredListItem from '../../utils/components/CenteredListItem';
 
-
 type QuestionListItemProps = {
   question: QuestionType,
   enabled: boolean,
@@ -37,31 +36,36 @@ type QuestionListProps = {
   selectQuestion: QuestionType => any
 };
 
-const p = x => { console.log(x); return x }
-
-
-const QuestionListItem = ({ question, enabled, onClick }: QuestionListItemProps) => (
+const QuestionListItem = ({
+  question,
+  enabled,
+  onClick
+}: QuestionListItemProps) => (
   <ListItem button onClick={onClick} disabled={!enabled}>
     <ListItemText
       primary={<Typography type="body1">{question.content}</Typography>}
     />
-    {
-      question.external ? (
-        <Tooltip title="Imported" style={{ float: 'right' }} placement="right">
-          <IconButton style={{ width: '24px', height: '24px' }} disableRipple>
-            <MDIcon style={{ fontSize: '20px' }}>web</MDIcon>
-          </IconButton>
-        </Tooltip>
-      ) : null
-    }
+    {question.external ? (
+      <Tooltip title="Imported" style={{ float: 'right' }} placement="right">
+        <IconButton style={{ width: '24px', height: '24px' }} disableRipple>
+          <MDIcon style={{ fontSize: '20px' }}>web</MDIcon>
+        </IconButton>
+      </Tooltip>
+    ) : null}
   </ListItem>
 );
 
 const QuestionList = (props: QuestionListProps) => {
-
   const {
-    initialLoad, loading, questionCount, currentPage,
-    loadedQuestions, loadQuestions, addQuestion, importQuestions, selectQuestion
+    initialLoad,
+    loading,
+    questionCount,
+    currentPage,
+    loadedQuestions,
+    loadQuestions,
+    addQuestion,
+    importQuestions,
+    selectQuestion
   } = props;
 
   if (!initialLoad) loadQuestions(0);
@@ -70,37 +74,38 @@ const QuestionList = (props: QuestionListProps) => {
   if (!initialLoad || questionCount === 0) {
     listContent = (
       <CenteredListItem>
-        <Typography><i>
-          {loading ? 'Loading questions...' : 'No questions to show.'}
-        </i></Typography>
+        <Typography>
+          <i>{loading ? 'Loading questions...' : 'No questions to show.'}</i>
+        </Typography>
       </CenteredListItem>
     );
   } else {
-    listContent =
-      loadedQuestions.map(question => (
-        <QuestionListItem
-          question={question}
-          enabled={!loading}
-          key={`q${question.questionID}`}
-          onClick={() => selectQuestion(question)}
-        />
-      ));
+    listContent = loadedQuestions.map(question => (
+      <QuestionListItem
+        question={question}
+        enabled={!loading}
+        key={`q${question.questionID}`}
+        onClick={() => selectQuestion(question)}
+      />
+    ));
   }
 
-
   const pageButtons = (
-      <PageButtons
-        loading={loading}
-        currentPage={currentPage}
-        maxPage={numPages(questionCount)}
-        loadNextPage={() => loadQuestions(currentPage + 1)}
-        loadPrevPage={() => loadQuestions(currentPage - 1)}
-      />
+    <PageButtons
+      loading={loading}
+      currentPage={currentPage}
+      maxPage={numPages(questionCount)}
+      loadNextPage={() => loadQuestions(currentPage + 1)}
+      loadPrevPage={() => loadQuestions(currentPage - 1)}
+    />
   );
 
   return (
     <List>
-      <QuestionListButtons addQuestion={addQuestion} importQuestions={importQuestions} />
+      <QuestionListButtons
+        addQuestion={addQuestion}
+        importQuestions={importQuestions}
+      />
       <Divider />
       {pageButtons}
       <Divider />
@@ -119,8 +124,8 @@ const mapStateToProps = state => ({
   loadedQuestions: state.questionList.loadedQuestions
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(QuestionListActions, dispatch);
-
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(QuestionListActions, dispatch);
 
 // $FlowFixMe
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionList);

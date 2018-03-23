@@ -8,10 +8,13 @@ import { checkMod } from './msgData';
 import { sendRaw } from './chat';
 import parseCommand from './commands/parse';
 
-
 export const logMessage = (msg: string, msgData: ?MsgData) => {
   if (msgData !== undefined && msgData !== null) {
-    console.log(`< ${msgData.isWhisper ? 'WSP' : 'MSG'} | ${msgData.sender.display}: ${msgData.msg}`);
+    console.log(
+      `< ${msgData.isWhisper ? 'WSP' : 'MSG'} | ${msgData.sender.display}: ${
+        msgData.msg
+      }`
+    );
   } else {
     console.log(`< RAW | ${msg}`);
   }
@@ -27,7 +30,7 @@ const replyToPing = (msg: string, ignored: ?MsgData) => {
 };
 
 const handleAnswer = (msg: string, msgData: ?MsgData) => {
-  if (msgData !== undefined && msgData !== null && !isNaN(msgData.msg)) {
+  if (msgData !== undefined && msgData !== null && !Number.isNaN(msgData.msg)) {
     dispatch(activeQuestionHandleAnswer(msgData));
   }
 };
@@ -38,10 +41,4 @@ const handleCommand = (msg: string, msgData: ?MsgData) => {
   }
 };
 
-
-export default [
-  replyToPing,
-  handleAnswer,
-  checkMod,
-  handleCommand
-];
+export default [replyToPing, handleAnswer, checkMod, handleCommand];
