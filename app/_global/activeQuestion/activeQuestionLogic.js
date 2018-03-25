@@ -53,7 +53,7 @@ const getContextFromState = (state, settings, extra = {}) => {
   // If there are any winners for the active question, insert a
   // 'winner' or 'winners' variable as appropriate.
   if (winners.length === 1) {
-    const [winner] = winners[0];
+    const [winner] = winners;
     context.winner = winner;
   } else if (winners.length > 1) {
     const [winnersStr] = `${[...winners].slice(0, -1).join(', ')} and ${
@@ -250,7 +250,6 @@ const activeQuestionHandleAnswerLogic = createLogic({
         // Check if the answer is correct
         const isCorrect = answerMap.indexOf(choice) === 0;
 
-        console.log({ isCorrect, endEarly, correctAnswerers, msgData });
         // If the question is supposed to end on the first correct answer,
         // and someone has already answered correctly, then ignore
         // any new answers
