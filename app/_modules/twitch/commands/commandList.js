@@ -15,7 +15,7 @@ import upload from '../../gist/gist';
 import questionListFormatter from '../../gist/formatters/questionList';
 import commandListFormatter from '../../gist/formatters/commandList';
 import leaderboardFormatter from '../../gist/formatters/leaderboard';
-import recentQuestionsFormatter from '../../gist/formatters/recentQuestionsFormatter';
+import recentQuestionsFormatter from '../../gist/formatters/recentQuestions';
 import { getState, dispatch } from '../../../store';
 import {
   activeQuestionStart,
