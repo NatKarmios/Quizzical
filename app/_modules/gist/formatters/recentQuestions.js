@@ -25,7 +25,9 @@ const mapRecentQuestion = ({
     ].join(' | ')
   ].join('\n');
 
-const recentQuestions = (recentQuestions: Array<UsedQuestionType>): string =>
+const recentQuestionsFormatter = (
+  recentQuestions: Array<UsedQuestionType>
+): string =>
   [
     `Showing the ${recentQuestions.length} most recently-used question${
       recentQuestions.length === 1 ? '' : 's'
@@ -34,4 +36,4 @@ const recentQuestions = (recentQuestions: Array<UsedQuestionType>): string =>
     recentQuestions.map(mapRecentQuestion).join('\n\n')
   ].join('\n');
 
-export default recentQuestions;
+export default recentQuestionsFormatter;
