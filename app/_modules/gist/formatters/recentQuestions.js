@@ -3,6 +3,12 @@
 import { getTimeString, getDateString } from '../../../utils/helperFuncs';
 import type { UsedQuestionType } from '../../../utils/types';
 
+/**
+ *  Maps a single 'used question' object into a Markdown-readable format
+ *
+ * @param [unnamed] | The used querstion to be mapped
+ * @returns The Markdown-formatter used question
+ */
 const mapRecentQuestion = ({
   question,
   cancelled,
@@ -25,6 +31,13 @@ const mapRecentQuestion = ({
     ].join(' | ')
   ].join('\n');
 
+/**
+ *  Transform a list of used questions into a Markdown-readable list of
+ *  used question information.
+ *
+ * @param recentQuestions | The list of used to be transformed
+ * @returns The Markdown-formatted command list
+ */
 const recentQuestionsFormatter = (
   recentQuestions: Array<UsedQuestionType>
 ): string =>
