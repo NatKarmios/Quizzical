@@ -3,7 +3,6 @@
 import { httpGet, notify } from '../utils/helperFuncs';
 
 // The IP of the Quizzical companion script's HTTP server
-// May be changed for debugging purposes
 const BOT_IP = '127.0.0.1';
 
 // The HTTP URL of the Quizzical companion script's HTTP server
@@ -18,11 +17,13 @@ const BOT_URL = `http://${BOT_IP}:23120`;
 export const testConnection = async (): Promise<void> => {
   let reply = null;
   try {
+    // Attempt to ping Steamlabs Bot
     reply = await httpGet({ url: `${BOT_URL}/ping`, json: true });
   } catch (e) {
     console.warn(e);
   }
 
+  // Notify the streamer whether the ping was successful
   if (
     reply !== undefined &&
     reply !== null &&
@@ -53,13 +54,16 @@ export const distributePoints = async (
   users: Array<string>,
   amount: number
 ) => {
+  // Abort if there are no users to send points to
   if (users.length === 0) {
     notify('No winners to distribute points to.');
     return;
   }
 
   let reply = null;
+
   try {
+    // Attempt to make the request to Streamlabs Bot
     reply = await httpGet({
       url: `${BOT_URL}/add_points`,
       method: 'POST',
@@ -70,6 +74,7 @@ export const distributePoints = async (
     console.warn(e);
   }
 
+  // Notify the streamer of the result of the attempt
   if (
     reply !== undefined &&
     reply !== null &&
