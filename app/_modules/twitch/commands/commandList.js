@@ -15,7 +15,7 @@ import upload from '../../gist/gist';
 import questionListFormatter from '../../gist/formatters/questionList';
 import commandListFormatter from '../../gist/formatters/commandList';
 import leaderboardFormatter from '../../gist/formatters/leaderboard';
-import recentQuestionsFormatter from '../../gist/formatters/recentQuestionsFormatter';
+import recentQuestionsFormatter from '../../gist/formatters/recentQuestions';
 import { getState, dispatch } from '../../../store';
 import {
   activeQuestionStart,
@@ -63,10 +63,9 @@ const cmdDetails = (name: string, usage: string, description: string) => ({
 // The URL to the GitHub Gist of the command list.
 let cmdListUrl;
 
-/**
- *  help
- *  Responds a link to the GitHub Gist of the command list.
- */
+// For each of the commands listed below, look to the parameters pased to `cmdDetails`
+// to see the command's purpose.
+
 export const help = makeCommand(
   /^help$/,
   async (msgData: MsgData) => msgData.reply(await cmdListUrl),
@@ -117,10 +116,6 @@ const questionListCombined = async (msgData: MsgData, page) => {
   msgData.reply(url);
 };
 
-/**
- *  questionList
- *  Gets the first page of questions
- */
 export const questionList = makeCommand(
   /^questionList$/,
   (msgData: MsgData) => questionListCombined(msgData, 0),
@@ -131,20 +126,12 @@ export const questionList = makeCommand(
   )
 );
 
-/**
- * questionList x
- * Gets a specific page of questions
- */
 export const questionListWithPageNumber = makeCommand(
   /^questionList [1-9]\d*$/,
   async (msgData: MsgData) =>
     questionListCombined(msgData, parseInt(msgData.words[1], 10) - 1)
 );
 
-/**
- *  startQuestion
- *  Starts a quiz question
- */
 export const startQuestion = makeCommand(
   /^startQuestion /,
   async (msgData: MsgData) => {
@@ -325,11 +312,6 @@ const finishOrCancelQuestion = (cancelled: boolean) => (msgData: MsgData) => {
   dispatch(activeQuestionEnd(cancelled));
 };
 
-/**
- *  finishQuestion
- *  Finish the currently running question, announcing the winner(s) and
- *  distributing points as normal
- */
 export const finishQuestion = makeCommand(
   /^finishQuestion$/,
   finishOrCancelQuestion(false),
@@ -340,11 +322,6 @@ export const finishQuestion = makeCommand(
   )
 );
 
-/**
- *  cancelQuestion
- *  Cancels the currently running question; no winners are announced and no points
- *  are distributed
- */
 export const cancelQuestion = makeCommand(
   /^cancelQuestion$/,
   finishOrCancelQuestion(true),
@@ -358,35 +335,49 @@ export const cancelQuestion = makeCommand(
 export const addQuestion = makeCommand(
   /^addQuestion /,
   async (msgData: MsgData) => {
+    // Ignore the first word (the command), join up the words, then split by the
+    // pipe (|) character; since this command can take multiple words per argument,
+    // this pipe character is used as the delimeter, rather than spaces
     const args = msgData.words
       .slice(1)
       .join(' ')
       .split('|')
       .map(s => s.trim());
+
+    // Verify that enough arguments were supplied
     if (args.length < 3) {
       msgData.reply(
         "Not enough arguments - make sure they're split up with `|`."
       );
       return;
     }
-    const questionContent = args[0];
-    const correctAnswer = args[1];
-    const incorrectAnswers = args.slice(2);
+
+    const questionContent = args[0]; // The question itself is the first argument
+    const correctAnswer = args[1]; // The correct answer is the second argument
+    const incorrectAnswers = args.slice(2); // All remaining arguments represent incorrect answers
 
     try {
+      // Attempt to insert the given question into the database.
       await insertQuestion(
         questionContent,
         correctAnswer,
         incorrectAnswers,
         false
       );
+
+      // Notify the command user that adding the question was successful
       msgData.reply('Question saved successfully.');
+
+      // Notify the streamer that the command user added a new question
       notify(`Question added by ${msgData.sender.display}.`);
     } catch (e) {
+      // If adding to DB failed, notify the command user and log the
+      // thrown exception error to the console
       msgData.reply('Failed to add question - it may already exist!');
       console.error('Failed to insert to SQLite DB!', e);
     }
 
+    // <editor-fold desc="Reload questions from DB">
     const { questionList: questionListState } = getState();
 
     if (
@@ -399,6 +390,7 @@ export const addQuestion = makeCommand(
     ) {
       dispatch(loadQuestions(questionListState.currentPage));
     }
+    // </editor-fold>
   },
   cmdDetails(
     'Add Question',
@@ -410,9 +402,16 @@ export const addQuestion = makeCommand(
 export const leaderboard = makeCommand(
   /^leaderboard$/,
   async (msgData: MsgData) => {
+    // Retrieve the top winners from the database
     const winners = await getTopWinners();
+
+    // Format the top winners into a leaderboard
     const formatted = leaderboardFormatter(winners);
+
+    // Upload the leaderboard to GitHub Gists
     const url = await upload('Quizzical Leaderboard', formatted);
+
+    // Send the gist's URL to the user
     msgData.reply(url);
   },
   cmdDetails(
@@ -425,6 +424,7 @@ export const leaderboard = makeCommand(
 export const recentQuestions = makeCommand(
   /^recentQuestions$/,
   async (msgData: MsgData) => {
+    // Retireve a list of the most recently-used questions from the database
     const usedQuestions = await getUsedQuestionList(
       'finishTime',
       'DESC',
@@ -434,13 +434,20 @@ export const recentQuestions = makeCommand(
       30
     );
 
+    // If there aren't any used questions to show, notify the user
+    // and avoid uploading to gists
     if (usedQuestions.length === 0) {
       msgData.reply('There are no recently-used questions.');
       return;
     }
 
+    // Format the used questions into a list
     const formatted = recentQuestionsFormatter(usedQuestions);
+
+    // Upload the list to GitHub Gists
     const url = await upload('Quizzical Recently Used Questions', formatted);
+
+    // Send the gist's URL to the user
     msgData.reply(url);
   },
   cmdDetails(

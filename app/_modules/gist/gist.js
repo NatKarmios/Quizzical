@@ -42,7 +42,7 @@ const upload = async (
     return reply.html_url;
   } catch (e) {
     console.warn(e);
-    return 'Something went wrong!';
+    return 'Something went wrong when uploading to gists!';
   }
 };
 

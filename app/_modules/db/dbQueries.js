@@ -7,6 +7,8 @@ import type {
   WinnerTotalType
 } from '../../utils/types';
 
+// <editor-fold desc="Query Strings">
+
 // All queries are written in SQLite 3 syntax.
 const CREATE_QUESTIONS_TABLE =
   'CREATE TABLE IF NOT EXISTS Questions (' +
@@ -40,7 +42,7 @@ const INSERT_USED_QUESTION =
   'INSERT INTO UsedQuestions(questionID, cancelled, finishTime, duration, prize) ' +
   'VALUES (?, ?, ?, ?, ?);';
 const INSERT_WINNER =
-  'INSERT INTO Winners(name, usedQuestionID)' + 'VALUES (?, ?);';
+  'INSERT INTO Winners(name, usedQuestionID) VALUES (?, ?);';
 const GET_LAST_INSERTED_ROW = 'SELECT last_insert_rowid();';
 const GET_USED_QUESTION_COUNT = 'SELECT COUNT(*) FROM UsedQuestions';
 
@@ -59,10 +61,14 @@ const GET_QUESTION_SELECTION = 'SELECT * FROM Questions LIMIT ? OFFSET ?;';
 const DELETE_ALL_QUESTIONS = 'DELETE FROM Questions;';
 const DELETE_QUESTION_BY_ID = 'DELETE FROM Questions WHERE questionID = ?;';
 
+// </editor-fold>
+
+// <editor-fold desc="Type Parser Functions">
+
 /**
- *  Parses and verifies the type of a raw question retrieved from the database
+ *  Parses and verifies the type of a raw 'question' retrieved from the database
  *
- *  The main difference is that `external` is 0 or 1 instead of a boolean,
+ *  In the database. `external` is stored as an integer (0 or 1) instead of a boolean,
  *  as SQLite 3 does not have boolean types, and incorrectAnswers is a single
  *  string with '|' characters delimiting answers, in order to avoid an
  *  unnecessarily complex data structure in the database.
@@ -94,6 +100,15 @@ const parseRawQuestion = (rawQuestion: mixed): QuestionType => {
   );
 };
 
+/**
+ *  Parses and verifies the type of a raw 'used question' retrieved from the database
+ *
+ *  `cancelled` must be mapped to a boolean, similar to `eternal` as above,
+ *  and finishTime must be parsed from an integer into a date.
+ *
+ * @param rawQuestion | The raw question object to be parsed
+ * @returns The parsed question
+ */
 const parseRawUsedQuestion = (rawUsedQuestion: mixed): UsedQuestionType => {
   if (
     rawUsedQuestion &&
@@ -125,6 +140,14 @@ const parseRawUsedQuestion = (rawUsedQuestion: mixed): UsedQuestionType => {
   );
 };
 
+/**
+ *  Parses and verifies the type of a raw 'winner' retrieved from the database
+ *
+ *  There are no type conversions necessary here.
+ *
+ * @param rawQuestion | The raw question object to be parsed
+ * @returns The parsed question
+ */
 const parseRawWinnerTotal = (rawWinner: mixed): WinnerTotalType => {
   if (
     rawWinner &&
@@ -143,6 +166,8 @@ const parseRawWinnerTotal = (rawWinner: mixed): WinnerTotalType => {
   );
 };
 
+// </editor-fold>
+
 /**
  *  Create any needed tables that don't yet exist.
  *
@@ -158,7 +183,7 @@ export const createTables = async (): Promise<void> => {
 };
 
 /**
- *  Insert a new question into the question database
+ *  Insert a new 'question' into the question database
  *
  * @param content          | The question to be asked
  * @param correctAnswer    | The correct answer
@@ -179,6 +204,16 @@ export const insertQuestion = (
     external
   ]);
 
+/**
+ *  Insert a new 'used question' into the database
+ *
+ * @param questionID | The ID of the question that was used
+ * @param cancelled  | Whether or not the question was cancelled before completion
+ * @param duration   | The duration that the question was run for
+ * @param prize      | The prize value set for the question
+ * @param winners    | The viewers who answered the question correctly
+ * @returns A promise that resolves when the action has completed.
+ */
 export const insertUsedQuestion = async (
   questionID: number,
   cancelled: boolean,
@@ -197,6 +232,13 @@ export const insertUsedQuestion = async (
   await Promise.all(winners.map(winner => insertWinner(winner, lastInsert)));
 };
 
+/**
+ *  Insert a new 'winner' into the database
+ *
+ * @param name           | The name of the winner
+ * @param usedQuestionID | The 'used question' that this relates to
+ * @returns A promise that resolves when the action has completed.
+ */
 export const insertWinner = async (
   name: string,
   usedQuestionID: number
@@ -204,9 +246,68 @@ export const insertWinner = async (
   await getDB().run(INSERT_WINNER, [name, usedQuestionID]);
 };
 
+/**
+ *  Gets the row ID of the last inserted entity
+ *
+ * @returns A promise that resolves with said ID
+ */
+export const getLastInsertedRow = async (): Promise<number> =>
+  (await getDB().get(GET_LAST_INSERTED_ROW))['last_insert_rowid()'];
+
+/**
+ *  Get how many questions in total are stored
+ *
+ * @returns A promise that resolves to the number of questions stored.
+ */
+export const getQuestionCount = async (): Promise<number> =>
+  (await getDB().get(GET_QUESTION_COUNT))['COUNT(*)'];
+
+/**
+ *  Gets the number of 'used question' entities stored in the database
+ * @returns A promise that resolves with said number
+ */
 export const getUsedQuestionCount = async (): Promise<number> =>
   (await getDB().get(GET_USED_QUESTION_COUNT))['COUNT(*)'];
 
+/**
+ *  Retrieve a specific question by ID
+ *
+ * @param id | The ID of the question to be retrieved
+ * @returns A promise that resolves with the question, once retrieved.
+ */
+export const getQuestionByID = async (id: number): Promise<QuestionType> =>
+  parseRawQuestion(await getDB().get(GET_QUESTION_BY_ID, [id]));
+
+/**
+ *  Get a specific selection of questions
+ *
+ * @param page         | The 'page' of questions being retrieved
+ *                     | i.e. page 0 means the first questions
+ *                     | in the database
+ * @param numQuestions | The number of questions considered to be on
+ *                     | each 'page'.
+ */
+export const getQuestionList = async (
+  page: number,
+  numQuestions: number = 10
+): Promise<Array<QuestionType>> =>
+  (await getDB().all(GET_QUESTION_SELECTION, [
+    numQuestions,
+    page * numQuestions
+  ])).map(parseRawQuestion);
+
+/**
+ *  Gets a list of 'used question' entities, with certain sorting and
+ *  filtering parameters
+ *
+ * @param sortBy           | The column name to sort the results by
+ * @param sortOrder        | Whether to sort in ascending or descending order
+ * @param includeExternal  | Whether to include imported questions
+ * @param questionSearch   | A search query for filtering results by question
+ * @param page             | What 'page' of 'used question' entities to return
+ * @param numUsedQuestions | How many 'used question' entities are on each 'page'
+ * @returns A promise that resolves with the requested list of 'used question' entities
+ */
 export const getUsedQuestionList = async (
   sortBy: string,
   sortOrder: string,
@@ -231,45 +332,15 @@ export const getUsedQuestionList = async (
 };
 
 /**
- *  Retrieve a specific question by ID
+ *  Gets a list of which viewers have won the most quiz questions
  *
- * @param id | The ID of the question to be retrieved
- * @returns A promise that resolves with the question, once retrieved.
+ * @param amount | The maximum number of viewers to display (defaults to 50)
+ * @returns A promise that resolves with a list of `winner` objects
  */
-export const getQuestionByID = async (id: number): Promise<QuestionType> =>
-  parseRawQuestion(await getDB().get(GET_QUESTION_BY_ID, [id]));
-
-/**
- *  Get how many questions in total are stored
- *
- * @returns A promise that resolves to the number of questions stored.
- */
-export const getQuestionCount = async (): Promise<number> =>
-  (await getDB().get(GET_QUESTION_COUNT))['COUNT(*)'];
-
-/**
- *  Get a specific selection of questions
- *
- * @param page         | The 'page' of questions being retrieved
- *                     | i.e. page 0 means the first questions
- *                     | in the database
- * @param numQuestions | The number of questions considered to be on
- *                     | each 'page'.
- */
-export const getQuestionList = async (
-  page: number,
-  numQuestions: number = 10
-): Promise<Array<QuestionType>> =>
-  (await getDB().all(GET_QUESTION_SELECTION, [
-    numQuestions,
-    page * numQuestions
-  ])).map(parseRawQuestion);
-
-export const getLastInsertedRow = async (): Promise<number> =>
-  (await getDB().get(GET_LAST_INSERTED_ROW))['last_insert_rowid()'];
-
-export const getTopWinners = async (): Promise<Array<WinnerTotalType>> =>
-  (await getDB().all(GET_TOP_WINNERS, [50])).map(parseRawWinnerTotal);
+export const getTopWinners = async (
+  amount: number = 50
+): Promise<Array<WinnerTotalType>> =>
+  (await getDB().all(GET_TOP_WINNERS, [amount])).map(parseRawWinnerTotal);
 
 /**
  *  Delete all questions that have been stored
