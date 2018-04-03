@@ -10,6 +10,9 @@ import type {
 // <editor-fold desc="Query Strings">
 
 // All queries are written in SQLite 3 syntax.
+
+// <editor-fold desc="Table Creation">
+
 const CREATE_QUESTIONS_TABLE =
   'CREATE TABLE IF NOT EXISTS Questions (' +
   'questionID INTEGER PRIMARY KEY ASC, ' +
@@ -18,6 +21,7 @@ const CREATE_QUESTIONS_TABLE =
   'incorrectAnswers TEXT NOT NULL, ' +
   'external BOOLEAN CHECK (external IN (0,1)) NOT NULL' +
   ');';
+
 const CREATE_USED_QUESTIONS_TABLE =
   'CREATE TABLE IF NOT EXISTS UsedQuestions (' +
   'usedQuestionID INTEGER PRIMARY KEY ASC,' +
@@ -28,6 +32,7 @@ const CREATE_USED_QUESTIONS_TABLE =
   'prize INTEGER NOT NULL,' +
   'FOREIGN KEY(questionID) REFERENCES Questions(questionID)' +
   ');';
+
 const CREATE_WINNERS_TABLE =
   'CREATE TABLE IF NOT EXISTS Winners (' +
   'winnerID INTEGER PRIMARY KEY ASC,' +
@@ -35,15 +40,28 @@ const CREATE_WINNERS_TABLE =
   'usedQuestionID INTEGER NOT NULL,' +
   'FOREIGN KEY(usedQuestionID) REFERENCES UsedQuestions(usedQuestionID)' +
   ');';
+
+// </editor-fold>
+
+// <editor-fold desc="Insertion">
+
 const INSERT_QUESTION =
   'INSERT INTO Questions(content, correctAnswer, incorrectAnswers, external) ' +
   'VALUES (?, ?, ?, ?);';
+
 const INSERT_USED_QUESTION =
   'INSERT INTO UsedQuestions(questionID, cancelled, finishTime, duration, prize) ' +
   'VALUES (?, ?, ?, ?, ?);';
+
 const INSERT_WINNER =
   'INSERT INTO Winners(name, usedQuestionID) VALUES (?, ?);';
+
+// </editor-fold>
+
+// <editor-fold desc="Selection">
+
 const GET_LAST_INSERTED_ROW = 'SELECT last_insert_rowid();';
+
 const GET_USED_QUESTION_COUNT = 'SELECT COUNT(*) FROM UsedQuestions';
 
 const GET_USED_QUESTION_PARTIAL_1 =
@@ -56,10 +74,34 @@ const GET_TOP_WINNERS =
   'SELECT *, count(name) as total FROM Winners GROUP BY name ORDER BY count(name) DESC LIMIT ?;';
 
 const GET_QUESTION_BY_ID = 'SELECT * FROM Questions WHERE questionID = ?;';
+
 const GET_QUESTION_COUNT = 'SELECT COUNT(*) FROM Questions;';
+
 const GET_QUESTION_SELECTION = 'SELECT * FROM Questions LIMIT ? OFFSET ?;';
-const DELETE_ALL_QUESTIONS = 'DELETE FROM Questions;';
+
+// </editor-fold>
+
+// <editor-fold desc="Deletion">
+
 const DELETE_QUESTION_BY_ID = 'DELETE FROM Questions WHERE questionID = ?;';
+
+const DELETE_USED_QUESTIONS_BY_QUESTION_ID =
+  'DELETE FROM UsedQuestions WHERE questionID = ?;';
+
+const DELETE_WINNERS_BY_QUESTION_ID =
+  'DELETE FROM Winners WHERE winnerID in (' +
+  'SELECT Winner.winnerID FROM Winners' +
+  'LEFT JOIN UsedQuestions on Winners.usedQuestionID = UsedQuestions.usedQuestionID' +
+  'WHERE questionID = ?' +
+  ');';
+
+const DELETE_ALL_QUESTIONS = 'DELETE FROM Questions;';
+
+const DELETE_ALL_USED_QUESTIONS = 'DELETE FROM UsedQuestions;';
+
+const DELETE_ALL_WINNERS = 'DELETE FROM Winners;';
+
+// </editor-fold>
 
 // </editor-fold>
 
@@ -168,6 +210,10 @@ const parseRawWinnerTotal = (rawWinner: mixed): WinnerTotalType => {
 
 // </editor-fold>
 
+// <editor-fold desc="Query Functions">
+
+// <editor-fold desc="Table Creation">
+
 /**
  *  Create any needed tables that don't yet exist.
  *
@@ -181,6 +227,10 @@ export const createTables = async (): Promise<void> => {
   ];
   await Promise.all(tables.map(table => getDB().run(table)));
 };
+
+// </editor-fold>
+
+// <editor-fold desc="Insertion">
 
 /**
  *  Insert a new 'question' into the question database
@@ -246,6 +296,10 @@ export const insertWinner = async (
   await getDB().run(INSERT_WINNER, [name, usedQuestionID]);
 };
 
+// </editor-fold>
+
+// <editor-fold desc="Selection">
+
 /**
  *  Gets the row ID of the last inserted entity
  *
@@ -270,7 +324,7 @@ export const getUsedQuestionCount = async (): Promise<number> =>
   (await getDB().get(GET_USED_QUESTION_COUNT))['COUNT(*)'];
 
 /**
- *  Retrieve a specific question by ID
+ *  Get a specific question by ID
  *
  * @param id | The ID of the question to be retrieved
  * @returns A promise that resolves with the question, once retrieved.
@@ -342,13 +396,9 @@ export const getTopWinners = async (
 ): Promise<Array<WinnerTotalType>> =>
   (await getDB().all(GET_TOP_WINNERS, [amount])).map(parseRawWinnerTotal);
 
-/**
- *  Delete all questions that have been stored
- *
- * @returns A promise that resolves when the action has completed.
- */
-export const deleteAllQuestions: () => Promise<?mixed> = () =>
-  getDB().run(DELETE_ALL_QUESTIONS);
+// </editor-fold>
+
+// <editor-fold desc="Deletion">
 
 /**
  *  Delete a specific question by ID
@@ -356,5 +406,77 @@ export const deleteAllQuestions: () => Promise<?mixed> = () =>
  * @param id | The ID of the question to be deleted
  * @returns A promise that resolves when the action has completed.
  */
-export const deleteQuestionByID = (id: number): Promise<?mixed> =>
-  getDB().run(DELETE_QUESTION_BY_ID, [id]);
+export const deleteQuestionByID = async (id: number): Promise<void> => {
+  await Promise.all([
+    getDB().run(DELETE_QUESTION_BY_ID, [id]),
+    deleteUsedQuestionsByQuestionID(id)
+  ]);
+};
+
+/**
+ *  Delete used questions by question ID
+ *
+ * @param id | The ID of the question to delete usedQuestions by
+ * @returns A promise that resolves when the action has completed.
+ */
+export const deleteUsedQuestionsByQuestionID = async (
+  id: number
+): Promise<void> => {
+  await Promise.all([
+    getDB().run(DELETE_USED_QUESTIONS_BY_QUESTION_ID, [id]),
+    deleteWinnersByQuestionID(id)
+  ]);
+};
+
+/**
+ *  Delete winners by question ID
+ *
+ * @param id | The ID of the question to delete winners by
+ * @returns A promise that resolves when the action has completed.
+ */
+export const deleteWinnersByQuestionID = async (id: number): Promise<void> => {
+  await getDB().run(DELETE_WINNERS_BY_QUESTION_ID, [id]);
+};
+
+/**
+ *  Delete all questions that have been stored
+ *
+ *  Because used questions - and by extention, winners - depend on questions,
+ *  all data for those tablews will be deleted as well.
+ *
+ * @returns A promise that resolves when the action has completed.
+ */
+export const deleteAllQuestions = async (): Promise<void> => {
+  await Promise.all([
+    getDB().run(DELETE_ALL_QUESTIONS),
+    deleteAllUsedQuestions()
+  ]);
+};
+
+/**
+ *  Delete all used questions that have been stored
+ *
+ *  Because winners depend on used questions, all winner data will be
+ *  deleted as well.
+ *
+ * @returns A promise that resolves when the action has completed.
+ */
+export const deleteAllUsedQuestions = async (): Promise<void> => {
+  await Promise.all([
+    getDB().run(DELETE_ALL_USED_QUESTIONS),
+    deleteAllWinners()
+  ]);
+};
+
+/**
+ *  Delete all winners that have been stored
+ *
+ * @returns A promise that resolves when the action has completed.
+ */
+export const deleteAllWinners = async (): Promise<void> => {
+  getDB().run(DELETE_ALL_WINNERS);
+};
+
+// </editor-fold>
+
+// </editor-fold>
