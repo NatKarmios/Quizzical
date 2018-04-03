@@ -13,26 +13,26 @@ import type {
 const CREATE_QUESTIONS_TABLE =
   'CREATE TABLE IF NOT EXISTS Questions (' +
   'questionID INTEGER PRIMARY KEY ASC, ' +
-  'content TEXT UNIQUE, ' +
-  'correctAnswer TEXT, ' +
-  'incorrectAnswers TEXT, ' +
-  'external BOOLEAN CHECK (external IN (0,1))' +
+  'content TEXT UNIQUE NOT NULL, ' +
+  'correctAnswer TEXT NOT NULL, ' +
+  'incorrectAnswers TEXT NOT NULL, ' +
+  'external BOOLEAN CHECK (external IN (0,1)) NOT NULL' +
   ');';
 const CREATE_USED_QUESTIONS_TABLE =
   'CREATE TABLE IF NOT EXISTS UsedQuestions (' +
-  'usedQuestionID INTEGER PRIMARY KEY ASC, ' +
-  'questionID INTEGER, ' +
-  'cancelled BOOLEAN CHECK (cancelled IN (0,1)), ' +
-  'finishTime INTEGER, ' +
-  'duration INTEGER, ' +
-  'prize INTEGER, ' +
+  'usedQuestionID INTEGER PRIMARY KEY ASC,' +
+  'questionID INTEGER NOT NULL,' +
+  'cancelled BOOLEAN CHECK (cancelled IN (0,1)) NOT NULL,' +
+  'finishTime INTEGER NOT NULL,' +
+  'duration INTEGER NOT NULL,' +
+  'prize INTEGER NOT NULL,' +
   'FOREIGN KEY(questionID) REFERENCES Questions(questionID)' +
   ');';
 const CREATE_WINNERS_TABLE =
   'CREATE TABLE IF NOT EXISTS Winners (' +
-  'winnerID INTEGER PRIMARY KEY ASC, ' +
-  'name TEXT, ' +
-  'usedQuestionID INTEGER, ' +
+  'winnerID INTEGER PRIMARY KEY ASC,' +
+  'name TEXT NOT NULL,' +
+  'usedQuestionID INTEGER NOT NULL,' +
   'FOREIGN KEY(usedQuestionID) REFERENCES UsedQuestions(usedQuestionID)' +
   ');';
 const INSERT_QUESTION =
