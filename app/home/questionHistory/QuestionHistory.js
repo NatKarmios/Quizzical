@@ -97,73 +97,73 @@ type ResultsTableProps = {
   onPageChange: number => ?mixed
 };
 
-const ResultsTable = ({
-  data,
-  count,
-  page,
-  onPageChange
-}: ResultsTableProps) => (
-  <div className={style.scrollwrap}>
-    <div className={style.scrollbar}>
-      <div style={{ minWidth: '800px' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <Cell>Question</Cell>
-              <Cell>Time</Cell>
-              <Cell>Date</Cell>
-              <Cell numeric>Winners</Cell>
-              <Cell numeric>Duration</Cell>
-              <Cell numeric>Prize</Cell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map(
-              ({
-                usedQuestionID,
-                question,
-                finishTime,
-                winners,
-                duration,
-                prize
-              }: UsedQuestionType) => (
-                <TableRow key={usedQuestionID}>
-                  <Cell>
-                    {
-                      <Tooltip title={question.content}>
-                        <div>
-                          {question.content.length > 35
-                            ? `${question.content.substring(0, 32)}...`
-                            : question.content}
-                        </div>
-                      </Tooltip>
-                    }
-                  </Cell>
-                  <Cell>{getTimeString(finishTime)}</Cell>
-                  <Cell>{getDateString(finishTime)}</Cell>
-                  <Cell numeric>{winners}</Cell>
-                  <Cell numeric>{duration}</Cell>
-                  <Cell numeric>{prize}</Cell>
-                </TableRow>
-              )
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                count={count}
-                onChangePage={(e, newPage) => onPageChange(newPage)}
-                page={page}
-                rowsPerPage={10}
-                rowsPerPageOptions={[10]}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
+const ResultsTable = ({ data, count, page, onPageChange }: ResultsTableProps) =>
+  data.length === 0 ? (
+    <Typography>
+      <i>No question history to show.</i>
+    </Typography>
+  ) : (
+    <div className={style.scrollwrap}>
+      <div className={style.scrollbar}>
+        <div style={{ minWidth: '800px' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <Cell>Question</Cell>
+                <Cell>Time</Cell>
+                <Cell>Date</Cell>
+                <Cell numeric>Winners</Cell>
+                <Cell numeric>Duration</Cell>
+                <Cell numeric>Prize</Cell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map(
+                ({
+                  usedQuestionID,
+                  question,
+                  finishTime,
+                  winners,
+                  duration,
+                  prize
+                }: UsedQuestionType) => (
+                  <TableRow key={usedQuestionID}>
+                    <Cell>
+                      {
+                        <Tooltip title={question.content}>
+                          <div>
+                            {question.content.length > 35
+                              ? `${question.content.substring(0, 32)}...`
+                              : question.content}
+                          </div>
+                        </Tooltip>
+                      }
+                    </Cell>
+                    <Cell>{getTimeString(finishTime)}</Cell>
+                    <Cell>{getDateString(finishTime)}</Cell>
+                    <Cell numeric>{winners}</Cell>
+                    <Cell numeric>{duration}</Cell>
+                    <Cell numeric>{prize}</Cell>
+                  </TableRow>
+                )
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  count={count}
+                  onChangePage={(e, newPage) => onPageChange(newPage)}
+                  page={page}
+                  rowsPerPage={10}
+                  rowsPerPageOptions={[10]}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 
 type Props = {
   sortBy: string,
