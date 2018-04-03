@@ -1,7 +1,7 @@
 {
   "name": "quizzical",
   "productName": "Quizzical",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A trivia bot for Twitch.tv",
   "main": "./main.prod.js",
   "author": {

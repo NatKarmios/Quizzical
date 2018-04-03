@@ -1,7 +1,7 @@
 // @flow
 
 // The RegEx pattern used to parse Twitch messages
-const PATTERN = /^@badges=([a-z/\d,-]*);color=(#[\dA-F]{6}?);display-name=([A-Za-z\d_]+);.*:[a-z\d_]+![a-z\d_]+@[a-z\d_]+\.tmi\.twitch\.tv (PRIVMSG|WHISPER) #?[a-z\d_]+ :(.+)$/;
+const PATTERN = /^@badges=([a-z/\d,-]*);color=(?:(#[\dA-F]{6}))?;display-name=([A-Za-z\d_]+);.*:[a-z\d_]+![a-z\d_]+@[a-z\d_]+\.tmi\.twitch\.tv (PRIVMSG|WHISPER) #?[a-z\d_]+ :(.+)$/;
 
 // An array to store the usernames of know moderators
 const mods: Array<string> = [];
@@ -100,7 +100,7 @@ export const parseMsg = (
       raw: nick,
       display: name
     },
-    color: search[2],
+    color: search[2] !== null && search[2] !== undefined ? search[2] : '',
     isMod: hasModBadge || mods.includes(name),
     sendMessage,
     sendWhisper,
